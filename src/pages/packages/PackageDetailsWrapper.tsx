@@ -96,11 +96,11 @@ const allPackages = [
 ];
 
 const PackageDetailsWrapper: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const packageId = parseInt(id || "", 10);
+  const { packageId } = useParams<{ packageId: string }>();
+  const packageIdNumber = parseInt(packageId || "", 10);
 
   // Find the package by ID
-  const selectedPackage = allPackages.find((pkg) => pkg.id === packageId);
+  const selectedPackage = allPackages.find((pkg) => pkg.id === packageIdNumber);
 
   // Redirect if the package is not found
   if (!selectedPackage) {

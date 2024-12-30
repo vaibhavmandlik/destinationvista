@@ -1,49 +1,28 @@
-import React from "react";
-
-import AboutUs from "../about/AboutUs";
-import Contact from "../contact/Contact";
-import Carousel from "../carousel/Carousel";
-
-
-// import TourPackages from "../packages/TourPackages";
-// import img5 from "../../img/destination-5.jpg";
-
-const images = [
-  {
-    src : "/img/carousel-1.jpg",
-    alt: "First slide"
-  },
-  {
-    src :"/img/carousel-2.jpg",
-    alt: "Second slide"
-  },
-  {
-    src :"/img/carousel-1.jpg",
-    alt: "third slide"
-  }
-];
+import React from 'react'
+import Carousel from '../carousel/Carousel'
+import AboutUs from '../about/AboutUs';
+import Contact from '../contact/Contact';
+import HomeRegistration from '../registration/HomeRegistration';
+import Footer from '../../components/footer/Footer';
 
 const Home: React.FC = () => {
-  return (
-    <>
-    
-      <Carousel images={images}  />
-      
-       {/* <TourPackages
-        heading="Perfect Tour Packages"
-        subheading="Packages"       // gettting error whrn importing
-        packages={packagesToShow}
-        onDetailsClick={handleOpenBookingForm}
-        onBookNowClick={handleOpenBookingForm}
-        onExploreMoreClick={handleExploreMore}
-      /> */}
-      <AboutUs />
-      <Contact />
-      // Back to top button
-     
-   
-    </>
-  );
-};
 
-export default Home;
+    const images = [
+        { src: "/img/carousel-1.jpg", alt: "Image 1" },
+        { src: "/img/carousel-2.jpg", alt: "Image 2" },
+      
+      ];
+  return (
+   <>
+
+   <Carousel  images={images }/>
+   <AboutUs/>
+   <HomeRegistration/>
+   <Contact/>
+   <Footer/>
+   
+   </>
+  )
+}
+
+export default Home

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Link}  from 'react-router-dom';
  
 
 const LoginPage: React.FC = () => {
@@ -7,29 +8,29 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+   
+    // try {
+    //   const response = await fetch('http://localhost:3000/api/login', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ email, password }),
+    //   });
 
-    try {
-      const response = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        alert('Login successful!');
-        window.location.href = '/';
-      } else {
-        const errorData = await response.json();
-        alert(`Login failed: ${errorData.message}`);
-      }
-    } catch (error) {
-      alert('An error occurred. Please try again later.');
-      console.error('Error:', error);
-    }
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     localStorage.setItem('token', data.token);
+    //     alert('Login successful!');
+    //     window.location.href = '/';
+    //   } else {
+    //     const errorData = await response.json();
+    //     alert(`Login failed: ${errorData.message}`);
+    //   }
+    // } catch (error) {
+    //   alert('An error occurred. Please try again later.');
+    //   console.error('Error:', error);
+    // }
   };
 
   return (
@@ -73,7 +74,7 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
           <p className="text-center mt-3">
-            Don’t have an account? <a href="/registration">Sign Up</a>
+            Don’t have an account? <Link to="/registration">Sign Up</Link>
           </p>
         </form>
       </div>

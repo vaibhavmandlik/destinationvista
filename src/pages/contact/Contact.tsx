@@ -9,7 +9,7 @@ const Contact: React.FC = () => {
   return ( 
     <>
      {/* <!-- Header Start --> */}
-     <div className="container-fluid page-header" >
+     {/* <div className="container-fluid page-header" >
         <div className="container" style={{marginTop:"auto" , minHeight:"400px"}}>
           <div className="d-flex flex-column align-items-center justify-content-center " >
             <h3 className="display-4 text-white text-uppercase mt-5">Contact</h3> 
@@ -24,7 +24,7 @@ const Contact: React.FC = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     <div className="container-fluid py-5">
       <div className="container py-5">
         <div className="text-center mb-3 pb-3">
