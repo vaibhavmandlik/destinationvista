@@ -11,11 +11,12 @@ import { PackageCreate } from "./Package/PackageCreate";
 import { PackageList } from "./Package/PackageList";
 import { PackageUpdate } from "./Package/PackageUpdate";
 import MyLayout from "./MyLayout";
+import theme from "./Theme";
 const apiUrl = import.meta.env.VITE_API_URL;
 const dataProvider = jsonServerProvider(apiUrl);
 //authProvider={authProvider}
 const App: React.FC = () => (
-  <Admin dataProvider={dataProvider} layout={MyLayout}>
+  <Admin dataProvider={dataProvider} layout={MyLayout} theme={theme}>
     <Resource
       name="user"
       list={UserList}

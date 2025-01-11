@@ -30,8 +30,8 @@ export const PackageList = () => (
             <NumberField source="updatedBy" />
             <DateField source="updatedOn" />
             <TextField source="enabled" /> */}
-      <EditButton />
-      <DeleteWithConfirmButton />
+      <EditButton variant="bootstrap" color="primary" />
+      <DeleteWithConfirmButton variant="bootstrap" color="danger" />
     </Datagrid>
   </List>
 );
