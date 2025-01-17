@@ -19,6 +19,13 @@ declare module "@mui/material/Button" {
 
 const theme = createTheme({
   components: {
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#007bff",
+        },
+      },
+    },
     MuiButton: {
       variants: [
         {

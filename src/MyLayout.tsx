@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, LayoutProps } from "react-admin";
+import { Layout, Menu, LayoutProps, AppBar } from "react-admin";
 import Sidebar from "./Sidebar";
 
 // Custom Sidebar (Optional)
@@ -11,6 +11,9 @@ const MySidebar: React.FC<React.ComponentProps<typeof Sidebar>> = (props) => (
 const MyMenu: React.FC<React.ComponentProps<typeof Menu>> = (props) => (
   <Menu {...props} />
 );
+const MyAppBar: React.FC = (props) => {
+  return <AppBar {...props} title="Destination Vista" />;
+};
 
 // Custom Layout
 const MyLayout: React.FC<LayoutProps> = (props) => (
@@ -19,7 +22,7 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
     <Layout
       sx={{ display: "flex", "& .RaLayout-appFrame": { marginTop: 0 } }}
       {...props}
-      appBar={() => null} // Disable Material-UI AppBar
+      appBar={MyAppBar}
       sidebar={MySidebar}
       menu={MyMenu}
     />
