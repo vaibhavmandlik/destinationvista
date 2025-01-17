@@ -1,26 +1,14 @@
 import React from "react";
+import PageHeader from "../pageheader/pageHeader";
 
 const AboutUs: React.FC = () => {
   return (
     <>
-       {/* <!-- Header Start --> */}
-     <div className="container-fluid page-header" >
-        <div className="container" style={{marginTop:"auto" , minHeight:"400px"}}>
-          <div className="d-flex flex-column align-items-center justify-content-center " >
-            <h3 className="display-4 text-white text-uppercase mt-5">About</h3> 
-            <div className="d-inline-flex text-white"  style={{marginTop:"200px" }}>
-              <p className="m-0 text-uppercase">
-                <a className="text-white" href="">
-                  Home
-                </a>
-              </p>
-              <i className="fa fa-angle-double-right pt-1 px-3"></i>
-              <p className="m-0 text-uppercase">about</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* <!-- Header Start --> */}
+      <PageHeader
+        title="About"
+        breadcrumb={[{ name: "Home", href: "/" }, { name: "About" }]}
+      />
       <div className="container-fluid py-5">
         <div className="container pt-5">
           <div className="row">

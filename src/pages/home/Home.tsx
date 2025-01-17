@@ -1,28 +1,43 @@
-import React from 'react'
-import Carousel from '../carousel/Carousel'
-import AboutUs from '../about/AboutUs';
-import Contact from '../contact/Contact';
-import HomeRegistration from '../registration/HomeRegistration';
-import Footer from '../../components/footer/Footer';
+import React from "react";
+import Carousel from "../carousel/Carousel";
+
+import Footer from "../../components/footer/Footer";
+import DynamicHeader from "../../components/header/DynamicHeader";
+import PackagesList from "../packages/PackagesList";
+import DestinationCategory from "../destinations/DestinationCategory";
+import BackToTop from "../backtotop/BackToTop";
+import HomeRegistration from "../registration/HomeRegistration";
+import HomeBlogSection from "../blogs/HomeBlogSection";
 
 const Home: React.FC = () => {
-
-    const images = [
-        { src: "/img/carousel-1.jpg", alt: "Image 1" },
-        { src: "/img/carousel-2.jpg", alt: "Image 2" },
-      
-      ];
+  const images = [
+    { src: "/img/carousel-1.jpg", alt: "Image 1" },
+    { src: "/img/carousel-2.jpg", alt: "Image 2" },
+  ];
   return (
-   <>
+    <>
+      <DynamicHeader />
+      <Carousel images={images} />
+      <DestinationCategory />
+      <PackagesList
+        isShowHeader={false}
+        isSearchBar={false}
+        heading={"Perfect Tour Packages"}
+        subheading={" Packages"}
+        packages={[]}
+        onDetailsBookNowClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onExploreMoreClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+      <HomeRegistration />
+      <HomeBlogSection />
+      <BackToTop />
+      <Footer />
+    </>
+  );
+};
 
-   <Carousel  images={images }/>
-   <AboutUs/>
-   <HomeRegistration/>
-   <Contact/>
-   <Footer/>
-   
-   </>
-  )
-}
-
-export default Home
+export default Home;

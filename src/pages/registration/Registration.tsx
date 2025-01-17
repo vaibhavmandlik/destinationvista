@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Registration: React.FC = () => {
   const [username, setUsername] = useState<string>("");
@@ -88,7 +89,7 @@ const Registration: React.FC = () => {
             Sign Up
           </button>
           <p className="text-center mt-3">
-            Already have an account? <a href="login.html">Login</a>
+            Already have an account? <Link to="/loginPage">Login</Link>
           </p>
           <p className="text-center mt-2">Or sign up with</p>
           <div className="text-center">
