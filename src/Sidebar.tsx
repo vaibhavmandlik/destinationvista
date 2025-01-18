@@ -17,6 +17,8 @@ const Sidebar: React.FC = () => {
       className="bg-dark text-white p-3"
       style={{ width: "250px", minHeight: "100vh" }}
     >
+      <br />
+      <br />
       <h5 className="mb-4 text-white">Destination Vista</h5>
       <ul className="nav flex-column">
         <li className="nav-item">
