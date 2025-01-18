@@ -1,3 +1,7 @@
+import { FaUsers } from "react-icons/fa";
+import { FaRunning } from "react-icons/fa";
+import { FaUserAltSlash } from "react-icons/fa";
+import { FaSyncAlt } from "react-icons/fa";
 import {
   Datagrid,
   DeleteWithConfirmButton,
@@ -12,40 +16,79 @@ export const UserList = () => {
     <>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>User Operations</h2>
-        <button className="btn btn-primary">Email All Users</button>
+        <button className="btn btn-info">Email All Users</button>
       </div>
 
-      <div className="row">
+      <div className="row p-3">
         {/* KPI Cards */}
-        <div className="col-md-3">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title">Total Users</h5>
-              <h2>2,420</h2>
+        <div
+          className="card shadow-sm p-3 mb-3 m-2 border border-primary"
+          style={{ maxWidth: "18rem", border: "none" }}
+        >
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <p className="text-muted mb-1">Total Users</p>
+              <h3 className="mb-0">2,420</h3>
+            </div>
+            <div
+              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
+              style={{ width: "50px", height: "50px" }}
+            >
+              <FaUsers className="text-primary" size={24} />
             </div>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title">Active Users</h5>
-              <h2>1,890</h2>
+
+        <div
+          className="card shadow-sm p-3 mb-3 m-2 border border-success"
+          style={{ maxWidth: "18rem", border: "none" }}
+        >
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <p className="text-muted mb-1">Active Users</p>
+              <h3 className="mb-0">1,890</h3>
+            </div>
+            <div
+              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
+              style={{ width: "50px", height: "50px" }}
+            >
+              <FaRunning size={24} color="#28a745" />
             </div>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title">Inactive Users</h5>
-              <h2>530</h2>
+
+        <div
+          className="card shadow-sm p-3 mb-3 m-2 border border-danger"
+          style={{ maxWidth: "18rem", border: "none" }}
+        >
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <p className="text-muted mb-1">Inactive Users</p>
+              <h3 className="mb-0">530</h3>
+            </div>
+            <div
+              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
+              style={{ width: "50px", height: "50px" }}
+            >
+              <FaUserAltSlash size={24} color="#dc3545" />
             </div>
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title">Average Session</h5>
-              <h2>24m</h2>
+
+        <div
+          className="card shadow-sm p-3 mb-3 m-2 border border-primary"
+          style={{ maxWidth: "18rem", border: "none" }}
+        >
+          <div className="card-body d-flex justify-content-between align-items-center">
+            <div>
+              <p className="text-muted mb-1">Recent Activity</p>
+              <h3 className="mb-0">120</h3>
+            </div>
+            <div
+              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
+              style={{ width: "50px", height: "50px" }}
+            >
+              <FaSyncAlt size={24} color="#28a745" />
             </div>
           </div>
         </div>
