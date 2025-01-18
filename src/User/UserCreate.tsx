@@ -10,9 +10,9 @@ import { SelectInput } from "react-admin";
 
 export const UserCreate = () => {
   return (
-    <Create>
+    <Create sx={{ maxWidth: 400, margin: '0 auto', marginTop:2 }}>
       <SimpleForm>
-        <SelectInput
+        <SelectInput fullWidth
           source="category"
           validate={[required()]}
           choices={[
@@ -21,13 +21,13 @@ export const UserCreate = () => {
             { id: "2", name: "User" },
           ]}
         />
-        <TextInput source="firstName" validate={[required()]} />
-        <TextInput source="lastName" validate={[required()]} />
-        <TextInput source="email" validate={[required(), email()]} />
-        <PasswordInput  source="password" validate={[required()]} />
-        <TextInput source="referCode" validate={[required()]} />
-        <TextInput source="createdBy" validate={[required()]} />
-        <TextInput source="updatedBy" validate={[required()]} />
+        <TextInput fullWidth source="firstName" validate={[required()]} />
+        <TextInput fullWidth source="lastName" validate={[required()]} />
+        <TextInput fullWidth source="email" validate={[required(), email()]} />
+        <PasswordInput fullWidth source="password" validate={[required()]} />
+        <TextInput fullWidth source="referCode" validate={[required()]} />
+        <TextInput fullWidth source="createdBy" validate={[required()]} />
+        <TextInput fullWidth source="updatedBy" validate={[required()]} />
       </SimpleForm>
     </Create>
   );
