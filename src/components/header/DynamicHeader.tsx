@@ -8,6 +8,9 @@ import {
   faInstagram,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
+
+
+
 const DynamicHeader: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -102,6 +105,7 @@ const DynamicHeader: React.FC = () => {
           </nav>
         </div>
       </div>
+      
     </>
   );
 };

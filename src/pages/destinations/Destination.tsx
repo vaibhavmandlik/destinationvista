@@ -2,6 +2,8 @@ import React from "react";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
 
+
+
 interface DestinationProps {
   isShowHeader?: boolean;
 }
@@ -95,6 +97,7 @@ const Destination: React.FC<DestinationProps> = ({ isShowHeader = true }) => {
           <h2 className="text-center mb-5 text-primary">Travel Tips</h2>
           <div className="row">
             {[
+              
               {
                 icon: "fa-calendar-alt",
                 text: "Best time to visit popular destinations is during the shoulder seasons for fewer crowds.",
