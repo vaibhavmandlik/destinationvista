@@ -91,7 +91,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
 
   // Redirect to the details page
   const onDetailsBookNowClick = (pkg: Package) => {
-    navigate(`/PackageDetails/${pkg.id}`);
+    navigate(`/packages/${pkg.id}`);
   };
 
   // Appends more packages to the list
@@ -205,7 +205,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
             data-ride="carousel"
           >
             <div className="carousel-inner">
-              {[1, 2].map((slide, idx) => (
+              {[1, 2].map((_slide, idx) => (
                 <div
                   className={`carousel-item ${idx === 0 ? "active" : ""}`}
                   key={idx}

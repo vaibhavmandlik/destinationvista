@@ -9,7 +9,6 @@ import AboutUs from "./pages/about/AboutUs";
 import Home from "./pages/home/Home";
 import Contact from "./pages/contact/Contact";
 import PackagesList from "./pages/packages/PackagesList";
-
 import LoginPage from "./pages/login/LoginPage";
 import Registration from "./pages/registration/Registration";
 import Blogs from "./pages/blogs/Blogs";
@@ -46,7 +45,8 @@ const App: React.FC = () => (
           />
         }
       />
-      <Route path="/packages/:packageId" element={<PackageDetailsWrapper />} />
+      <Route path="/packages/:id" element={<PackageDetailsWrapper />} />
+
       <Route path="*" element={<Footer />} />
     </CustomRoutes>
   </Admin>
