@@ -2,7 +2,6 @@ import React from "react";
 import Carousel from "../carousel/Carousel";
 
 import Footer from "../../components/footer/Footer";
-import DynamicHeader from "../../components/header/DynamicHeader";
 import PackagesList from "../packages/PackagesList";
 import DestinationCategory from "../destinations/DestinationCategory";
 import BackToTop from "../backtotop/BackToTop";
@@ -16,7 +15,7 @@ const Home: React.FC = () => {
   ];
   return (
     <>
-      <DynamicHeader />
+      {/* <DynamicHeader /> */}
       <Carousel images={images} />
       <DestinationCategory />
       <PackagesList

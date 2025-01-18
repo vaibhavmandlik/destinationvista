@@ -65,7 +65,7 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
       sx={{
         display: "flex",
         "& .RaLayout-appFrame": { marginTop: 0 },
-        "& .RaLayout-content": { backgroundColor: "#f6f7f8" },
+        "& .RaLayout-content": { backgroundColor: "#f6f7f8" , paddingTop:5},
       }}
       {...props}
       appBar={MyAppBar}
