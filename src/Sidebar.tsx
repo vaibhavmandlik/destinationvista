@@ -60,7 +60,7 @@ const Sidebar: React.FC = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link text-white" href="#">
+                <a className="nav-link text-white" href="#/wallet">
                   <i className="bi bi-wallet"></i> Wallet
                 </a>
               </li>

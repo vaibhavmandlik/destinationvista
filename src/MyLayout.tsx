@@ -17,7 +17,11 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
   <>
     {/* <MyNavbar /> */}
     <Layout
-      sx={{ display: "flex", "& .RaLayout-appFrame": { marginTop: 0 } }}
+      sx={{
+        display: "flex",
+        "& .RaLayout-appFrame": { marginTop: 0 },
+        "& .RaLayout-content": { backgroundColor: "#f6f7f8" },
+      }}
       {...props}
       appBar={() => null} // Disable Material-UI AppBar
       sidebar={MySidebar}
