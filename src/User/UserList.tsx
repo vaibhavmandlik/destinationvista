@@ -10,7 +10,7 @@ import {
 export const UserList = () => {
   return (
     <>
-      <div className="d-flex justify-content-between align-items-center mb-4">
+      <div className="d-flex justify-content-between align-items-center mb-4 mt-3">
         <h2>User Operations</h2>
         <button className="btn btn-primary">Email All Users</button>
       </div>

@@ -20,7 +20,7 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
   <>
     {/* <MyNavbar /> */}
     <Layout
-      sx={{ display: "flex", "& .RaLayout-appFrame": { marginTop: 0 } }}
+      sx={{ display: "flex", "& .RaLayout-appFrame": { marginTop: 6 } }}
       {...props}
       appBar={MyAppBar}
       sidebar={MySidebar}
