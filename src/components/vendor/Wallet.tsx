@@ -1,5 +1,5 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { TextField } from "react-admin";
 
 const Wallet = () => {
   const walletData = {
@@ -10,6 +10,7 @@ const Wallet = () => {
 
   return (
     <div className="container mt-5">
+      <TextField source="id" />
       {/* Wallet Summary Section */}
       <div className="card shadow-sm mb-4">
         <div className="card-body">
