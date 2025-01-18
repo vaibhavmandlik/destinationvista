@@ -52,7 +52,7 @@ const App: React.FC = () => (
       
       <Route path="*" element={<DynamicHeader  />}/>
 
-        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/destinations" element={<Destination />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/contact" element={<Contact />} />

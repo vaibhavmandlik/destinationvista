@@ -82,7 +82,7 @@ const DynamicHeader: React.FC = () => {
               }`}
             >
               <div className="navbar-nav ml-auto py-0">
-                <Link to="/" className="nav-item nav-link">
+                <Link to="/home" className="nav-item nav-link">
                   Home
                 </Link>
                 <Link to="/packages" className="nav-item nav-link">
