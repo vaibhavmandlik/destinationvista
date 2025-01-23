@@ -1,84 +1,106 @@
-import React from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Registration: React.FC = () => {
-  return (
-    <div className="container-fluid bg-registration py-5" style={{ margin: '90px 0' }}>
-      <div className="container py-5">
-        <div className="row align-items-center">
-          {/* Offer Section */}
-          <div className="col-lg-7 mb-5 mb-lg-0">
-            <div className="mb-4">
-              <h6 className="text-primary text-uppercase" style={{ letterSpacing: '5px' }}>Mega Offer</h6>
-              <h1 className="text-white">
-                <span className="text-primary">30% OFF</span> For Honeymoon
-              </h1>
-            </div>
-            <p className="text-white">
-              Discover romance and adventure with our exclusive honeymoon offer! Enjoy 30% off on select packages, 
-              and make your special moments unforgettable with luxurious stays, scenic destinations, and curated experiences just for you.
-            </p>
-            <ul className="list-inline text-white m-0">
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Indulge in romantic getaways at unbeatable prices.
-              </li>
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Personalized itineraries to suit your perfect honeymoon.
-              </li>
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Affordable Luxury, from tropical beaches to cozy mountain retreats.
-              </li>
-            </ul>
-          </div>
+  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-          {/* Registration Form */}
-          <div className="col-lg-5">
-            <div className="card border-0">
-              <div className="card-header bg-primary text-center p-4">
-                <h1 className="text-white m-0">Sign Up Now</h1>
-              </div>
-              <div className="card-body rounded-bottom bg-white p-5">
-                <form>
-                  {/* Name Input */}
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      className="form-control p-4"
-                      placeholder="Your name"
-                      required
-                    />
-                  </div>
-                  {/* Email Input */}
-                  <div className="form-group">
-                    <input
-                      type="email"
-                      className="form-control p-4"
-                      placeholder="Your email"
-                      required
-                    />
-                  </div>
-                  {/* Destination Dropdown */}
-                  <div className="form-group">
-                    <select className="custom-select px-4" style={{ height: '47px' }} required>
-                      <option value="" selected disabled>Select a destination</option>
-                      <option value="1">Maharashtra</option>
-                      <option value="2">Goa</option>
-                      <option value="3">Rajasthan</option>
-                    </select>
-                  </div>
-                  {/* Submit Button */}
-                  <div>
-                    <button className="btn btn-primary btn-block py-3" type="submit">
-                      Sign Up Now
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    setError(null);
+    alert(`Sign Up Successful! Welcome, ${username}.`);
+
+    // Reset the form
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  return (
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "80vh" }}
+    >
+      <div className="card p-4 shadow-lg" style={{ width: "400px" }}>
+        <h3 className="text-center text-primary mb-4">
+          Sign Up to Destination Vista
+        </h3>
+        <form id="signupForm" onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="username">Full Name</label>
+            <input
+              type="text"
+              id="username"
+              className="form-control"
+              placeholder="Enter your full name"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
-        </div>
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              className="form-control"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              className="form-control"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              className="form-control"
+              placeholder="Confirm your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+          {error && <p className="text-danger text-center">{error}</p>}
+          <button type="submit" className="btn btn-primary btn-block">
+            Sign Up
+          </button>
+          <p className="text-center mt-3">
+            Already have an account? <Link to="/loginPage">Login</Link>
+          </p>
+          <p className="text-center mt-2">Or sign up with</p>
+          <div className="text-center">
+            <button type="button" className="btn btn-outline-primary mr-2">
+              <i className="fab fa-facebook-f"></i> Facebook
+            </button>
+            <button type="button" className="btn btn-outline-danger">
+              <i className="fab fa-google"></i> Google
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

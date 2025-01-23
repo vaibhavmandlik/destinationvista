@@ -1,47 +1,40 @@
 import React from "react";
-
-import AboutUs from "../about/AboutUs";
-import Contact from "../contact/Contact";
 import Carousel from "../carousel/Carousel";
 
-
-// import TourPackages from "../packages/TourPackages";
-// import img5 from "../../img/destination-5.jpg";
-
-const images = [
-  {
-    src : "/img/carousel-1.jpg",
-    alt: "First slide"
-  },
-  {
-    src :"/img/carousel-2.jpg",
-    alt: "Second slide"
-  },
-  {
-    src :"/img/carousel-1.jpg",
-    alt: "third slide"
-  }
-];
+import Footer from "../../components/footer/Footer";
+import PackagesList from "../packages/PackagesList";
+import DestinationCategory from "../destinations/DestinationCategory";
+import BackToTop from "../backtotop/BackToTop";
+import HomeRegistration from "../registration/HomeRegistration";
+import HomeBlogSection from "../blogs/HomeBlogSection";
 
 const Home: React.FC = () => {
+  const images = [
+    { src: "/img/carousel-1.jpg", alt: "Image 1" },
+    { src: "/img/carousel-2.jpg", alt: "Image 2" },
+  ];
   return (
     <>
-    
-      <Carousel images={images}  />
-      
-       {/* <TourPackages
-        heading="Perfect Tour Packages"
-        subheading="Packages"       // gettting error whrn importing
-        packages={packagesToShow}
-        onDetailsClick={handleOpenBookingForm}
-        onBookNowClick={handleOpenBookingForm}
-        onExploreMoreClick={handleExploreMore}
-      /> */}
-      <AboutUs />
-      <Contact />
-      // Back to top button
-     
-   
+      {/* <DynamicHeader /> */}
+      <Carousel images={images} />
+      <DestinationCategory />
+      <PackagesList
+        isShowHeader={false}
+        isSearchBar={false}
+        heading={"Perfect Tour Packages"}
+        subheading={" Packages"}
+        packages={[]}
+        onDetailsBookNowClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+        onExploreMoreClick={function (): void {
+          throw new Error("Function not implemented.");
+        }}
+      />
+      <HomeRegistration />
+      <HomeBlogSection />
+      <BackToTop />
+      <Footer />
     </>
   );
 };

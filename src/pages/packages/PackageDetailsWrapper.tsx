@@ -48,11 +48,7 @@ const allPackages = [
       " All transfers and sightseeing in an air-conditioned vehicle",
       " Local guide and entrance fees",
     ],
-    excluded: [
-      " Any tips and gratuities",
-      "Lunches and personal expenses",
-      
-    ],
+    excluded: [" Any tips and gratuities", "Lunches and personal expenses"],
     location: "Mumbai",
     duration: "3 days 2 nights ",
     bestTimeToVisit: "November to February",
@@ -82,11 +78,7 @@ const allPackages = [
       " All transfers and sightseeing in an air-conditioned vehicle",
       " Local guide and entrance fees",
     ],
-    excluded: [
-      " Any tips and gratuities",
-      "Lunches and personal expenses",
-      
-    ],
+    excluded: [" Any tips and gratuities", "Lunches and personal expenses"],
     location: "Lonavala",
     duration: "1 day 1 nights ",
     bestTimeToVisit: "November to February",
@@ -97,10 +89,10 @@ const allPackages = [
 
 const PackageDetailsWrapper: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const packageId = parseInt(id || "", 10);
+  const packageIdNumber = parseInt(id || "", 10);
 
   // Find the package by ID
-  const selectedPackage = allPackages.find((pkg) => pkg.id === packageId);
+  const selectedPackage = allPackages.find((pkg) => pkg.id === packageIdNumber);
 
   // Redirect if the package is not found
   if (!selectedPackage) {

@@ -1,47 +1,83 @@
-import {useId} from 'react';
+import React from "react";
+import { Link } from "react-router-dom";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
-
-interface CarouselProps {
-  
-  images: { src: string; alt: string }[];
- 
-}
-
-const Carousel: React.FC<CarouselProps> = ({ images}) => {
-
-  const uniqueId = useId();
-
+const Carousel: React.FC = () => {
   return (
-    <div id={uniqueId} className="carousel slide h-50  mt-100 " data-ride="carousel"
-   >
-      <div className="carousel-inner">
-        {images.map((image, index) => (
-          <div
-            className={`carousel-item ${index === 0 ? 'active' : ''}`}
-            key={index}
-          >
-            <img className="d-block w-100 " src={image.src} alt={`Slide ${index + 1}`} />
+    <div className="container-fluid p-0">
+      <div id="header-carousel" className="carousel slide" data-ride="carousel">
+        <div className="carousel-inner">
+          {/* Carousel Item 1 */}
+          <div className="carousel-item active">
+            <img className="w-100" src="img/carousel-1.jpg" alt="Image" />
+            <div className="carousel-caption d-flex flex-column align-items-center justify-content-center">
+              <div className="p-3" style={{ maxWidth: "900px" }}>
+                <h4 className="text-white text-uppercase mb-md-3">
+                  Tours & Travel
+                </h4>
+                <h1 className="display-3 text-white mb-md-4">
+                  Let's Discover The World Together
+                </h1>
+                <Link
+                  to="/booknow"
+                  className="btn btn-primary py-md-3 px-md-5 mt-2"
+                >
+                  Book Now
+                </Link>
+              </div>
+            </div>
           </div>
-        ))}
+
+          {/* Carousel Item 2 */}
+          <div className="carousel-item">
+            <img className="w-100" src="img/carousel-2.jpg" alt="Image" />
+            <div className="carousel-caption d-flex flex-column align-items-center justify-content-center">
+              <div className="p-3" style={{ maxWidth: "900px" }}>
+                <h4 className="text-white text-uppercase mb-md-3">
+                  Tours & Travel
+                </h4>
+                <h1 className="display-3 text-white mb-md-4">
+                  Discover Amazing Places With Us
+                </h1>
+                <a
+                  href="package.html"
+                  className="btn btn-primary py-md-3 px-md-5 mt-2"
+                >
+                  Book Now
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Carousel Controls */}
+        <a
+          className="carousel-control-prev"
+          href="#header-carousel"
+          role="button"
+          data-slide="prev"
+        >
+          <div
+            className="btn btn-dark"
+            style={{ width: "45px", height: "45px" }}
+          >
+            <span className="carousel-control-prev-icon mb-n2"></span>
+          </div>
+        </a>
+        <a
+          className="carousel-control-next"
+          href="#header-carousel"
+          role="button"
+          data-slide="next"
+        >
+          <div
+            className="btn btn-dark"
+            style={{ width: "45px", height: "45px" }}
+          >
+            <span className="carousel-control-next-icon mb-n2"></span>
+          </div>
+        </a>
       </div>
-      <a
-        className="carousel-control-prev"
-        href={`#${uniqueId}`}
-        role="button"
-        data-slide="prev"
-      >
-        <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span className="sr-only">Previous</span>
-      </a>
-      <a
-        className="carousel-control-next"
-        href={`#${uniqueId}`}
-        role="button"
-        data-slide="next"
-      >
-        <span className="carousel-control-next-icon" aria-hidden="true"></span>
-        <span className="sr-only">Next</span>
-      </a>
     </div>
   );
 };

@@ -27,17 +27,17 @@ const Sidebar: React.FC = () => {
           </a>
         </li>
         <li className="nav-item">
-          <a className="nav-link text-white" href="#/package">
+          <a className="nav-link text-white" href="/admin/package">
             <i className="bi bi-box"></i> Packages
           </a>
         </li>
         <li className="nav-item">
-          <a className="nav-link text-white" href="#/user">
+          <a className="nav-link text-white" href="/admin/user">
             <i className="bi bi-person"></i> Users
           </a>
         </li>
         <li className="nav-item">
-          <a className="nav-link text-white" href="#/vendor">
+          <a className="nav-link text-white" href="/admin/vendor">
             <i className="bi bi-person"></i> Vendor
           </a>
         </li>
