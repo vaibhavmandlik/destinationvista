@@ -19,6 +19,32 @@ declare module "@mui/material/Button" {
 
 const theme = createTheme({
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          // margin: '10px 0', // Add spacing between input fields
+          
+          '& .MuiOutlinedInput-root': {
+            transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out',
+            '& fieldset': {
+              borderColor: '#ccc', // Light border color
+            },
+            '&:hover fieldset': {
+              borderColor: '#000', // Darker border on hover
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#7AB730 ', // Green border when focused
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#666', // Label color
+          },
+          '& .MuiInputLabel-root.Mui-focused': {
+            color: '#4caf50', // Label color when focused
+          },
+        },
+      },
+    },
     MuiAppBar: {
       styleOverrides: {
         root: {

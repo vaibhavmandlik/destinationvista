@@ -1,5 +1,5 @@
 import React from "react";
-import { Admin, Resource } from "react-admin";
+import { Admin, CustomRoutes, fetchUtils, Resource } from "react-admin";
 import jsonServerProvider from "ra-data-json-server";
 import { UserList } from "./User/UserList";
 import { UserCreate } from "./User/UserCreate";
@@ -12,7 +12,7 @@ import { PackageList } from "./Package/PackageList";
 import { PackageUpdate } from "./Package/PackageUpdate";
 import MyLayout from "./MyLayout";
 import theme from "./Theme";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./components/footer/Footer";
 import DynamicHeader from "./components/header/DynamicHeader";
 import AboutUs from "./pages/about/AboutUs";
@@ -25,12 +25,28 @@ import Registration from "./pages/registration/Registration";
 import Home from "./pages/home/Home";
 import Destination from "./pages/destinations/Destination";
 const apiUrl = import.meta.env.VITE_API_URL;
-const dataProvider = jsonServerProvider(apiUrl);
-import { Outlet } from "react-router"
-
-//authProvider={authProvider}
+import { Outlet } from "react-router";
+import VendorResistration from "./components/vendor/Register";
+import authProvider from "./authProvider";
+import MyLoginPage from "./pages/login/LoginPage";
+const httpClient = (url:string, options:any = {}) => {
+  if (!options.headers) {
+      options.headers = new Headers({ Accept: 'application/json' });
+  }
+  const { data } = JSON.parse(localStorage?.getItem('auth') as string);
+  options.headers.set('Authorization', `Bearer ${data.accessToken}`);
+  return fetchUtils.fetchJson(url, options);
+};
+const dataProvider = jsonServerProvider(apiUrl,httpClient);
 const AdminRoute: React.FC = () => (
-  <Admin basename="/admin" dataProvider={dataProvider} layout={MyLayout} theme={theme}>
+  <Admin
+    basename="/admin"
+    dataProvider={dataProvider}
+    authProvider={authProvider}
+    loginPage={MyLoginPage}
+    layout={MyLayout}
+    theme={theme}
+  >
     <Resource
       name="user"
       list={UserList}
@@ -51,7 +67,21 @@ const AdminRoute: React.FC = () => (
     />
   </Admin>
 );
-
+const OpenRoute: React.FC = () => (
+  <Admin
+    basename="/open"
+    dataProvider={dataProvider}
+  >
+    <CustomRoutes noLayout>
+    <Route
+          path="/vendorRegistration"
+          element={
+              <VendorResistration />
+          }
+        />
+    </CustomRoutes>
+  </Admin>
+);
 const App: React.FC = () => {
   return (
     <Router>
@@ -83,21 +113,25 @@ const App: React.FC = () => {
           <Route path="packages/:id" element={<PackageDetailsWrapper />} />
           <Route index element={<Home />} />
         </Route>
+
+        
         <Route path="admin/*" element={<AdminRoute />} />
+        <Route path="/open/*" element={<OpenRoute />} />
       </Routes>
     </Router>
   );
-}
+};
 
 const Layout: React.FC = () => {
   return (
     <>
       <DynamicHeader />
-      <main><Outlet /></main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
 };
-
 
 export default App;
