@@ -10017,3 +10017,30 @@ h6,
   padding: 0;
   list-style-type: none;
 }
+
+/* custom component css */
+
+.signup-input{
+    border-radius: 30px;
+}
+
+.slogan{
+  width: 140px;
+  font-size: 30px;
+  background: linear-gradient(to top right, #66ff33 0%, #003300 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.user-icon{
+  background-color: greenyellow;
+  border: 2px solid greenyellow;
+  border-radius: 50%;
+  color: white;
+  padding: 3px;
+}
+
+.user-icon:hover{
+  background-color: white;
+  color: greenyellow;
+}
