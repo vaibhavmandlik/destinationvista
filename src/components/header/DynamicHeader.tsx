@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaRegUser } from "react-icons/fa";
+
 import {
   faFacebookF,
   faTwitter,
@@ -113,7 +115,7 @@ const DynamicHeader: React.FC = () => {
                   onClick={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
-                  <i className="fa fa-user user-icon"></i>
+                  <FaRegUser/>
 
                   {isOpen && (
                     <div

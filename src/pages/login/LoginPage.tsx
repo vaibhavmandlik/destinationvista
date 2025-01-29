@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
- 
+const url = `${import.meta.env.VITE_API_URL}/user/login`
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +9,7 @@ const LoginPage: React.FC = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:3000/api/login', {
+      const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ const LoginPage: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('token', data.data.accessToken);
         alert('Login successful!');
         window.location.href = '/';
       } else {
