@@ -44,13 +44,18 @@ const authProvider: AuthProvider = {
   },
   // called when the user navigates to a new location, to check for authentication
   checkAuth: () => {
-    return localStorage.getItem("auth")
-      ? Promise.resolve()
-      : Promise.reject();
+    return localStorage.getItem("auth") ? Promise.resolve() : Promise.reject();
   },
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
     return Promise.resolve();
+  },
+  async getIdentity() {
+    const authData = localStorage.getItem("auth");
+    const authCredentials = authData ? JSON.parse(authData) : null;
+    const { id, fullName, avatar } = authCredentials?.data;
+    const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
+    return { id, fullName, avatar:avatarUrl };
   },
 };
 

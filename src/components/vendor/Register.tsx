@@ -43,7 +43,7 @@ const Register = () => {
       {
         onSuccess: () => notify("User Created Successfully", { type: "success" }),
         onError: (error:any) => {
-          notify(`Failed to create user: reason ${JSON.stringify(error?.body?.error)}`, { type: "error" })},
+          notify(`Failed to create user: reason ${(error?.body?.error)}`, { type: "error" })},
       }
     );
   };
