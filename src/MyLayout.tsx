@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Menu, LayoutProps, AppBar, TitlePortal } from "react-admin";
 import Sidebar from "./Sidebar";
 import { FaBookMedical } from "react-icons/fa";
-import { PiPackageBold, PiUserBold, PiUsers } from "react-icons/pi";
+import { PiPackageBold, PiSuitcaseBold, PiUserBold, PiUsers } from "react-icons/pi";
 import { Drawer } from '@mui/material';
 import { SidebarClasses, useLocale, useSidebarState } from 'react-admin';
 import './mylayout.css';
@@ -30,7 +30,7 @@ export const MyMenu = () => (
     <br/>
       <Menu.Item to="/admin/package" primaryText="Packages" leftIcon={<PiPackageBold />}/>
       <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />}/>
-      <Menu.Item to="/admin/vendor" primaryText="Vendors" leftIcon={<PiUsers />}/>
+      <Menu.Item to="/admin/vendor" primaryText="Vendors" leftIcon={<PiSuitcaseBold />}/>
       {/* <Menu.Item to="/comments" primaryText="Comments" leftIcon={<ChatBubbleIcon />}/>
       <Menu.Item to="/users" primaryText="Users" leftIcon={<PeopleIcon />}/>
       <Menu.Item to="/custom-route" primaryText="Miscellaneous" leftIcon={<LabelIcon />}/> */}
