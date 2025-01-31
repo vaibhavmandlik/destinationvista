@@ -2,31 +2,51 @@ import React, { useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CustomTextInput } from "../common/CustomInputFields/TextInput";
-import { useCreate } from "react-admin";
+import { useCreate, useNotify } from "react-admin";
+import Button from "@mui/material/Button";
+import CheckIcon from "@mui/icons-material/Check";
+import { Cancel, Check } from "@mui/icons-material";
 export type FormInputVendorType = {
   firstName: string;
   lastName: string;
-  address: string;
-  state: string;
-  postalCode: string;
   dateOfBirth: string;
-  mobileNo: string;
+  primaryContactNumber: string;
   email: string;
   password: string;
   cpassword: string;
+  category: string;
+  addressLine1: string;
+  addressLine2: string;
+  landmark: string;
+  city: string;
+  state: string;
+  pincode: string;
+  secondaryContactNumber: string;
 };
 const Register = () => {
+  const notify = useNotify();
   const {
     register,
     watch,
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputVendorType>();
-  const onSubmit: SubmitHandler<FormInputVendorType> = (data) =>
-  {
+  const onSubmit: SubmitHandler<FormInputVendorType> = (data) => {
     console.log(data);
-    create('user',{data})
-  }
+    const newData = {
+      ...data,
+      category: "2",
+    };
+    create(
+      "user",
+      { data: newData },
+      {
+        onSuccess: () => notify("User Created Successfully", { type: "success" }),
+        onError: (error:any) => {
+          notify(`Failed to create user: reason ${JSON.stringify(error?.body?.error)}`, { type: "error" })},
+      }
+    );
+  };
   const validateAge = (value: string) => {
     const today = new Date();
     const birthDate = new Date(value);
@@ -42,7 +62,7 @@ const Register = () => {
   };
   const password = useRef({});
   password.current = watch("password", "");
-  const [create,result]=useCreate()
+  const [create, result] = useCreate();
   return (
     <div className="overflow-hidden">
       <div style={{ padding: "0px !important" }}>
@@ -58,9 +78,9 @@ const Register = () => {
               <div className="text-center mb-4">
                 <h2 className="text-primary">Destination Vista</h2>
                 <p className="m-4 text-muted">Create Account</p>
-                <hr/>
+                <hr />
               </div>
-              
+
               <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="row ">
                   <div className="col-md-6 mb-3">
@@ -79,36 +99,73 @@ const Register = () => {
                       errors={errors.lastName && errors.lastName.message}
                     />
                   </div>
-                  <div className="col-md-6">
+                  <div className="col-md-6 mb-3">
                     <CustomTextInput
-                      id="address"
-                      label="Address"
-                      register={register("address", { required: "required" })}
-                      errors={errors.address && errors.address.message}
+                      id="addressLine1"
+                      label="address Line 1"
+                      register={register("addressLine1", {
+                        required: "required",
+                      })}
+                      errors={
+                        errors?.addressLine1 && errors?.addressLine1.message
+                      }
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <CustomTextInput
+                      id="addressLine2"
+                      label="address Line 2"
+                      register={register("addressLine2", {
+                        required: "required",
+                      })}
+                      errors={
+                        errors?.addressLine2 && errors?.addressLine2.message
+                      }
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <CustomTextInput
+                      id="landmark"
+                      label="landmark"
+                      register={register("landmark", {
+                        required: "required",
+                      })}
+                      errors={errors?.landmark && errors?.landmark.message}
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <CustomTextInput
+                      id="city"
+                      label="city"
+                      register={register("city", {
+                        required: "required",
+                      })}
+                      errors={errors?.city && errors?.city.message}
                     />
                   </div>
                   <div className="col-md-6 mb-3">
                     <CustomTextInput
                       id="state"
                       label="state"
-                      register={register("state", { required: "required" })}
-                      errors={errors.state && errors.state.message}
+                      register={register("state", {
+                        required: "required",
+                      })}
+                      errors={errors?.state && errors?.state.message}
                     />
                   </div>
                   <div className="col-md-6 mb-3">
                     <CustomTextInput
                       type="number"
-                      id="postalCode"
-                      label="postal Code"
-                      register={register("postalCode", {
+                      id="pincode"
+                      label="pincode"
+                      register={register("pincode", {
                         required: "required",
                         minLength: {
                           value: 6,
-                          message:
-                            "Postal code must be at least 6 characters long",
+                          message: "pincode must be at least 6 characters long",
                         },
                       })}
-                      errors={errors.postalCode && errors.postalCode.message}
+                      errors={errors?.pincode && errors?.pincode.message}
                     />
                   </div>
 
@@ -127,9 +184,9 @@ const Register = () => {
                   <div className="col-md-6 mb-3">
                     <CustomTextInput
                       type="number"
-                      id="mobileNo"
+                      id="primaryContactNumber"
                       label="Mobile Number"
-                      register={register("mobileNo", {
+                      register={register("primaryContactNumber", {
                         required: "required",
                         minLength: {
                           value: 10,
@@ -137,7 +194,29 @@ const Register = () => {
                             "Mobile number must be at least 10 digit long",
                         },
                       })}
-                      errors={errors.mobileNo && errors.mobileNo.message}
+                      errors={
+                        errors.primaryContactNumber &&
+                        errors.primaryContactNumber.message
+                      }
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <CustomTextInput
+                      type="number"
+                      id="secondaryContactNumber"
+                      label="Mobile Number 2"
+                      register={register("secondaryContactNumber", {
+                        required: "required",
+                        minLength: {
+                          value: 10,
+                          message:
+                            "Mobile number must be at least 10 digit long",
+                        },
+                      })}
+                      errors={
+                        errors.secondaryContactNumber &&
+                        errors.secondaryContactNumber.message
+                      }
                     />
                   </div>
                   <div className="col-md-6 mb-3">
@@ -193,13 +272,46 @@ const Register = () => {
                     />
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary w-100">
+                <div className="row">
+                  <div className="col-md-3 col-sm-12"></div>
+                  <div className="col-md-3 col-sm-12">
+                    {" "}
+                    <Button
+                      type="submit"
+                      disabled={result.isLoading}
+                      variant="contained"
+                      sx={{ width: "100%" }}
+                      startIcon={<Check />}
+                    >
+                      Signup
+                    </Button>
+                  </div>
+                  <div className="col-md-3 col-sm-12">
+                    <Button
+                      type="reset"
+                      color="warning"
+                      disabled={result.isLoading}
+                      variant="contained"
+                      sx={{ width: "100%" }}
+                      startIcon={<Cancel />}
+                    >
+                      reset
+                    </Button>
+                  </div>
+                  <div className="col-md-3 col-sm-12"></div>
+                </div>
+
+                {/* <button
+                  
+                  type="submit"
+                  className="btn btn-primary w-100"
+                >
                   Sign up
-                </button>
+                </button> */}
               </form>
               <p className="text-center mt-3 text-muted">
-                Don’t have an account?{" "}
-                <a href="#" className="text-primary">
+                Do you have an account?{" "}
+                <a href="/admin/login" className="text-primary">
                   Login
                 </a>
               </p>

@@ -3,6 +3,8 @@ import { useLogin } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
+import { Button } from "@mui/material";
+import { Login } from "@mui/icons-material";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
@@ -76,9 +78,15 @@ const MyLoginPage: React.FC = () => {
                 register={register("password", { required: "Password is required" })}
               />
             </div>
-            <button type="submit" className="btn btn-primary btn-block">
-              Login
-            </button>
+            <Button
+                      type="submit"
+                      
+                      variant="contained"
+                      sx={{ width: "100%" }}
+                      startIcon={<Login />}
+                    >
+                      Signup
+                    </Button>
             <p className="text-center mt-3">
               <a href="#">Forgot Password?</a>
             </p>
@@ -92,7 +100,7 @@ const MyLoginPage: React.FC = () => {
               </button>
             </div>
             <p className="text-center mt-3">
-              Don’t have an account? <Link to="/registration">Sign Up</Link>
+              Don’t have an account? <Link to="/open/vendorRegistration">Sign Up</Link>
             </p>
         </div>
       </div>
