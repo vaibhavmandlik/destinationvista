@@ -8,6 +8,8 @@ import { SidebarClasses, useLocale, useSidebarState } from 'react-admin';
 import './mylayout.css';
 import { Box } from '@mui/material';
 import SearchBar from "./Search";
+import logo from './assets/logo.svg';
+
 // Custom Sidebar (Optional)
 export const MySidebar = ({ children }) => {
   const [open, setOpen] = useSidebarState();
@@ -28,6 +30,8 @@ export const MyMenu = () => (
   <Menu>
     <br/>
     <br/>
+      <img src={logo} alt="logo" className="logo"/>
+      <hr/>
       <Menu.Item to="/admin/package" primaryText="Packages" leftIcon={<PiPackageBold />}/>
       <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />}/>
       <Menu.Item to="/admin/vendor" primaryText="Vendors" leftIcon={<PiSuitcaseBold />}/>
@@ -43,10 +47,8 @@ const MyAppBar: React.FC = (props) => {
   return (
     <AppBar {...props}>
       <TitlePortal />
-      <Box component="span" flex={1} />
-      <h1 className="m-0 text-primary"><span className="text-white">DESTINATION</span>VISTA</h1>
-      <Box component="span" flex={1} />
-      <SearchBar />
+    
+      {/* <SearchBar /> */}
     </AppBar>
   );
 };

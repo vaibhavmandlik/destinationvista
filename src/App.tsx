@@ -29,15 +29,16 @@ import { Outlet } from "react-router";
 import VendorResistration from "./components/vendor/Register";
 import authProvider from "./authProvider";
 import MyLoginPage from "./pages/login/LoginPage";
-const httpClient = (url:string, options:any = {}) => {
+const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
-      options.headers = new Headers({ Accept: 'application/json' });
+    options.headers = new Headers({ Accept: "application/json" });
   }
-  const { data } = JSON.parse(localStorage?.getItem('auth') as string);
-  options.headers.set('Authorization', `Bearer ${data.accessToken}`);
+  const auth = localStorage?.getItem("auth");
+  const { data } = auth ? JSON.parse(auth) : { data: null };
+  options.headers.set("Authorization", `Bearer ${data?.accessToken}`);
   return fetchUtils.fetchJson(url, options);
 };
-const dataProvider = jsonServerProvider(apiUrl,httpClient);
+const dataProvider = jsonServerProvider(apiUrl, httpClient);
 const AdminRoute: React.FC = () => (
   <Admin
     basename="/admin"
@@ -68,17 +69,9 @@ const AdminRoute: React.FC = () => (
   </Admin>
 );
 const OpenRoute: React.FC = () => (
-  <Admin
-    basename="/open"
-    dataProvider={dataProvider}
-  >
+  <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>
-    <Route
-          path="/vendorRegistration"
-          element={
-              <VendorResistration />
-          }
-        />
+      <Route path="/vendorRegistration" element={<VendorResistration />} />
     </CustomRoutes>
   </Admin>
 );
@@ -114,7 +107,6 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
         </Route>
 
-        
         <Route path="admin/*" element={<AdminRoute />} />
         <Route path="/open/*" element={<OpenRoute />} />
       </Routes>
