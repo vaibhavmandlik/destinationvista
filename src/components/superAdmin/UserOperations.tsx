@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { FaUsers } from "react-icons/fa";
-import { FaRunning } from "react-icons/fa";
-import { FaUserAltSlash } from "react-icons/fa";
-import { FaSyncAlt } from "react-icons/fa";
+import { FaUsers, FaRunning, FaUserAltSlash, FaSyncAlt } from "react-icons/fa";
+
 
 const UserOperations = () => {
-  const userData = [
+  const [userData, setUserData] = useState([
     {
       name: "John Doe",
       email: "john@example.com",
@@ -17,6 +15,7 @@ const UserOperations = () => {
         "Booked Goa Beach Vacation Package - 2 days ago",
         "Booked Goa Beach Vacation Package - 2 days ago",
       ],
+      status: "Active",
     },
     {
       name: "Jane Smith",
@@ -28,8 +27,9 @@ const UserOperations = () => {
         "Booked Maldives Honeymoon Package - 3 days ago",
         "Booked Bali Retreat Package - 5 days ago",
       ],
+      status: "Active",
     },
-  ];
+  ]);
 
   const [selectedUser, setSelectedUser] = useState(null);
 
@@ -41,151 +41,111 @@ const UserOperations = () => {
     setSelectedUser(null);
   };
 
+  const handleDeactivate = (index) => {
+    setUserData((prevUsers) =>
+      prevUsers.map((user, i) =>
+        i === index ? { ...user, status: "Inactive" } : user
+      )
+    );
+  };
+
+  const handleEmailAllUsers = () => {
+    alert("Emailing all users...");
+  };
+
+  const userCards = [
+    { title: "Total Users", value: "2,420", change: "+12% from last month", icon: <FaUsers />, color: "#28a745", textColor: "text-success" },
+    { title: "Active Users", value: "1,890", change: "-2% from last month", icon: <FaRunning />, color: "#28a745", textColor: "text-danger" },
+    { title: "Inactive Users", value: "530", change: "+8% from last month", icon: <FaUserAltSlash />, color: "#dc3545", textColor: "text-success" },
+    { title: "Recent Activity", value: "120", change: "+5% from last month", icon: <FaSyncAlt />, color: "#28a745", textColor: "text-warning" },
+  ];
+
   return (
-    <div
-      className="container mt-4"
-      style={{ backgroundColor: "rgb(232, 232, 232)" }}
-    >
+    <div className="container mt-4" style={{ backgroundColor: "#c1c6cf" }}>
+      {/* Header with buttons */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>User Operations</h2>
-        <button className="btn btn-primary">Email All Users</button>
-      </div>
-
-      <div className="row p-3">
-        {/*Cards */}
-        <div
-          className="card shadow-sm p-3 mb-3 m-2 "
-          style={{ maxWidth: "18rem", border: "none" }}
-        >
-          <div className="card-body d-flex justify-content-between align-items-center">
-            <div>
-              <p className="text-muted mb-1">Total Users</p>
-              <h3 className="mb-0">2,420</h3>
-            </div>
-            <div
-              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
-              style={{ width: "50px", height: "50px" }}
-            >
-              <FaUsers className="text-primary" size={24} />
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="card shadow-sm p-3 mb-3 m-2"
-          style={{ maxWidth: "18rem", border: "none" }}
-        >
-          <div className="card-body d-flex justify-content-between align-items-center">
-            <div>
-              <p className="text-muted mb-1">Active Users</p>
-              <h3 className="mb-0">1,890</h3>
-            </div>
-            <div
-              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
-              style={{ width: "50px", height: "50px" }}
-            >
-              <FaRunning size={24} color="#28a745" />
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="card shadow-sm p-3 mb-3 m-2"
-          style={{ maxWidth: "18rem", border: "none" }}
-        >
-          <div className="card-body d-flex justify-content-between align-items-center">
-            <div>
-              <p className="text-muted mb-1">Inactive Users</p>
-              <h3 className="mb-0">530</h3>
-            </div>
-            <div
-              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
-              style={{ width: "50px", height: "50px" }}
-            >
-              <FaUserAltSlash size={24} color="#dc3545" />
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="card shadow-sm p-3 mb-3 m-2"
-          style={{ maxWidth: "18rem", border: "none" }}
-        >
-          <div className="card-body d-flex justify-content-between align-items-center">
-            <div>
-              <p className="text-muted mb-1">Recent Activity</p>
-              <h3 className="mb-0">120</h3>
-            </div>
-            <div
-              className="d-flex justify-content-center align-items-center rounded-circle bg-light"
-              style={{ width: "50px", height: "50px" }}
-            >
-              <FaSyncAlt size={24} color="#28a745" />
-            </div>
-          </div>
+        <div>
+          <button className="btn btn-success me-2">Add User</button>
+          <button className="btn btn-primary" onClick={handleEmailAllUsers}>
+            Email All Users
+          </button>
         </div>
       </div>
 
-      {/* User List */}
-      <div className="mt-5">
-        <h4>User List</h4>
-        <table className="table table-striped mt-3">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Last Active</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userData.map((user, index) => (
-              <tr key={index}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>
-                  <span className={`badge bg-success`}>Active</span>
-                </td>
-                <td>{user.lastActive}</td>
-                <td>
-                  <a
-                    href="#"
-                    className="text-primary me-3"
-                    onClick={() => handleViewDetails(user)}
-                  >
-                    View Details
-                  </a>
-                  <button className="btn btn-sm btn-danger">Deactivate</button>
-                </td>
+      {/* User Statistics Cards */}
+      <div className="row g-3">
+        {userCards.map((item, index) => (
+          <div className="col-md-3" key={index}>
+            <div className="card text-start border-0 shadow-sm p-3" style={{ background: "#f8f9fa", borderRadius: "10px" }}>
+              <div className="d-flex align-items-center justify-content-between">
+                <div>
+                  <h6 className="text-muted mb-1">{item.title}</h6>
+                  <h4 className="fw-bold">{item.value}</h4>
+                  <p className={`fw-bold ${item.textColor}`} style={{ fontSize: "14px" }}>{item.change}</p>
+                </div>
+                <div style={{ color: item.color, fontSize: "28px" }}>
+                  {item.icon}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* User List Table */}
+      <div className="mt-5 p-3">
+        <h4 className="text-secondary">User List</h4>
+        <div className="table-container shadow-sm" style={{ borderRadius: "10px", overflow: "hidden" }}>
+          <table className="table table-striped mb-0">
+            <thead className="">
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Last Active</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {userData.map((user, index) => (
+                <tr key={index}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>
+                    <span className={`badge ${user.status === "Active" ? "bg-success" : "bg-danger"}`}>
+                      {user.status}
+                    </span>
+                  </td>
+                  <td>{user.lastActive}</td>
+                  <td>
+                    <button className="btn btn-link text-primary me-3" onClick={() => handleViewDetails(user)}>
+                      View Details
+                    </button>
+                    <button className="btn btn-sm btn-danger" onClick={() => handleDeactivate(index)}>
+                      Deactivate
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* Modal */}
+
+      {/* User Details Modal */}
       {selectedUser && (
-        <div
-          className="modal show d-block"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-        >
-          <div className="modal-dialog">
+        <div className="modal fade show custom-modal d-block" tabIndex="-1" onClick={handleCloseModal}>
+          <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">User Details</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleCloseModal}
-                ></button>
+                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
               </div>
               <div className="modal-body">
                 <div className="text-center mb-3">
-                  <i
-                    className="bi bi-person-circle"
-                    style={{ fontSize: "50px" }}
-                  ></i>
+                  <i className="bi bi-person-circle" style={{ fontSize: "50px" }}></i>
                   <h4>{selectedUser.name}</h4>
                   <p>{selectedUser.email}</p>
                 </div>
@@ -211,11 +171,7 @@ const UserOperations = () => {
                 </ul>
               </div>
               <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
                   Close
                 </button>
               </div>
