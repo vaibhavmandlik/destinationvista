@@ -39,7 +39,11 @@ const httpClient = (url: string, options: any = {}) => {
   return fetchUtils.fetchJson(url, options);
 };
 const dataProvider = jsonServerProvider(apiUrl, httpClient);
-const AdminRoute: React.FC = () => (
+const VendorHasAgencyCheck=({children}:any)=>{
+  return <>{children}</>
+}
+const AdminRoute: React.FC = () => {
+  return(
   <Admin
     basename="/admin"
     dataProvider={dataProvider}
@@ -67,7 +71,7 @@ const AdminRoute: React.FC = () => (
       edit={PackageUpdate}
     />
   </Admin>
-);
+)};
 const OpenRoute: React.FC = () => (
   <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>

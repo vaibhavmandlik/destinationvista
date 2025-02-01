@@ -10,8 +10,15 @@ import {
   List,
   TextField,
 } from "react-admin";
+import useHasVendors from "../hook/useHasvendors";
+import AgencyManagement from "../Vendor/AgencyManagement ";
 
 export const UserList = () => {
+  const hasVendors = useHasVendors(); 
+  if(!hasVendors) 
+    return (<>
+   <AgencyManagement/>
+    </>)
   return (
     <>
     

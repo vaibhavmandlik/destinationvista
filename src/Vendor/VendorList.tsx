@@ -7,16 +7,40 @@ import {
   TextField,
   ReferenceField,
 } from "react-admin";
+import AgencyManagement from "./AgencyManagement ";
+import useHasVendors from "../hook/useHasvendors";
+import ImageField from "../components/CustomFields/ImageField";
+import { Breadcrumbs, Link, Typography } from "@mui/material";
+import { Link as RouterLink } from 'react-router-dom';
+import { Home as HomeIcon, AccountBox as AccountBoxIcon } from '@mui/icons-material';
 
-export const VendorList = () => (
+
+export const VendorList = () => {
+  const hasVendors = useHasVendors(); 
+  if(!hasVendors) 
+    return (<>
+   <AgencyManagement/>
+    </>)
+  return(
   <>
-    <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
+    {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
       <h2>Vendor Operations</h2>
       <button className="btn btn-primary">Email all Vendors</button>
+    </div> */}
+     <div>
+      <br/>
+      <Breadcrumbs aria-label="breadcrumb">
+        <Link component={RouterLink} to="/" color="inherit" startIcon={<HomeIcon />}>
+          My Agency
+        </Link>
+        {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
+          Account
+        </Link> */}
+        <Typography color="textPrimary">Agency List</Typography>
+      </Breadcrumbs>
     </div>
 
-    <div className="row m-2 ">
-      {/* KPI Cards */}
+    {/* <div className="row m-2 ">
       <div className="col-md-3">
         <div className="card shadow-sm">
           <div className="card-body">
@@ -73,24 +97,17 @@ export const VendorList = () => (
           </div>
         </div>
       </div>
-    </div>
+    </div> */}
     <List>
-      <Datagrid>
+      <Datagrid rowClick={false} bulkActionButtons={false}>
         <TextField source="id" />
-        {/* <ReferenceField source="userId" reference="users" /> */}
-        <TextField source="agencyTitle" />
+        <ImageField source="images" />
+        <TextField source="agencytitle" />
         <EmailField source="email" />
         <TextField source="contactNumber" />
-        <ReferenceField source="createdBy" reference="user" label="Vendor Name">
-          <TextField source="firstName" />
-        </ReferenceField>
-        {/* <ReferenceField source="updatedBy" reference="user">
-        <TextField source="email" />
-        </ReferenceField> */}
-        {/* <CustomBooleanField source="enabled" /> */}
         <EditButton variant="bootstrap" color="primary" />
         <DeleteWithConfirmButton variant="bootstrap" color="danger" />
       </Datagrid>
     </List>
   </>
-);
+)};

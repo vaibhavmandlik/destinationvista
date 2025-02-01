@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, LayoutProps, AppBar, TitlePortal } from "react-admin";
+import { Layout, Menu, LayoutProps, AppBar, TitlePortal, useGetList, useGetIdentity } from "react-admin";
 import Sidebar from "./Sidebar";
 import { FaBookMedical } from "react-icons/fa";
 import { PiPackageBold, PiSuitcaseBold, PiUserBold, PiUsers } from "react-icons/pi";
@@ -9,6 +9,7 @@ import './mylayout.css';
 import { Box } from '@mui/material';
 import SearchBar from "./Search";
 import logo from './assets/logo.svg';
+import { SwitchVendor } from "./SwitchVendor";
 
 // Custom Sidebar (Optional)
 export const MySidebar = ({ children }) => {
@@ -18,28 +19,36 @@ export const MySidebar = ({ children }) => {
   const toggleSidebar = () => setOpen(!open);
 
   return (
-         <>
-         <div className="RaSidebar-fixed">
-         {children}
-         </div>
-         </>
-      
+    <>
+      <div className="RaSidebar-fixed">
+        {children}
+      </div>
+    </>
+
   );
 };
-export const MyMenu = () => (
-  <Menu>
-    <br/>
-    <br/>
-      <img src={logo} alt="logo" className="logo"/>
-      <hr/>
-      <Menu.Item to="/admin/package" primaryText="Packages" leftIcon={<PiPackageBold />}/>
-      <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />}/>
-      <Menu.Item to="/admin/vendor" primaryText="Vendors" leftIcon={<PiSuitcaseBold />}/>
+export const MyMenu = () => {
+  const { data: user } = useGetIdentity();
+  const { data: VendorList } = useGetList('vendor', { filter: { 'userId': user?.id } });
+  return (
+    <Menu>
+      <br />
+      <br />
+      <img src={logo} alt="logo" className="logo" />
+      <SwitchVendor />
+      <hr />
+      {(VendorList ? VendorList?.length > 0 : false) && <>
+        <Menu.Item to="/admin/package" primaryText="Package" leftIcon={<PiPackageBold />} />
+        {/* <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
+        <Menu.Item to="/admin/vendor" primaryText="Agency" leftIcon={<PiSuitcaseBold />} />
+      </>}
+
       {/* <Menu.Item to="/comments" primaryText="Comments" leftIcon={<ChatBubbleIcon />}/>
       <Menu.Item to="/users" primaryText="Users" leftIcon={<PeopleIcon />}/>
       <Menu.Item to="/custom-route" primaryText="Miscellaneous" leftIcon={<LabelIcon />}/> */}
-  </Menu>
-);
+    </Menu>
+  )
+};
 
 
 
@@ -47,7 +56,7 @@ const MyAppBar: React.FC = (props) => {
   return (
     <AppBar {...props}>
       <TitlePortal />
-    
+
       {/* <SearchBar /> */}
     </AppBar>
   );
@@ -61,7 +70,7 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
       sx={{
         display: "flex",
         "& .RaLayout-appFrame": { marginTop: 0 },
-        "& .RaLayout-content": { paddingTop:5},
+        "& .RaLayout-content": { paddingTop: 5 },
       }}
       {...props}
       appBar={MyAppBar}

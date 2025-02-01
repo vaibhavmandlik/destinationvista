@@ -7,7 +7,7 @@ export const VendorCreate = () => (
       {/* <ReferenceInput source="userId" reference="user" >
         <SelectInput optionText="email"  />
       </ReferenceInput> */}
-      <TextInput source="userId" validate={[required()]} />
+      {/* <TextInput source="userId" validate={[required()]} /> */}
       <TextInput source="agencyTitle" validate={[required()]} />
       <TextInput source="email" validate={[required(), email()]} />
       <TextInput source="contactNumber" validate={[required()]} />
