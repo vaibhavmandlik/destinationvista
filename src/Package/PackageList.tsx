@@ -8,35 +8,47 @@ import {
   NumberField,
   ReferenceField,
   TextField,
+  useGetIdentity,
 } from "react-admin";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 import { Chip } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
 import { Breadcrumbs, Link, Typography } from "@mui/material";
-import { Link as RouterLink } from 'react-router-dom';
-import { Home as HomeIcon, AccountBox as AccountBoxIcon } from '@mui/icons-material';
+import { Link as RouterLink } from "react-router-dom";
+import {
+  Home as HomeIcon,
+  AccountBox as AccountBoxIcon,
+} from "@mui/icons-material";
 import ImageField from "../components/CustomFields/ImageField";
-export const PackageList = () => (
-  <>
-  <div>
-      <br/>
-      <Breadcrumbs aria-label="breadcrumb">
-        <Link component={RouterLink} to="/" color="inherit" startIcon={<HomeIcon />}>
-          Packages
-        </Link>
-        {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
+export const PackageList = () => {
+  const { data: user } = useGetIdentity();
+
+  return (
+    <>
+      <div>
+        <br />
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link
+            component={RouterLink}
+            to="/"
+            color="inherit"
+            startIcon={<HomeIcon />}
+          >
+            Packages
+          </Link>
+          {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
           Account
         </Link> */}
-        <Typography color="textPrimary">Package List</Typography>
-      </Breadcrumbs>
-    </div>
-    {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
+          <Typography color="textPrimary">Package List</Typography>
+        </Breadcrumbs>
+      </div>
+      {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
       <h2>Package Operations</h2>
     
     </div> */}
 
-    {/* <div className="row m-2 ">
+      {/* <div className="row m-2 ">
       <div className="col-md-3">
         <div className="card shadow-sm">
           <div className="card-body">
@@ -94,30 +106,44 @@ export const PackageList = () => (
         </div>
       </div>
     </div> */}
-    <List>
-      <Datagrid rowClick={false} bulkActionButtons={false}>
-        <TextField source="id" />
-        <ImageField source="images" />
-        {/* <ReferenceField source="vendorId" reference="vendor">
+      <List filter={{ vendorId: user?.vendorId }}>
+        <Datagrid rowClick={false} bulkActionButtons={false}>
+          <TextField source="id" />
+          <ImageField source="images" />
+          {/* <ReferenceField source="vendorId" reference="vendor">
           <TextField source="agencyTitle" />
         </ReferenceField> */}
-        <TextField source="title" />
-        <TextField source="description" />
-        <CurrencyField locale="en-IN" currency="INR" source="price" />
-        <NumberField source="durationDays" />
-        <TextField source="destination" />
-        <NumberField source="availableSlots" />
-        {/* <NumberField source="approvedBy" /> */}
-        {/* <DateField source="approvedOn" /> */}
-        <FunctionField label="Approved On" render={(record) => !record.approvedOn? (<Chip sx={{background:'#dc3545', color:'#fff'}} icon={<Close color="#fff" />} label="Approval Pending" />):record.approvedOn } />
-        {/* <NumberField source="createdBy" />
+          <TextField source="title" />
+          <TextField source="description" />
+          <CurrencyField locale="en-IN" currency="INR" source="price" />
+          <NumberField source="durationDays" />
+          <TextField source="destination" />
+          <NumberField source="availableSlots" />
+          {/* <NumberField source="approvedBy" /> */}
+          {/* <DateField source="approvedOn" /> */}
+          <FunctionField
+            label="Approved On"
+            render={(record) =>
+              !record.approvedOn ? (
+                <Chip
+                  sx={{ background: "#dc3545", color: "#fff" }}
+                  icon={<Close color="#fff" />}
+                  label="Approval Pending"
+                />
+              ) : (
+                record.approvedOn
+              )
+            }
+          />
+          {/* <NumberField source="createdBy" />
             <DateField source="createdOn" />
             <NumberField source="updatedBy" />
             <DateField source="updatedOn" />
             <TextField source="enabled" /> */}
-        <EditButton variant="bootstrap" color="primary" />
-        <DeleteWithConfirmButton variant="bootstrap" color="danger" />
-      </Datagrid>
-    </List>
-  </>
-);
+          <EditButton variant="bootstrap" color="primary" />
+          <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+        </Datagrid>
+      </List>
+    </>
+  );
+};

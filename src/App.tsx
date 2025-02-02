@@ -58,19 +58,19 @@ const AdminRoute: React.FC = () => {
       create={UserCreate}
       edit={UserUpdate}
     /> */}
-    
+        <Resource
+      name="vendor"
+      list={VendorList}
+      create={VendorCreate}
+      edit={VendorUpdate}
+    />
     <Resource
       name="package"
       list={PackageList}
       create={PackageCreate}
       edit={PackageUpdate}
     />
-    <Resource
-      name="vendor"
-      list={VendorList}
-      create={VendorCreate}
-      edit={VendorUpdate}
-    />
+
   </Admin>
 )};
 const OpenRoute: React.FC = () => (

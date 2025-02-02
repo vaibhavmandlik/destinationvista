@@ -7,7 +7,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from "react-router-dom";
 
 export const SwitchVendor = () => {
-    const { handleSubmit, register, setValue, watch } = useForm();
+    const { handleSubmit, register, setValue, watch } = useForm({defaultValues:{vendor_select:localStorage.getItem("selectedVendor")}});
     const { data: user } = useGetIdentity();
     const { data: VendorList } = useGetList('vendor', { filter: { 'userId': user?.id } });
     const data = VendorList?.map((item: any) => ({ value: item.id, label: item.agencytitle })) || [];
@@ -21,7 +21,10 @@ export const SwitchVendor = () => {
         }
     }, [data])
     useEffect(() => {
+        if(!!selectedVendor && selectedVendor !== localStorage.getItem("selectedVendor")){
         localStorage.setItem("selectedVendor", selectedVendor);
+        window.location.reload();
+        }
     }, [selectedVendor])
     const onSubmit = () => {
     };

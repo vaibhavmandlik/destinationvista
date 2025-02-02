@@ -6,25 +6,22 @@ import {
   required,
   NumberInput,
   ReferenceInput,
+  useGetIdentity,
 } from "react-admin";
 import { SelectInput } from "react-admin";
 
 export const PackageCreate = () => {
+  const { data: user } = useGetIdentity();
+
   return (
-    <Create>
+    <Create redirect={'list'} transform={data=>{return {...data,vendorId:user?.vendorId}}} title="Create a Package">
       <SimpleForm>
-        <ReferenceInput source="vendorId" reference="vendor">
-          <SelectInput optionText="agencyTitle" />
-        </ReferenceInput>
         <TextInput source="title" validate={[required()]} />
         <TextInput source="description" validate={[required()]} />
         <NumberInput source="price" validate={[required()]} />
         <NumberInput source="durationDays" validate={[required()]} />
         <TextInput source="destination" validate={[required()]} />
         <NumberInput source="availableSlots" validate={[required()]} />
-        <NumberInput source="approvedBy" validate={[required()]} />
-        <NumberInput source="createdBy" validate={[required()]} />
-        <NumberInput source="updatedBy" validate={[required()]} />
       </SimpleForm>
     </Create>
   );

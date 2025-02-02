@@ -135,4 +135,7 @@ const baseDataProvider = jsonServerProvider(apiUrl, httpClient);
 
 export const dataProviders = {
   ...baseDataProvider,
+  getList: async(resource:string, params:any) => {
+    return baseDataProvider.getList(resource, params);
+  },
 };

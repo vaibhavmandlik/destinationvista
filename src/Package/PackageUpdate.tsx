@@ -13,7 +13,7 @@ export const PackageUpdate = () => (
   <Edit>
     <SimpleForm>
       <ReferenceInput source="vendorId" reference="vendor">
-        <SelectInput optionText="agencyTitle" />
+        <SelectInput optionText="agencytitle" />
       </ReferenceInput>
       <TextInput source="title" validate={[required()]} />
       <TextInput source="description" validate={[required()]} />
