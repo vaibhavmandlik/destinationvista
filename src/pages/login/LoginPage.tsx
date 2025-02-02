@@ -85,7 +85,7 @@ const MyLoginPage: React.FC = () => {
                       sx={{ width: "100%" }}
                       startIcon={<Login />}
                     >
-                      Signup
+                      Login
                     </Button>
             <p className="text-center mt-3">
               <a href="#">Forgot Password?</a>
