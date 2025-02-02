@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import SearchBar from "./Search";
 import logo from './assets/logo.svg';
 import { SwitchVendor } from "./SwitchVendor";
+import useHasVendors from "./hook/useHasvendors";
 
 // Custom Sidebar (Optional)
 export const MySidebar = ({ children }) => {
@@ -28,8 +29,8 @@ export const MySidebar = ({ children }) => {
   );
 };
 export const MyMenu = () => {
-  const { data: user } = useGetIdentity();
-  const { data: VendorList } = useGetList('vendor', { filter: { 'userId': user?.id } });
+  const hasVendors = useHasVendors(); 
+
   return (
     <Menu>
       <br />
@@ -37,7 +38,7 @@ export const MyMenu = () => {
       <img src={logo} alt="logo" className="logo" />
       <SwitchVendor />
       <hr />
-      {(VendorList ? VendorList?.length > 0 : false) && <>
+      {(hasVendors) && <>
         <Menu.Item to="/admin/package" primaryText="Package" leftIcon={<PiPackageBold />} />
         {/* <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
         <Menu.Item to="/admin/vendor" primaryText="Agency" leftIcon={<PiSuitcaseBold />} />
