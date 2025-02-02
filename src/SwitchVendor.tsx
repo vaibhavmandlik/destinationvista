@@ -4,13 +4,14 @@ import { useGetIdentity, useGetList } from "react-admin";
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-
+import { useNavigate } from "react-router-dom";
 
 export const SwitchVendor = () => {
     const { handleSubmit, register, setValue, watch } = useForm();
     const { data: user } = useGetIdentity();
     const { data: VendorList } = useGetList('vendor', { filter: { 'userId': user?.id } });
     const data = VendorList?.map((item: any) => ({ value: item.id, label: item.agencytitle })) || [];
+    const navigate = useNavigate();
     // if only one vendor is there then select that vendor by default
 
     const selectedVendor = watch("vendor_select");
@@ -36,11 +37,11 @@ export const SwitchVendor = () => {
                             placeholder="Select Agency"
                             errors=""
                             options={data}
-                            onAddClick={()=>window.open('/admin/vendor/create')}
+                            onAddClick={()=>navigate('/admin/vendor/create')}
                         />
                     </div>
                 </div>
-            </form>) : <div className="py-2"><Button variant="outlined" sx={{width:'100%'}} startIcon={<AddIcon />}>Agency</Button></div>}
+            </form>) : <div className="py-2"><Button variant="outlined" onClick={()=>navigate('/admin/vendor/create')} sx={{width:'100%'}} startIcon={<AddIcon />}>Agency</Button></div>}
         </>
 
     );

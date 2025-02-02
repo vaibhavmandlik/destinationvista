@@ -34,14 +34,13 @@ export const CustomSelectInput = ({ register, label, placeholder, type, id, erro
                     />
                 </div>
                 {showAddButton && (
-                    <Button
-                        variant='outlined'
+                    <IconButton
                         size="small"
                         onClick={onAddClick}
 
                     >
                         <AddIcon />
-                    </Button>
+                    </IconButton>
                 )}
             </div>
             {errors && <div className="text-danger">{errors}</div>}

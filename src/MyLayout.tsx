@@ -41,7 +41,7 @@ export const MyMenu = () => {
       {(hasVendors) && <>
         <Menu.Item to="/admin/package" primaryText="Package" leftIcon={<PiPackageBold />} />
         {/* <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
-        <Menu.Item to="/admin/vendor" primaryText="Agency" leftIcon={<PiSuitcaseBold />} />
+        {/* <Menu.Item to="/admin/vendor" primaryText="Agency" leftIcon={<PiSuitcaseBold />} /> */}
       </>}
 
       {/* <Menu.Item to="/comments" primaryText="Comments" leftIcon={<ChatBubbleIcon />}/>

@@ -29,46 +29,47 @@ import { Outlet } from "react-router";
 import VendorResistration from "./components/vendor/Register";
 import authProvider from "./authProvider";
 import MyLoginPage from "./pages/login/LoginPage";
+import { dataProviders } from "./DataProviders";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
   }
   const auth = localStorage?.getItem("auth");
   const { data } = auth ? JSON.parse(auth) : { data: null };
+  const vendorId = localStorage?.getItem("selectedVendor");
   options.headers.set("Authorization", `Bearer ${data?.accessToken}`);
   return fetchUtils.fetchJson(url, options);
 };
 const dataProvider = jsonServerProvider(apiUrl, httpClient);
-const VendorHasAgencyCheck=({children}:any)=>{
-  return <>{children}</>
-}
+
 const AdminRoute: React.FC = () => {
   return(
   <Admin
     basename="/admin"
-    dataProvider={dataProvider}
+    dataProvider={dataProviders}
     authProvider={authProvider}
     loginPage={MyLoginPage}
     layout={MyLayout}
     theme={theme}
   >
-    <Resource
+    {/* <Resource
       name="user"
       list={UserList}
       create={UserCreate}
       edit={UserUpdate}
+    /> */}
+    
+    <Resource
+      name="package"
+      list={PackageList}
+      create={PackageCreate}
+      edit={PackageUpdate}
     />
     <Resource
       name="vendor"
       list={VendorList}
       create={VendorCreate}
       edit={VendorUpdate}
-    />
-    <Resource
-      name="package"
-      list={PackageList}
-      create={PackageCreate}
-      edit={PackageUpdate}
     />
   </Admin>
 )};
