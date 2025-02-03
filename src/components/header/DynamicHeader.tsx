@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FaRegUser } from "react-icons/fa";
@@ -25,6 +25,18 @@ const DynamicHeader: React.FC = () => {
   const handleMouseLeave = () => {
     setIsOpen(false);
   };
+
+  const [isLogin ,setIsLogin] = useState(false);
+
+  useEffect(()=>{
+      const handleIsLogin = ()=>{
+        const token = localStorage.getItem("token")
+        if(token){
+          setIsLogin(true);
+        }
+      }
+      handleIsLogin();
+  },[]);
 
   return (
     <>
@@ -107,53 +119,57 @@ const DynamicHeader: React.FC = () => {
                 <Link to="/destinations" className="nav-item nav-link">
                   Destinations
                 </Link>
-                <Link to="/loginpage" className="nav-item nav-link active">
-                  Login
-                </Link>
-                <div
-                  className="nav-item nav-link active position-relative dropdown"
-                  onClick={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                >
-                  <FaRegUser/>
+                {isLogin == false ? 
+                 <Link to="/loginpage" className="nav-item nav-link active">
+                 Login
+               </Link> : 
+                 <div
+                 className="nav-item nav-link active position-relative dropdown"
+                 onClick={handleMouseEnter}
+                 onMouseLeave={handleMouseLeave}
+               >
+                 <FaRegUser/>
 
-                  {isOpen && (
-                    <div
-                      className="position-absolute top-10 left-0 bg-white shadow rounded-lg p-3"
-                      style={{ width: "250px" }}
-                    >
-                      <ul className="mr-5">
-                        <li className="py-1 rounded list-unstyled dropdown-menu-tab">
-                          <Link
-                            to="/"
-                            className=""
-                            style={{ width: "150px" }}
-                          >
-                            Profile
-                          </Link>
-                        </li>
-                        <li className="py-1 rounded list-unstyled dropdown-menu-tab">
-                          <Link
-                            to="/bookingshistory"
-                            className=""
-                            style={{ width: "150px" }}
-                          >
-                            My Bookings
-                          </Link>
-                        </li>
-                        <li className="py-1 rounded list-unstyled dropdown-menu-tab">
-                          <Link
-                            to="/"
-                            className=""
-                            style={{ width: "150px" }}
-                          >
-                            My Cart
-                          </Link>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                 {isOpen && (
+                   <div
+                     className="position-absolute top-10 left-0 bg-white shadow rounded-lg p-3"
+                     style={{ width: "250px" }}
+                   >
+                     <ul className="mr-5">
+                       <li className="py-1 rounded list-unstyled dropdown-menu-tab">
+                         <Link
+                           to="/profile"
+                           className=""
+                           style={{ width: "150px" }}
+                         >
+                           Profile
+                         </Link>
+                       </li>
+                       <li className="py-1 rounded list-unstyled dropdown-menu-tab">
+                         <Link
+                           to="/bookingshistory"
+                           className=""
+                           style={{ width: "150px" }}
+                         >
+                           My Bookings
+                         </Link>
+                       </li>
+                       <li className="py-1 rounded list-unstyled dropdown-menu-tab">
+                         <Link
+                           to="/packagecart"
+                           className=""
+                           style={{ width: "150px" }}
+                         >
+                           My Cart
+                         </Link>
+                       </li>
+                     </ul>
+                   </div>
+                 )}
+               </div>
+                }
+               
+               
               </div>
             </div>
           </nav>

@@ -2,15 +2,16 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 // Get API URL from environment variables
-const url = `${import.meta.env.VITE_API_URL}/user`;
+const url = `${import.meta.env.VITE_API_URL}/booking`;
 
 // TypeScript Interface for Booking Data
 interface Booking {
+    id:number;
     packageId: number;
     totalPrice: number;
     totalSlots: number;
     bookedDate: string; // Store date as a string to prevent serialization issues
-    status: 0 | 1 | 2; // Assuming 0 = Pending, 1 = Confirmed, 2 = Cancelled
+    status: "0" | "1" | "2"; // Assuming 0 = Pending, 1 = Confirmed, 2 = Cancelled
 }
 
 const BookingsHistory: React.FC = () => {
@@ -29,7 +30,11 @@ const BookingsHistory: React.FC = () => {
                     throw new Error("Unauthorized: No token found. Please log in.");
                 }
 
-                const response = await axios.get<Booking[]>(url);
+                const response = await axios.get<Booking[]>(url,{
+                    headers:{
+                        Authorization:`Bearer ${token}`,
+                    }
+                });
 
                 console.log("Response Data:", response.data); // Debugging log
 
@@ -47,8 +52,6 @@ const BookingsHistory: React.FC = () => {
                     } else {
                         setError("Failed to fetch bookings. Please try again.");
                     }
-                } else {
-                    setError(error.message || "An unexpected error occurred.");
                 }
             } finally {
                 setLoading(false);
@@ -59,11 +62,9 @@ const BookingsHistory: React.FC = () => {
     }, []);
 
     return (
-        <div className="container shadow bg-white p-5 my-4" style={{ width: "160vh", height: "500px" }}>
-            <p className="h2">My Bookings</p>
-
-            <div className="card">
-                <div className="card-body">
+        <div className="container shadow bg-white p-5 my-4" style={{ width: "160vh"  }}>
+            <p className="h2">My Bookings</p>            
+                <div className="">
                     {loading ? (
                         <p>Loading...</p>
                     ) : error ? (
@@ -71,22 +72,34 @@ const BookingsHistory: React.FC = () => {
                     ) : data.length > 0 ? (
                         <ul>
                             {data.map((item) => (
-                                <li key={item.packageId}>
-                                    <strong>Package ID:</strong> {item.packageId} <br />
-                                    <strong>Total Price:</strong> ₹{item.totalPrice} <br />
-                                    <strong>Total Slots:</strong> {item.totalSlots} <br />
-                                    <strong>Booked Date:</strong> {new Date(item.bookedDate).toLocaleDateString()} <br />
-                                    <strong>Status:</strong> {item.status === 0 ? "Pending" : item.status === 1 ? "Confirmed" : "Cancelled"} <br />
-                                    <hr />
-                                </li>
+                                 <div key={item.id} className="border rounded my-3">
+                                 <div className="bg-cart p-2 d-flex justify-content-between align-items-center">
+                                     <p className="mb-0">
+                                     <strong className="fs-5 ">Package Id: {item.packageId}</strong> 
+                                     </p>
+                                     <p className="mb-0">
+                                     <strong className="">Booking Date : <span>{new Date(item.bookedDate).toLocaleDateString()}</span> </strong>
+                                     </p>
+                                 </div>
+                                 <div className="d-flex justify-content-between  p-2 border-bottom border-right border-left rounded m-auto">
+                                     <span>
+                                     <strong>Status : </strong> <span className={item.status === "1" ? "text-success" : item.status === "2" ? "text-danger" : "text-warning"}> {item.status === "0" ? "Pending" : item.status === "1" ? "Confirmed" : "Cancelled"} </span>
+                                     </span>
+                                    <span>
+                                    <strong>Total Price : </strong> {item.totalPrice}
+                                     </span> 
+                                     <span>
+                                     <strong>Total Slots : </strong> {item.totalSlots} Seats 
+                                     </span>
+                                 </div>
+                             </div>
                             ))}
                         </ul>
                     ) : (
                         <p>No bookings found.</p>
                     )}
                 </div>
-            </div>
-        </div>
+            </div>  
     );
 };
 

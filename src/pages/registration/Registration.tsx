@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import IndianStateDropdown from "./IndianStateDropdown";
+const url = `${import.meta.env.VITE_API_URL}/user`;
 
 // const Registration: React.FC = () => {
 //   const [firstName, setFirstName] = useState<string>("");
@@ -38,8 +39,14 @@ interface FormData {
   password: string;
   confirmPassword: string;
   category: 0 | 1 | 2;
-  postalCode: number;
-  contactNumber:string;
+  pincode: number;
+  primaryContactNumber: string;
+  secondaryContactNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  city:string;
+  landmark:string;
+  dateOfBirth:string
 }
 
 const Registration: React.FC = () => {
@@ -50,18 +57,19 @@ const Registration: React.FC = () => {
     password: "",
     confirmPassword: "",
     category: 2,
-    postalCode: 0,
-    contactNumber:"",
+    pincode: 0,
+    primaryContactNumber: "",
+    secondaryContactNumber: "",
+    addressLine1: "",
+    addressLine2: "",
+    city:"",
+    landmark:"",
+    dateOfBirth:"",
   });
 
-  const [selectState, setSelectState] = useState<string>("");
+  const [state, setSelectState] = useState<string>("");
   const handleStateSelect = (state: string) => {
     setSelectState(state);
-  };
-
-  const [address, setAddress] = useState<string>("");
-  const habdleTextAreaInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setAddress(e.target.value);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -79,10 +87,27 @@ const Registration: React.FC = () => {
       password,
       confirmPassword,
       category,
-      postalCode,
-      contactNumber
+      pincode,
+      primaryContactNumber,
+      secondaryContactNumber,
+      addressLine1,
+      addressLine2,
+      city,
+      landmark,
+      dateOfBirth
     } = formData;
 
+    if(password.length < 6)
+    {
+      toast.error("password must be atleast 6 character ", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        theme: "light",
+        pauseOnHover: true,
+      })
+      return;
+    }
     if (password !== confirmPassword) {
       toast.error("Password does not Match!", {
         position: "top-right",
@@ -94,78 +119,69 @@ const Registration: React.FC = () => {
       return;
     }
 
-    toast.success(
-      `Account created successfully Welcome ${firstName} ${lastName}`,
-      {
-        position: "top-right",
-        autoClose: 3000,
-        closeOnClick: true,
-        theme: "light",
-        pauseOnHover: true,
-      },
-    );
-
     const payload = {
       firstName,
       lastName,
       email,
       password,
       category,
-      address,
-      selectState,
-      postalCode,
-      contactNumber,
+      addressLine1,
+      addressLine2,
+      state,
+      pincode,
+      primaryContactNumber,
+      secondaryContactNumber,
+      city,
+      landmark,
+      dateOfBirth
     };
 
     console.log(payload);
-    // setTimeout(() => {
-    //   window.location.href = "/loginPage";
-    // }, 1000);
 
-    // try {
-    //   const response = await fetch("",{
-    //     method:'POST',
-    //     headers:{
-    //       'Content-Type':'application/json',
-    //     },
-    //     body:JSON.stringify(payload),
-    //   });
+    try {
+      const response = await fetch(url,{
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+        },
+        body:JSON.stringify(payload),
+      });
 
-    //   if(response.ok){
-    //     const data = await response.json();
-    //     console.log('API response' , data);
-    //     toast.success(`Account created successfully Welcome ${firstName} ${lastName}`,{
-    //       position:'top-right',
-    //       autoClose:3000,
-    //       closeOnClick:true,
-    //       theme:"light",
-    //       pauseOnHover:true,
-    //     })
-    //     window.location.href="/loginPage"
-    //   }
-    //   else{
-    //     const errorData = await response.json();
-    //     console.error('Api Error :', errorData);
-    //     toast.error(`Something went wrong. Please try again.`,{
-    //       position:'top-right',
-    //       autoClose:3000,
-    //       closeOnClick:true,
-    //       theme:"light",
-    //       pauseOnHover:true,
-    //     })
+      if(response.ok){
+        const data = await response.json();
+        console.log('API response' , data);
+        toast.success(`Account created successfully Welcome ${firstName} ${lastName}`,{
+          position:'top-right',
+          autoClose:3000,
+          closeOnClick:true,
+          theme:"light",
+          pauseOnHover:true,
+        })
+        window.location.href="/loginPage"
+      }
+      else{
+        const errorData = await response.json();
+        console.error('Api Error :', errorData);
+        toast.error(`Something went wrong. Please try again.`,{
+          position:'top-right',
+          autoClose:3000,
+          closeOnClick:true,
+          theme:"light",
+          pauseOnHover:true,
+        })
 
-    //   }
+      }
 
-    // } catch (error) {
-    //   console.error("Error :",error);
-    //   toast.error(`Failed to connect to the server. Please try again later.`,{
-    //     position:'top-right',
-    //     autoClose:3000,
-    //     closeOnClick:true,
-    //     theme:"light",
-    //     pauseOnHover:true,
-    //   })
-    // }
+    } catch (error) {
+      console.error("Error :",error);
+      toast.error(`Failed to connect to the server. Please try again later.`,{
+        position:'top-right',
+        autoClose:3000,
+        closeOnClick:true,
+        theme:"light",
+        pauseOnHover:true,
+      })
+    }
   };
 
   return (
@@ -247,15 +263,17 @@ const Registration: React.FC = () => {
     // </div>
     <>
       <ToastContainer />
-      <div className="container p-5">
+      <div className="container py-3 ">
         <form onSubmit={handleSubmit}>
           <div className="row justify-content-md-center shadow-lg">
-            <div className="col bg-white ">
+            <div className="col bg-dark signup-card">
               <div className="p-5 my-5">
-                <h1 className="text-dark">Destination Vista</h1>
-                <p className="slogan">
+                <h1 className="text-dark" style={{ fontSize: "45px" }}>
+                  Destination <span className="text-primary">Vista</span>
+                </h1>
+                <h5 className="slogan">
                   Explore Dream Discover Your Next Adventure Awaits!
-                </p>
+                </h5>
               </div>
             </div>
             <div className="col p-5 shadow-lg bg-primary">
@@ -263,8 +281,8 @@ const Registration: React.FC = () => {
                 Create account
               </h1>
               <div className="row">
-                <div className="col my-2">
-                  <label className="text-white mx-3">First name :</label>
+                <div className="col my-1">
+                  <label className="text-white mx-3">First name:</label>
                   <input
                     type="text"
                     className="form-control signup-input"
@@ -275,8 +293,8 @@ const Registration: React.FC = () => {
                     required
                   />
                 </div>
-                <div className="col my-2">
-                  <label className="text-white mx-3">Last name :</label>
+                <div className="col my-1">
+                  <label className="text-white mx-3">Last name:</label>
                   <input
                     type="text"
                     className="form-control signup-input"
@@ -288,8 +306,8 @@ const Registration: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="my-2">
-                <label className="text-white mx-3">Email :</label>
+              <div className="">
+                <label className="text-white mx-3">Email:</label>
                 <input
                   type="email"
                   className="form-control signup-input"
@@ -300,48 +318,104 @@ const Registration: React.FC = () => {
                   required
                 />
               </div>
-              <div className="my-2">
-                <label className="text-white mx-3">Contact Number :</label>
+              <div className="row align-items-center">
+                <div className="col my-1">
+                  <label className="text-white mx-3">Primary Number:</label>
+                  <input
+                    type="text"
+                    name="primaryContactNumber"
+                    className="form-control signup-input"
+                    placeholder="Primary contact number"
+                    value={formData.primaryContactNumber}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="col my-1">
+                  <label className="text-white mx-3">Secondary Number:</label>
+                  <input
+                    type="text"
+                    name="secondaryContactNumber"
+                    className="form-control signup-input"
+                    placeholder="Secondary contact number"
+                    value={formData.secondaryContactNumber}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="col my-1">
+                  <label className="text-white mx-3">Date of <br />Birth:</label>
+                  <input
+                    type="date"
+                    name="dateOfBirth"
+                    className="form-control signup-input"
+                    placeholder="dd/mm/yyyy"
+                    value={formData.dateOfBirth}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="my-1">
+                <label className="text-white mx-3">Address Line 1:</label>
                 <input
                   type="text"
-                  name="contactNumber"
+                  name="addressLine1"
                   className="form-control signup-input"
-                  placeholder="Contact number"
-                  value={formData.contactNumber}
+                  placeholder="Address Line 1"
                   onChange={handleInputChange}
-                />
-              </div>
-              <div className="my-2">
-                <label className="text-white mx-3">Address :</label>
-                <textarea
-                  name="address"
-                  className="form-control signup-input"
-                  rows={1}
-                  placeholder="Address"
-                  onChange={habdleTextAreaInput}
                   required
-                ></textarea>
+                ></input>
               </div>
-              <div className="row">
-                <div className="col my-2">
-                  <label className="mx-2 text-white">State :</label>
+              <div className="my-1">
+                <label className="text-white mx-3">Address Line 2:</label>
+                <input
+                  type="text"
+                  name="addressLine2"
+                  className="form-control signup-input"
+                  placeholder="Address Line 2"
+                  onChange={handleInputChange}
+                  required
+                ></input>
+              </div>
+              <div className="my-1">
+                <label className="text-white mx-3">Landmark:</label>
+                <input
+                  type="text"
+                  name="landmark"
+                  className="form-control signup-input"
+                  placeholder="Landmark"
+                  onChange={handleInputChange}
+                  required
+                ></input>
+              </div>
+              <div className="row align-items-center">
+                <div className="col">
+                  <label className="mx-3 text-white">City:</label>
+                  <input
+                    type="text"
+                    name="city"
+                    className="form-control signup-input"
+                    placeholder="City"
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="col">
+                  <label className="mx-3 text-white">State:</label>
                   <IndianStateDropdown
                     onStateSelect={handleStateSelect}
                     name={"state"}
                   />
                 </div>
-                <div className="col my-2">
-                  <label className="mx-2 text-white">Postal code:</label>
+                <div className="col">
+                  <label className="mx-3 text-white">Postal code:</label>
                   <input
                     type="number"
-                    name="postalCode"
+                    name="pincode"
                     className="form-control signup-input"
                     placeholder="Postal Code"
                     onChange={handleInputChange}
                   />
                 </div>
               </div>
-              <div className="my-2">
+              <div className="my-1">
                 <label className="text-white mx-3">Password :</label>
                 <input
                   type="password"
@@ -353,7 +427,7 @@ const Registration: React.FC = () => {
                   required
                 />
               </div>
-              <div className="my-2">
+              <div>
                 <label className="text-white mx-3">Confirm password :</label>
                 <input
                   type="password"

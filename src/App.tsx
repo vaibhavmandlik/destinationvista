@@ -1,5 +1,6 @@
 import React from "react";
-import { Admin, Resource } from "react-admin";
+import { Outlet } from "react-router";
+import { Admin, CustomRoutes, fetchUtils, Resource } from "react-admin";
 import jsonServerProvider from "ra-data-json-server";
 import { UserList } from "./User/UserList";
 import { UserCreate } from "./User/UserCreate";
@@ -25,10 +26,20 @@ import Registration from "./pages/registration/Registration";
 import Home from "./pages/home/Home";
 import Destination from "./pages/destinations/Destination";
 import BookingsHistory from "./pages/dropDown/BookingsHistory";
+import PackageCart from "./pages/dropDown/PackageCart";
+import Profile from "./pages/dropDown/Profile";
 const apiUrl = import.meta.env.VITE_API_URL;
-const dataProvider = jsonServerProvider(apiUrl);
+const httpClient = (url: string, options: any = {}) => {
+  if (!options.headers) {
+    options.headers = new Headers({ Accept: "application/json" });
+  }
+  const { data } = JSON.parse(localStorage?.getItem('auth') as string);
+  options.headers.set('Authorization', `Bearer ${data.accessToken}`);
+  return fetchUtils.fetchJson(url, options);
+};
+const dataProvider = jsonServerProvider(apiUrl,httpClient);
 //authProvider={authProvider}
-const App: React.FC = () => (
+const AdminRoute: React.FC = () => (
   <Admin dataProvider={dataProvider} layout={MyLayout} theme={theme}>
     <Resource
       name="user"
@@ -51,6 +62,22 @@ const App: React.FC = () => (
   </Admin>
 );
 
+const OpenRoute: React.FC = () => (
+  <Admin
+    basename="/open"
+    dataProvider={dataProvider}
+  >
+    <CustomRoutes noLayout>
+    <Route
+          path="/vendorRegistration"
+          element={
+              <VendorResistration />
+          }
+        />
+    </CustomRoutes>
+  </Admin>
+);
+
 const App: React.FC = () => {
   return (
     <Router>
@@ -64,6 +91,9 @@ const App: React.FC = () => {
           <Route path="registration" element={<Registration />} />
           <Route path="loginpage" element={<LoginPage />} />
           <Route path="bookingshistory" element={<BookingsHistory/>}/>
+          <Route path="packagecart" element={<PackageCart/>}/>
+          <Route path="profile" element={<Profile/>}/>
+          
           <Route
             path="packages"
             element={
@@ -84,6 +114,7 @@ const App: React.FC = () => {
           <Route index element={<Home />} />
         </Route>
         <Route path="admin/*" element={<AdminRoute />} />
+        <Route path="/open/*" element={<OpenRoute />} />
       </Routes>
     </Router>
   );
