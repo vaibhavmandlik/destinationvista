@@ -4,7 +4,13 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
-    options.headers = new Headers({ Accept: "application/json" });
+    options.headers = new Headers();
+  }
+
+  if (options.body instanceof FormData) {
+    options.headers.delete("Content-Type"); // Let the browser set it automatically
+  } else {
+    options.headers.set("Accept", "application/json");
   }
   const auth = localStorage?.getItem("auth");
   const { data } = auth ? JSON.parse(auth) : { data: null };
@@ -19,6 +25,7 @@ type PackageParams = {
   durationDays: string;
   destination: string;
   availableSlots: string;
+  vendorId: string;
   description: string;
   images: {
     rawFile: File;
@@ -31,18 +38,23 @@ const createPackageFormData = (
 ) => {
   const formData = new FormData();
   debugger;
-  if(params.data.images){
-    const imagesArr:any = params?.data?.images;
-    for(let fileObj of imagesArr){
+  if (params.data.images) {
+    const imagesArr: any = params?.data?.images;
+    for (let fileObj of imagesArr) {
       formData.append("images[]", fileObj?.rawFile);
     }
-  } 
+  }
   params.data.title && formData.append("title", params.data.title);
-  params.data.price && formData.append("content", params.data.price);
-  params.data.durationDays && formData.append("durationDays", params.data.durationDays);
-  params.data.destination && formData.append("destination", params.data.destination);
-  params.data.availableSlots && formData.append("availableSlots", params.data.availableSlots);
-  params.data.description && formData.append("description", params.data.description);
+  params.data.price && formData.append("price", params.data.price);
+  params.data.durationDays &&
+    formData.append("durationDays", params.data.durationDays);
+  params.data.destination &&
+    formData.append("destination", params.data.destination);
+  params.data.availableSlots &&
+    formData.append("availableSlots", params.data.availableSlots);
+  params.data.description &&
+    formData.append("description", params.data.description);
+  params.data.vendorId && formData.append("vendorId", params.data.vendorId);
 
   return formData;
 };
@@ -53,10 +65,9 @@ export const dataProviders = {
       const formData = createPackageFormData(params);
       debugger;
       return httpClient(`${apiUrl}/${resource}`, {
-          method: "POST",
-          body: formData,
-        })
-        .then(({ json }) => ({ data: json }));
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
     }
     return baseDataProvider.create(resource, params);
   },
@@ -65,10 +76,9 @@ export const dataProviders = {
       const formData = createPackageFormData(params);
       formData.append("id", params.id);
       return httpClient(`${apiUrl}/${resource}`, {
-          method: "PUT",
-          body: formData,
-        })
-        .then(({ json }) => ({ data: json }));
+        method: "PUT",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
     }
     return baseDataProvider.update(resource, params);
   },
