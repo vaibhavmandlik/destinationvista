@@ -52,8 +52,7 @@ export const dataProviders = {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       debugger;
-      return fetchUtils
-        .fetchJson(`${apiUrl}/${resource}`, {
+      return httpClient(`${apiUrl}/${resource}`, {
           method: "POST",
           body: formData,
         })
@@ -65,8 +64,7 @@ export const dataProviders = {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       formData.append("id", params.id);
-      return fetchUtils
-        .fetchJson(`${apiUrl}/${resource}`, {
+      return httpClient(`${apiUrl}/${resource}`, {
           method: "PUT",
           body: formData,
         })
