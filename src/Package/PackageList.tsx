@@ -7,6 +7,7 @@ import {
   List,
   NumberField,
   ReferenceField,
+  ReferenceManyCount,
   TextField,
   useGetIdentity,
 } from "react-admin";
@@ -118,7 +119,14 @@ export const PackageList = () => {
           <CurrencyField locale="en-IN" currency="INR" source="price" />
           <NumberField source="durationDays" />
           <TextField source="destination" />
-          <NumberField source="availableSlots" />
+          <ReferenceManyCount
+            label="Booking"
+            reference="booking"
+            target="packageId"
+            link
+          />
+          <NumberField label="available" source="availableSlots" />
+
           {/* <NumberField source="approvedBy" /> */}
           {/* <DateField source="approvedOn" /> */}
           <FunctionField
@@ -127,7 +135,6 @@ export const PackageList = () => {
               !record.approvedOn ? (
                 <Chip
                   sx={{ background: "#dc3545", color: "#fff" }}
-                  icon={<Close color="#fff" />}
                   label="Approval Pending"
                 />
               ) : (
@@ -140,6 +147,7 @@ export const PackageList = () => {
             <NumberField source="updatedBy" />
             <DateField source="updatedOn" />
             <TextField source="enabled" /> */}
+
           <EditButton variant="bootstrap" color="primary" />
           <DeleteWithConfirmButton variant="bootstrap" color="danger" />
         </Datagrid>

@@ -18,6 +18,7 @@ import {
   Link,
   Switch,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import {
@@ -29,6 +30,7 @@ import { PiUserSwitchBold } from "react-icons/pi";
 export const VendorList = () => {
   const hasVendors = useHasVendors();
   const { data: user } = useGetIdentity();
+  const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
   if (!hasVendors)
     return (
       <>

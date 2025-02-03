@@ -11,8 +11,10 @@ import {
 import Sidebar from "./Sidebar";
 import { FaBookMedical } from "react-icons/fa";
 import {
+  PiMountains,
   PiPackageBold,
   PiSuitcaseBold,
+  PiTicket,
   PiUserBold,
   PiUsers,
 } from "react-icons/pi";
@@ -60,6 +62,16 @@ export const MyMenu = () => {
             to="/admin/package"
             primaryText="Package"
             leftIcon={<PiPackageBold />}
+          />
+          <Menu.Item
+            to="/admin/booking"
+            primaryText="Booking"
+            leftIcon={<PiTicket />}
+          />
+          <Menu.Item
+            to="/admin/destination"
+            primaryText="Destination"
+            leftIcon={<PiMountains />}
           />
           {/* <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
         </>
