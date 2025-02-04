@@ -21,7 +21,7 @@ export const BookingList = () => {
     <List filter={{ vendorId: user?.vendorId }}>
       <Datagrid rowClick={false} bulkActionButtons={false}>
         <TextField source="id" />
-        <ReferenceField source="status" reference="users">
+        <ReferenceField source="status" reference="user">
           <TextField source="firstname" />
         </ReferenceField>
         <ReferenceField source="packageId" reference="package" />
