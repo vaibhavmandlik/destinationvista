@@ -10,10 +10,18 @@ import {
   List,
   TextField,
 } from "react-admin";
+import useHasVendors from "../hook/useHasvendors";
+import AgencyManagement from "../Vendor/AgencyManagement ";
 
 export const UserList = () => {
+  const hasVendors = useHasVendors(); 
+  if(!hasVendors) 
+    return (<>
+   <AgencyManagement/>
+    </>)
   return (
     <>
+    
       <div className="d-flex justify-content-between align-items-center mb-4 mt-3">
         <h2>User Operations</h2>
         <button className="btn btn-info">Email All Users</button>

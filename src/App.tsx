@@ -29,25 +29,39 @@ import BookingsHistory from "./pages/dropDown/BookingsHistory";
 import PackageCart from "./pages/dropDown/PackageCart";
 import Profile from "./pages/dropDown/Profile";
 const apiUrl = import.meta.env.VITE_API_URL;
+import VendorResistration from "./components/vendor/Register";
+import authProvider from "./authProvider";
+import MyLoginPage from "./pages/login/LoginPage";
+import { dataProviders } from "./DataProviders";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
   }
-  const { data } = JSON.parse(localStorage?.getItem('auth') as string);
-  options.headers.set('Authorization', `Bearer ${data.accessToken}`);
+  const auth = localStorage?.getItem("auth");
+  const { data } = auth ? JSON.parse(auth) : { data: null };
+  const vendorId = localStorage?.getItem("selectedVendor");
+  options.headers.set("Authorization", `Bearer ${data?.accessToken}`);
   return fetchUtils.fetchJson(url, options);
 };
-const dataProvider = jsonServerProvider(apiUrl,httpClient);
-//authProvider={authProvider}
-const AdminRoute: React.FC = () => (
-  <Admin dataProvider={dataProvider} layout={MyLayout} theme={theme}>
+const dataProvider = jsonServerProvider(apiUrl, httpClient);
+
+const AdminRoute: React.FC = () => {
+  return(
+  <Admin
+    basename="/admin"
+    dataProvider={dataProviders}
+    authProvider={authProvider}
+    loginPage={MyLoginPage}
+    layout={MyLayout}
+    theme={theme}
+  >
     <Resource
       name="user"
       list={UserList}
       create={UserCreate}
       edit={UserUpdate}
     />
-    <Resource
+        <Resource
       name="vendor"
       list={VendorList}
       create={VendorCreate}
@@ -59,21 +73,13 @@ const AdminRoute: React.FC = () => (
       create={PackageCreate}
       edit={PackageUpdate}
     />
-  </Admin>
-);
 
+  </Admin>
+)};
 const OpenRoute: React.FC = () => (
-  <Admin
-    basename="/open"
-    dataProvider={dataProvider}
-  >
+  <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>
-    <Route
-          path="/vendorRegistration"
-          element={
-              <VendorResistration />
-          }
-        />
+      <Route path="/vendorRegistration" element={<VendorResistration />} />
     </CustomRoutes>
   </Admin>
 );

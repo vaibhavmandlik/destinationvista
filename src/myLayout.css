@@ -1,0 +1,39 @@
+.RaSidebar-fixed {
+    background-color: rgb(238, 238, 238);
+    padding: 0 5px;
+}
+.css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root {
+    border-radius: 4px;
+    color: #000;
+    height: 40px;
+    margin-bottom: 10px !important;
+    font-weight: 600;
+}
+.css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root.RaMenuItemLink-active {
+    background: #fff;
+    border-radius: 4px;
+    color: #007bff !important;
+    height: 40px;
+    margin-bottom: 10px !important;
+    font-weight: 600;
+}
+.css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root.RaMenuItemLink-active::before {
+    background: #007bff;
+    border-radius: 0 4px 4px 0;
+    content: "";
+    height: 24px;
+    left: 0;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 4px;
+}
+.css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root:hover {
+    background: #f5f5f5;
+    border-radius: 4px;
+    color: #007bff !important;
+    height: 40px;
+    margin-bottom: 10px !important;
+    font-weight: 600;
+}
