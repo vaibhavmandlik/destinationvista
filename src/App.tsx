@@ -6,6 +6,7 @@ import {
   List,
   ListGuesser,
   Resource,
+  ShowGuesser,
 } from "react-admin";
 import jsonServerProvider from "ra-data-json-server";
 import { UserList } from "./User/UserList";
@@ -73,6 +74,7 @@ const AdminRoute: React.FC = () => {
         list={PackageList}
         create={PackageCreate}
         edit={PackageUpdate}
+        show={ShowGuesser}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} />
