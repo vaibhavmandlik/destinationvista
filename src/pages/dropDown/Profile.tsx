@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,76 +7,113 @@ import Button from "@mui/material/Button";
 import { states } from "./states";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-const url = `${import.meta.env.VITE_API_URL}/user`
+import { Select, InputLabel, FormControl } from "@mui/material";
 
-interface profileDetails {
-  firstname:string,
-  lastName:string,
-  email:string,
+const url = `${import.meta.env.VITE_API_URL}/user`;
+
+interface ProfileDetails {
+  firstName: string;
+  lastName: string;
+  email: string;
+  primaryContactNumber: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  pincode: string;
+  landmark: string;
+  state: string; // This will store the **value** (not label)
 }
 
 const Profile: React.FC = () => {
+  const navigate = useNavigate();
   const id = localStorage.getItem("userid");
-  const token  = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
 
-  if(!id || !token)
-  {
-    toast.error("Unauthorized User" , {
-      position: "top-right",
-      autoClose: 3000,
-      closeOnClick: true,
-      theme: "light",
-      pauseOnHover: true,
-    })
-    return;
-  } 
+  const [data, setData] = useState<ProfileDetails | null>(null);
+  const [formData, setFormData] = useState<ProfileDetails>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    primaryContactNumber: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    pincode: "",
+    landmark: "",
+    state: "",
+  });
 
-  const [data , setData] = useState<profileDetails | null>(null);
-  try {
-    useEffect(()=>{
-      const fetchData = async ()=>{
-        const response = await axios.get(`${url}/${id}`,{
-          headers:{
-            Authorization:`Bearer ${token}`,
-        }
+  useEffect(() => {
+    if (!id || !token) {
+      toast.error("Unauthorized User", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      localStorage.clear();
+      navigate("/loginpage");
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${url}/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("response : ", response.data);
-
-        if(response.status !== 200){
-          toast.error("No Such User Exist",{
-            position: "top-right",
-            autoClose: 3000,
-            closeOnClick: true,
-            theme: "light",
-            pauseOnHover: true,
-          })
-          return;
+        if (response.status === 200) {
+          const fetchedData = response.data;
+          setData(fetchedData);
+          setFormData({
+            ...fetchedData,
+            state: fetchedData.state, 
+          });
         }
-        else{
-          setData(response.data);
-        }
+      } catch (error: any) {
+        toast.error("Something went wrong. Please try again later.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        navigate("/loginpage");
       }
+    };
 
-      fetchData();
+    fetchData();
+  }, [id, token, navigate ]);
 
-    },[]);
+  const handleChange = (
+    e: React.ChangeEvent<{ name?: string; value: unknown }>,
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name as string]: e.target.value as string,
+    });
+  };
 
-  } catch (error) {
-    
-  }
+  console.log(formData);
 
- 
+  const handleUpdate = async () => {
+    try {
+      const response = await axios.put(`${url}/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status === 200) {
+        toast.success("Profile updated successfully", { position: "top-right", autoClose: 3000 });
+      }
+    } catch (error) {
+      toast.error("Update failed. Please try again.", { position: "top-right", autoClose: 3000 });
+    }
+  };
 
   return (
     <>
-    <ToastContainer/>
+      <ToastContainer />
       <div
         className="container bg-white my-3"
         style={{ width: "180vh", height: "100vh" }}
       >
         <p className="fs-1 p-5 text-dark">
-          <strong>User Profile</strong>
+          <strong>Your Profile</strong>
         </p>
         <div className="d-flex justify-content-center gap-1">
           <div className="col">
@@ -86,18 +124,12 @@ const Profile: React.FC = () => {
               textAlign={"center"}
             >
               <img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxctjU21pUENIsGN1F4qY21P7GfdEbhTMp2g&s"
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-tKwIjOYpL22jOrb4omh2-Uq4uQSsITFvtg&s"
                 className="profile-picture"
               />
-              <p>
-                <h2 className="my-2">{`${data?.firstname} ${data?.lastName}`}</h2>
-              </p>
-              <p>
-                <span>{data?.email}</span>
-              </p>
-              <p>
-                <span>Los Angeles USA</span>
-              </p>
+              <h2 className="my-2">{`${formData.firstName} ${formData.lastName}`}</h2>
+              <p>{formData.email}</p>
+              <p>{`${formData.addressLine1} ${formData.addressLine2}`}</p>
               <Button sx={{ width: "55ch" }} variant="text">
                 Update profile picture
               </Button>
@@ -118,30 +150,30 @@ const Profile: React.FC = () => {
               >
                 <TextField
                   required
-                  id="outlined-required"
+                  name="firstName"
                   label="First Name"
-                  defaultValue="First Name"
-                  value={data?.firstname}
+                  value={formData.firstName}
+                  onChange={handleChange}
                 />
                 <TextField
                   required
-                  id="outlined-required"
-                  label="Last name"
-                  defaultValue="Last Name"
-                  value={data?.lastName}
+                  name="lastName"
+                  label="Last Name"
+                  value={formData.lastName}
+                  onChange={handleChange}
                 />
                 <TextField
                   disabled
-                  id="outlined-disabled"
+                  name="email"
                   label="Email"
-                  defaultValue="Email"
-                  value={data?.email}
+                  value={formData.email}
                 />
                 <TextField
-                  disabled
-                  id="outlined-disabled"
+                  required
+                  name="primaryContactNumber"
                   label="Contact number"
-                  defaultValue="Contact number"
+                  value={formData.primaryContactNumber}
+                  onChange={handleChange}
                 />
               </Box>
               <Box
@@ -152,15 +184,17 @@ const Profile: React.FC = () => {
               >
                 <TextField
                   required
-                  id="outlined-required"
+                  name="addressLine1"
                   label="Address Line 1"
-                  defaultValue="Address Line 1"
+                  value={formData.addressLine1}
+                  onChange={handleChange}
                 />
                 <TextField
                   required
-                  id="outlined-required"
+                  name="addressLine2"
                   label="Address Line 2"
-                  defaultValue="Address Line 2"
+                  value={formData.addressLine2}
+                  onChange={handleChange}
                 />
               </Box>
               <Box
@@ -171,36 +205,44 @@ const Profile: React.FC = () => {
               >
                 <TextField
                   required
-                  id="outlined-required"
+                  name="landmark"
                   label="Landmark"
-                  defaultValue="Landmark"
+                  value={formData.landmark}
+                  onChange={handleChange}
                 />
-                <TextField
-                  id="outlined-select-currency"
-                  select
-                  label="Select state"
-                  defaultValue="select state"
-                >
-                  {states.map((state) => (
-                    <MenuItem key={state.value} value={state.label}>
-                      {state.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  <TextField
+                    label="Select State"
+                    select
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    fullWidth
+                  >
+                    {states.map((state) => (
+                      <MenuItem key={state.value} value={state.value}>
+                        {state.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+  
                 <TextField
                   required
-                  id="outlined-required"
+                  name="city"
                   label="City"
-                  defaultValue="City"
+                  value={formData.city}
+                  onChange={handleChange}
                 />
                 <TextField
                   required
-                  id="outlined-required"
-                  label="Posatl code"
-                  defaultValue="Postal code"
+                  name="pincode"
+                  label="Postal Code"
+                  value={formData.pincode}
+                  onChange={handleChange}
                 />
-                <Box textAlign={'center'}>
-                  <Button sx={{mt:1}} variant="contained">Save Details</Button>
+                <Box textAlign={"center"}>
+                  <Button sx={{ mt: 1 }} variant="contained" onClick={handleUpdate}>
+                    Save Details
+                  </Button>
                 </Box>
               </Box>
             </Box>

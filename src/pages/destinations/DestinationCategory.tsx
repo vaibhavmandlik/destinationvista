@@ -1,12 +1,64 @@
-import React from "react";
+import React , {useState} from "react";
 import SearchBar from "../Searchbar/SearchBar";
 
 interface DestinationCategoryProps {
   isShowSearchBar?: boolean;
 }
+
+interface Destibation{
+  img:string,
+  title:string,
+  subtitle:string
+}
+
+const destinations:Destibation[][] =[
+  [
+    {
+      img: "img/destination-1.jpg",
+      title: "Rajasthan",
+      subtitle: "Where History Meets Grandeur!",
+    },
+    {
+      img: "img/destination-2.jpg",
+      title: "Goa",
+      subtitle: "Your Escape to Paradise!",
+    },
+    {
+      img: "img/destination-3.jpg",
+      title: "Himachal",
+      subtitle: "Where The Hills Come Alive With Adventure!",
+    },
+  ],
+  [
+    {
+      img: "img/destination-4.jpg",
+      title: "Kerala",
+      subtitle: "Backwaters, Bliss, and Breathtaking Beauty!",
+    },
+    {
+      img: "img/destination-5.jpg",
+      title: "Uttarakhand",
+      subtitle: "Find Your Spiritual Calling in the Land of Gods!",
+    },
+    {
+      img: "img/destination-6.jpg",
+      title: "Maharashtra",
+      subtitle: "From Caves to Coasts, Maharashtra Has It All!",
+    },
+  ]
+]
 const DestinationCategory: React.FC<DestinationCategoryProps> = ({
   isShowSearchBar = true,
 }) => {
+
+  const [activeIndex, setActiveIndex] = useState(0); 
+  const handlePrev =()=>{
+      setActiveIndex((prev)=>(prev === 0 ? destinations.length - 1 : prev - 1));
+  }
+
+  const handleNext = ()=>{
+    setActiveIndex((prev)=>(prev === destinations.length - 1 ? 0 : prev + 1));
+  }
   return (
     <>
       {isShowSearchBar && (
@@ -112,30 +164,13 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
               data-ride="carousel"
             >
               <div className="carousel-inner">
-                {[1, 2].map((_slide, idx) => (
+                {destinations.map((slide, idx) => (
                   <div
-                    className={`carousel-item ${idx === 0 ? "active" : ""}`}
+                    className={`carousel-item ${idx === activeIndex ? "active" : ""}`}
                     key={idx}
                   >
                     <div className="row">
-                      {[
-                        {
-                          img: `img/destination-${3 * idx + 1}.jpg`,
-                          title: "Rajasthan",
-                          subtitle: "Where History Meet Grandure!",
-                        },
-                        {
-                          img: `img/destination-${3 * idx + 2}.jpg`,
-                          title: "Goa",
-                          subtitle: "Your Escape To Paradise!",
-                        },
-                        {
-                          img: `img/destination-${3 * idx + 3}.jpg`,
-                          title: "Himachal",
-                          subtitle:
-                            "Where The Hills Come Alive With Adventure!",
-                        },
-                      ].map((destination, index) => (
+                      {slide.map((destination, index) => (
                         <div className="col-lg-4 col-md-6 mb-4" key={index}>
                           <div className="destination-item position-relative overflow-hidden mb-2">
                             <img
@@ -145,7 +180,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
                             />
                             <a
                               className="destination-overlay text-white text-decoration-none"
-                              href=""
+                              href="/packages"
                             >
                               <h5 className="text-white">
                                 {destination.title}
@@ -159,26 +194,16 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
                   </div>
                 ))}
               </div>
-              <a
-                className="carousel-control-prev custom-prev"
-                href="#destinationCarousel"
-                role="button"
-                data-slide="prev"
-              >
-                <span className="carousel-control-prev-icon d-flex align-items-center justify-content-center p-3">
-                  <i className="fas fa-chevron-left fa-2x text-primary"></i>
-                </span>
-              </a>
-              <a
-                className="carousel-control-next custom-next"
-                href="#destinationCarousel"
-                role="button"
-                data-slide="next"
-              >
-                <span className="carousel-control-next-icon d-flex align-items-center justify-content-center p-3">
-                  <i className="fas fa-chevron-right fa-2x text-primary"></i>
-                </span>
-              </a>
+              <button className="carousel-control-prev custom-prev" onClick={handlePrev}>
+            <span className="carousel-control-prev-icon d-flex align-items-center justify-content-center p-3">
+              <i className="fas fa-chevron-left fa-2x text-primary"></i>
+            </span>
+          </button>
+          <button className="carousel-control-next custom-next" onClick={handleNext}>
+            <span className="carousel-control-next-icon d-flex align-items-center justify-content-center p-3">
+              <i className="fas fa-chevron-right fa-2x text-primary"></i>
+            </span>
+          </button>
             </div>
           </div>
         </div>

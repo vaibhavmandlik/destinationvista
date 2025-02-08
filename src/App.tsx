@@ -99,7 +99,6 @@ const App: React.FC = () => {
           <Route path="bookingshistory" element={<BookingsHistory/>}/>
           <Route path="packagecart" element={<PackageCart/>}/>
           <Route path="profile" element={<Profile/>}/>
-          
           <Route
             path="packages"
             element={
