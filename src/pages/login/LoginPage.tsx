@@ -3,8 +3,8 @@ import { useLogin } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
-import { Button } from "@mui/material";
 import { Login } from "@mui/icons-material";
+import { Button, Container, Grid, Typography, Box, Card, CardContent, CardMedia,} from "@mui/material";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
@@ -51,60 +51,124 @@ const MyLoginPage: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div
-        className="container d-flex justify-content-center align-items-center"
-        style={{ minHeight: "80vh" }}
+    <Grid container sx={{ height: "100vh" }}>
+      {/* Left Side (Sign In Form) */}
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
       >
-        <div className="card p-4 shadow-lg" style={{ width: "400px" }}>
-          <h3 className="text-center text-primary mb-4">Login</h3>
-            <div className="form-group">
-              <CustomTextInput
-                label="Email"
-                placeholder="Enter your email"
-                type="email"
-                id="email"
-                errors={errors.email && errors.email.message}
-                register={register("email", { required: "Email is required" })} 
-              />
-            </div>
-            <div className="form-group">
-              <CustomTextInput
-                label="Password"
-                placeholder="Enter your password"
-                type="password"
-                id="password"
-                errors={errors.password && errors.password.message}
-                register={register("password", { required: "Password is required" })}
-              />
-            </div>
+        <Container maxWidth="xs">
+          <Typography variant="h5" fontWeight="bold">
+            Sign in
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            Don&apos;t have an account?{" "}
+            <Link to="/open/vendorRegistration">Sign up</Link>
+          </Typography>
+
+          {/* Form Start */}
+          <form onSubmit={handleSubmit(onSubmit)}>
+            {/* Email Field */}
+            <CustomTextInput
+              label="Email address"
+              placeholder="Enter your email"
+              type="email"
+              id="email"
+              errors={errors.email && errors.email.message}
+              register={register("email", { required: "Email is required" })}
+            />
+
+            {/* Password Field */}
+            <CustomTextInput
+              label="Password"
+              placeholder="Enter your password"
+              type="password"
+              id="password"
+              errors={errors.password && errors.password.message}
+              register={register("password", {
+                required: "Password is required",
+              })}
+            />
+
+            {/* Forgot Password */}
+            <Box sx={{ textAlign: "right", mt: 1 }}>
+              <Link to="#">Forgot password?</Link>
+            </Box>
+
+            {/* Sign In Button */}
             <Button
-                      type="submit"
-                      
-                      variant="contained"
-                      sx={{ width: "100%" }}
-                      startIcon={<Login />}
-                    >
-                      Login
-                    </Button>
-            <p className="text-center mt-3">
-              <a href="#">Forgot Password?</a>
-            </p>
-            {/* <p className="text-center mt-2">Or login with</p>
-            <div className="text-center">
-              <button type="button" className="btn btn-outline-primary mr-2">
-                <i className="fab fa-facebook-f"></i> Facebook
-              </button>
-              <button type="button" className="btn btn-outline-danger">
-                <i className="fab fa-google"></i> Google
-              </button>
-            </div> */}
-            <p className="text-center mt-3">
-              Don’t have an account? <Link to="/open/vendorRegistration">Sign Up</Link>
-            </p>
-        </div>
-      </div>
-    </form>
+              type="submit"
+              variant="contained"
+              sx={{
+                mt: 2,
+                backgroundColor: "#635DFF",
+                color: "#fff",
+                width: "100%",
+              }}
+              startIcon={<Login />}
+            >
+              Sign in
+            </Button>
+          </form>
+        </Container>
+      </Grid>
+
+      {/* Right Side (Illustration) */}
+      <Grid
+        item
+        xs={12}
+        md={6}
+        sx={{
+          backgroundColor: "#0F172A",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "#fff",
+          textAlign: "center",
+          padding: 3,
+        }}
+      >
+        <Box>
+          <Typography variant="h4" fontWeight="bold">
+           <span style={{ color: "#43B581" }}>Destination Vista</span>
+          </Typography>
+          <Typography variant="body1" sx={{ mt: 1 }}>
+            A Travel Friendly Website.
+          </Typography>
+
+          {/* Image Only */}
+          <Box
+  sx={{
+    mt: 3,
+    backgroundColor: "white", // White background
+    borderRadius: 3, // Rounded corners (3 = 16px in Material UI)
+    padding: 2, // Space around the image
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    boxShadow: 3, // Adds a subtle shadow
+    maxWidth: 350, // Optional: Limits width
+    mx: "auto", // Centers the box horizontally
+  }}
+>
+  <CardMedia
+    component="img"
+    height="300"
+    image="/public/img/login.jpg"
+    alt="Destination Vista"
+    sx={{ borderRadius: 2 }} // Slight rounding for the image itself
+  />
+</Box>
+
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 
