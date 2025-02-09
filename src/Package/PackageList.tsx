@@ -7,8 +7,11 @@ import {
   List,
   NumberField,
   ReferenceField,
+  ReferenceManyCount,
+  ShowButton,
   TextField,
   useGetIdentity,
+  WrapperField,
 } from "react-admin";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 import { Chip } from "@mui/material";
@@ -114,34 +117,48 @@ export const PackageList = () => {
           <TextField source="agencyTitle" />
         </ReferenceField> */}
           <TextField source="title" />
-          <TextField source="description" />
+          {/* <TextField source="description" /> */}
           <CurrencyField locale="en-IN" currency="INR" source="price" />
-          <NumberField source="durationDays" />
+          <NumberField label={"duration"} source="durationDays" />
           <TextField source="destination" />
-          <NumberField source="availableSlots" />
+          <ReferenceManyCount
+            label="Booking"
+            reference="booking"
+            target="packageId"
+            link
+          />
+          <NumberField label="available" source="availableSlots" />
+
           {/* <NumberField source="approvedBy" /> */}
           {/* <DateField source="approvedOn" /> */}
-          <FunctionField
+          {/* <FunctionField
             label="Approved On"
             render={(record) =>
               !record.approvedOn ? (
                 <Chip
                   sx={{ background: "#dc3545", color: "#fff" }}
-                  icon={<Close color="#fff" />}
                   label="Approval Pending"
                 />
               ) : (
                 record.approvedOn
               )
             }
-          />
+          /> */}
           {/* <NumberField source="createdBy" />
             <DateField source="createdOn" />
             <NumberField source="updatedBy" />
             <DateField source="updatedOn" />
             <TextField source="enabled" /> */}
-          <EditButton variant="bootstrap" color="primary" />
-          <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+          <FunctionField
+            source=""
+            render={(record) => (
+              <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
+                <ShowButton variant="bootstrap" label="Details" color="info" />
+                <EditButton variant="bootstrap" color="primary" />
+                <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+              </div>
+            )}
+          />
         </Datagrid>
       </List>
     </>

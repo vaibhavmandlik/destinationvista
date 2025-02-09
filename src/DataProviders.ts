@@ -41,7 +41,7 @@ const createPackageFormData = (
   if (params.data.images) {
     const imagesArr: any = params?.data?.images;
     for (let fileObj of imagesArr) {
-      formData.append("images[]", fileObj?.rawFile);
+      formData.append("images", fileObj?.rawFile);
     }
   }
   params.data.title && formData.append("title", params.data.title);
