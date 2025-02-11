@@ -43,13 +43,13 @@ import { dataProviders } from "./DataProviders";
 import { BookingList } from "./Booking/BookingList";
 import { DestinationList } from "./Destination/DestinationList";
 import ViewDetails from "./Package/ViewDetails";
+import { UserShow } from "./User/UserShow";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
   }
   const auth = localStorage?.getItem("auth");
   const { data } = auth ? JSON.parse(auth) : { data: null };
-  const vendorId = localStorage?.getItem("selectedVendor");
   options.headers.set("Authorization", `Bearer ${data?.accessToken}`);
   return fetchUtils.fetchJson(url, options);
 };
@@ -86,6 +86,7 @@ const AdminRoute: React.FC = () => {
       name="user"
       list={UserList}
       create={UserCreate}
+      show={UserShow}
       edit={UserUpdate}
     />
     </Admin>
