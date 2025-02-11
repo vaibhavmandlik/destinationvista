@@ -44,6 +44,7 @@ import { BookingList } from "./Booking/BookingList";
 import { DestinationList } from "./Destination/DestinationList";
 import ViewDetails from "./Package/ViewDetails";
 import { UserShow } from "./User/UserShow";
+import VendorDashboard from "./VendorDashboard/VendorDashboard";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -64,6 +65,7 @@ const AdminRoute: React.FC = () => {
       loginPage={MyLoginPage}
       layout={MyLayout}
       theme={theme}
+      dashboard={VendorDashboard}
     >
       
       <Resource
