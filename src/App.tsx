@@ -20,7 +20,7 @@ import { PackageList } from "./Package/PackageList";
 import { PackageUpdate } from "./Package/PackageUpdate";
 import MyLayout from "./MyLayout";
 import theme from "./Theme";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Footer from "./components/footer/Footer";
 import DynamicHeader from "./components/header/DynamicHeader";
 import AboutUs from "./pages/about/AboutUs";
