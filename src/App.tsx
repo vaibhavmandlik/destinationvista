@@ -42,6 +42,7 @@ import MyLoginPage from "./pages/login/LoginPage";
 import { dataProviders } from "./DataProviders";
 import { BookingList } from "./Booking/BookingList";
 import { DestinationList } from "./Destination/DestinationList";
+import ViewDetails from "./Package/ViewDetails";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -76,7 +77,8 @@ const AdminRoute: React.FC = () => {
         list={PackageList}
         create={PackageCreate}
         edit={PackageUpdate}
-        show={ShowGuesser}
+        // show={ShowGuesser}
+        show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} />
