@@ -24,6 +24,7 @@
     "bootstrap-icons": "^1.11.3",
     "destinationvista": "file:",
     "ra-data-json-server": "^5.4.2",
+    "ra-input-rich-text": "^5.5.3",
     "react": "^18.3.1",
     "react-admin": "^5.4.2",
     "react-bootstrap": "^2.10.7",

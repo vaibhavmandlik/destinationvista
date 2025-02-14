@@ -1,4 +1,5 @@
 import { Card, CardHeader } from "@mui/material";
+
 import * as React from "react";
 import {
   Create,
@@ -12,7 +13,13 @@ import {
   Title,
   ImageInput,
   ImageField,
+  useUnique,
+  ReferenceInput,
+  SelectInput,
+  ArrayInput,
+  SimpleFormIterator,
 } from "react-admin";
+import { CustomRichTextInput } from "../components/CustomInputs/CustomRichTextInput";
 type PackageParams = {
   id: string;
   title: string;
@@ -26,19 +33,25 @@ type PackageParams = {
 export const PackageCreate = () => {
   const { data: user } = useGetIdentity();
 
-
+  const unique = useUnique();
   return (
     <CreateBase
       redirect={"list"}
-      transform={(data:PackageParams) => {
-        return { ...data, vendorId: user?.vendorId, price: parseInt(data.price), durationDays: parseInt(data.durationDays), availableSlots: parseInt(data.availableSlots) };
+      transform={(data: PackageParams) => {
+        return {
+          ...data,
+          vendorId: user?.vendorId,
+          price: parseInt(data.price),
+          durationDays: parseInt(data.durationDays),
+          availableSlots: parseInt(data.availableSlots),
+        };
       }}
     >
       <div className="my-5">
         <Title title="Book Creation" />
         <div className="row">
-          <div className="col-md-3"></div>
-          <div className="col-md-6">
+          <div className="col-md-12 col-lg-3"></div>
+          <div className="col-md-12 col-lg-6">
             <Card>
               <CardHeader title="Add Package" />
               <hr />
@@ -48,7 +61,7 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required()]}
+                      validate={[required(), unique()]}
                     />
                   </div>
                   <div className="col-md-6">
@@ -66,11 +79,16 @@ export const PackageCreate = () => {
                     />
                   </div>
                   <div className="col-md-6">
-                    <TextInput
-                      fullWidth
+                    <ReferenceInput
                       source="destination"
-                      validate={[required()]}
-                    />
+                      reference="destination"
+                    >
+                      <SelectInput
+                        fullWidth
+                        optionText="title"
+                        validate={[required()]}
+                      />
+                    </ReferenceInput>
                   </div>
                   <div className="col-md-6">
                     <TextInput
@@ -80,16 +98,20 @@ export const PackageCreate = () => {
                     />
                   </div>
                   <div className="col-md-12">
-                    <TextInput
-                      multiline={true}
-                      fullWidth
-                      source="description"
+                    <CustomRichTextInput
+                      source={"discription"}
+                      label={"Package Description"}
+                      size={"small"}
                       validate={[required()]}
                     />
                   </div>
                   <div className="col-md-12">
                     <ImageInput
-                    sx={{'& .RaFileInput-dropZone':{border:'1px dotted #000'}}}
+                      sx={{
+                        "& .RaFileInput-dropZone": {
+                          border: "1px dotted #000",
+                        },
+                      }}
                       accept={{ "image/*": [".png", ".jpg"] }}
                       multiple={true}
                       source="images"
@@ -98,11 +120,53 @@ export const PackageCreate = () => {
                       <ImageField source="src" title="title" />
                     </ImageInput>
                   </div>
+                  <div className="col-md-12">
+                    <TextInput
+                      fullWidth
+                      source="quickItinerary"
+                      validate={[required()]}
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <hr/>
+                    <ArrayInput source="itinerary">
+                      <SimpleFormIterator disableReordering getItemLabel={index => `#${index + 1}`} fullWidth>
+                        <div className="m-2">
+                        <TextInput fullWidth source="title" validate={[required()]} />
+                        <CustomRichTextInput
+                          source={"description"}
+                          size={"small"}
+                          validate={[required()]}/>
+                          </div>
+                      </SimpleFormIterator>
+                    </ArrayInput>
+                  </div>
+                  <div className="col-md-12">
+                    <CustomRichTextInput
+                      source={"inclusion"}
+                      size={"small"}
+                      validate={[required()]}
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <CustomRichTextInput
+                      source={"exclusion"}
+                      size={"small"}
+                      validate={[required()]}
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <CustomRichTextInput
+                      source={"otherInfo"}
+                      size={"small"}
+                      validate={[required()]}
+                    />
+                  </div>
                 </div>
               </SimpleForm>
             </Card>
           </div>
-          <div className="col-md-3"></div>
+          <div className="col-md-12 col-lg-3"></div>
         </div>
       </div>
     </CreateBase>
