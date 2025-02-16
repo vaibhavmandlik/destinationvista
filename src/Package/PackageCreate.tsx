@@ -83,7 +83,7 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required()]}
+                      validate={[required(),unique({filter:{vendorId: user?.vendorId }})]}
                     />
                   </div>
                   <div className="col-md-6">
