@@ -18,8 +18,20 @@ import {
   SelectInput,
   ArrayInput,
   SimpleFormIterator,
+  number,
 } from "react-admin";
-import { CustomRichTextInput } from "../components/CustomInputs/CustomRichTextInput";
+import {
+  ClearButtons,
+  FormatButtons,
+  LinkButtons,
+  ListButtons,
+  RichTextInput,
+  RichTextInputToolbar,
+} from "ra-input-rich-text";
+type itineraryType = {
+  title: string;
+  discription: string;
+};
 type PackageParams = {
   id: string;
   title: string;
@@ -27,8 +39,18 @@ type PackageParams = {
   durationDays: string;
   destination: string;
   availableSlots: string;
+  vendorId: string;
   description: string;
-  images: any;
+  images: {
+    rawFile: File;
+    src?: string;
+    title?: string;
+  };
+  quickItinerary: string;
+  itinerary: itineraryType[];
+  inclusion: string;
+  exclusion: string;
+  otherInfo: string;
 };
 export const PackageCreate = () => {
   const { data: user } = useGetIdentity();
@@ -61,21 +83,21 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required(), unique()]}
+                      validate={[required()]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="price"
-                      validate={[required()]}
+                      validate={[required(),number()]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="durationDays"
-                      validate={[required()]}
+                      validate={[required(),number()]}
                     />
                   </div>
                   <div className="col-md-6">
@@ -94,14 +116,21 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="availableSlots"
-                      validate={[required()]}
+                      validate={[required(),number()]}
                     />
                   </div>
                   <div className="col-md-12">
-                    <CustomRichTextInput
-                      source={"discription"}
-                      label={"Package Description"}
-                      size={"small"}
+                    <RichTextInput
+                      toolbar={
+                        <RichTextInputToolbar>
+                          <FormatButtons size={"small"} />
+                          <ListButtons size={"small"} />
+                          <LinkButtons size={"small"} />
+                          <ClearButtons size={"small"} />
+                        </RichTextInputToolbar>
+                      }
+                      fullWidth
+                      source={"description"}
                       validate={[required()]}
                     />
                   </div>
@@ -124,41 +153,82 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="quickItinerary"
-                      validate={[required()]}
+                      validate={[]}
                     />
                   </div>
                   <div className="col-md-12">
-                    <hr/>
+                    <hr />
                     <ArrayInput source="itinerary">
-                      <SimpleFormIterator disableReordering getItemLabel={index => `#${index + 1}`} fullWidth>
+                      <SimpleFormIterator
+                        disableReordering
+                        getItemLabel={(index) => `#${index + 1}`}
+                        fullWidth
+                      >
                         <div className="m-2">
-                        <TextInput fullWidth source="title" validate={[required()]} />
-                        <CustomRichTextInput
-                          source={"description"}
-                          size={"small"}
-                          validate={[required()]}/>
-                          </div>
+                          <TextInput
+                            fullWidth
+                            source="title"
+                            validate={[required()]}
+                          />
+                          <RichTextInput
+                            toolbar={
+                              <RichTextInputToolbar>
+                                <FormatButtons size={"small"} />
+                                <ListButtons size={"small"} />
+                                <LinkButtons size={"small"} />
+                                <ClearButtons size={"small"} />
+                              </RichTextInputToolbar>
+                            }
+                            fullWidth
+                            source={"description"}
+                            validate={[required()]}
+                          />
+                        </div>
                       </SimpleFormIterator>
                     </ArrayInput>
                   </div>
                   <div className="col-md-12">
-                    <CustomRichTextInput
+                    <RichTextInput
+                      toolbar={
+                        <RichTextInputToolbar>
+                          <FormatButtons size={"small"} />
+                          <ListButtons size={"small"} />
+                          <LinkButtons size={"small"} />
+                          <ClearButtons size={"small"} />
+                        </RichTextInputToolbar>
+                      }
+                      fullWidth
                       source={"inclusion"}
-                      size={"small"}
                       validate={[required()]}
                     />
                   </div>
                   <div className="col-md-12">
-                    <CustomRichTextInput
+                  <RichTextInput
+                      toolbar={
+                        <RichTextInputToolbar>
+                          <FormatButtons size={"small"} />
+                          <ListButtons size={"small"} />
+                          <LinkButtons size={"small"} />
+                          <ClearButtons size={"small"} />
+                        </RichTextInputToolbar>
+                      }
+                      fullWidth
                       source={"exclusion"}
-                      size={"small"}
                       validate={[required()]}
                     />
                   </div>
                   <div className="col-md-12">
-                    <CustomRichTextInput
+                    <RichTextInput
+                      toolbar={
+                        <RichTextInputToolbar>
+                          <FormatButtons size={"small"} />
+                          <ListButtons size={"small"} />
+                          <LinkButtons size={"small"} />
+                          <ClearButtons size={"small"} />
+                        </RichTextInputToolbar>
+                      }
+                      fullWidth
                       source={"otherInfo"}
-                      size={"small"}
                       validate={[required()]}
                     />
                   </div>

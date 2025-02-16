@@ -18,6 +18,10 @@ const httpClient = (url: string, options: any = {}) => {
   return fetchUtils.fetchJson(url, options);
 };
 const baseDataProvider = jsonServerProvider(apiUrl, httpClient);
+type itineraryType = {
+  title: string;
+  discription: string;
+};
 type PackageParams = {
   id: string;
   title: string;
@@ -32,6 +36,11 @@ type PackageParams = {
     src?: string;
     title?: string;
   };
+  quickItinerary: string;
+  itinerary: itineraryType[];
+  inclusion: string;
+  exclusion: string;
+  otherInfo: string;
 };
 const createPackageFormData = (
   params: CreateParams<PackageParams> | UpdateParams<PackageParams>
@@ -55,6 +64,16 @@ const createPackageFormData = (
   params.data.description &&
     formData.append("description", params.data.description);
   params.data.vendorId && formData.append("vendorId", params.data.vendorId);
+  params.data.quickItinerary &&
+    formData.append("quickItinerary", params.data.quickItinerary);
+     params.data.itinerary &&
+    formData.append("itinerary",JSON.stringify(params.data.itinerary));
+    params.data.inclusion &&
+    formData.append("inclusion", params.data.inclusion);
+    params.data.exclusion &&
+    formData.append("exclusion", params.data.exclusion);
+    params.data.otherInfo &&
+    formData.append("otherInfo", params.data.otherInfo);
 
   return formData;
 };
