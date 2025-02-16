@@ -14,6 +14,8 @@ import {
   WrapperField,
 } from "react-admin";
 import CurrencyField from "../components/CustomFields/CurrencyField";
+import { IconButton, Tooltip } from "@mui/material";
+import { Visibility, Edit, Delete } from "@mui/icons-material";
 import { Chip } from "@mui/material";
 import { Close } from "@mui/icons-material";
 
@@ -153,9 +155,29 @@ export const PackageList = () => {
             source=""
             render={(record) => (
               <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
-                <ShowButton variant="bootstrap" label="Details" color="info" />
-                <EditButton variant="bootstrap" color="primary" />
-                <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+                <Tooltip title="View Details">
+                  <ShowButton
+                    icon={<Visibility />}
+                    label=""
+                    sx={{ color: "#1976d2" }} // Blue color
+                  />
+                </Tooltip>
+                
+                <Tooltip title="Edit Package">
+                  <EditButton
+                    icon={<Edit />}
+                    label=""
+                    sx={{ color: "#388e3c" }} // Green color
+                  />
+                </Tooltip>
+
+                <Tooltip title="Delete Package">
+                  <DeleteWithConfirmButton
+                    icon={<Delete />}
+                    label=""
+                    sx={{ color: "#d32f2f" }} // Red color
+                  />
+                </Tooltip>
               </div>
             )}
           />
