@@ -88,6 +88,18 @@ export const dataProviders = {
         body: formData,
       }).then(({ json }) => ({ data: json }));
     }
+    else if(resource === "destination"){
+      const formData = new FormData();
+      formData.append("title", params.data.title);
+      formData.append("description", params.data.description);
+      formData.append("image", params.data.image.rawFile);
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
+    }
+    
+
     return baseDataProvider.create(resource, params);
   },
   update: (resource, params) => {

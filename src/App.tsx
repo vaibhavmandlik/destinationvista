@@ -18,7 +18,7 @@ import { VendorUpdate } from "./Vendor/VendorUpdate";
 import { PackageCreate } from "./Package/PackageCreate";
 import { PackageList } from "./Package/PackageList";
 import { PackageUpdate } from "./Package/PackageUpdate";
-import MyLayout from "./MyLayout";
+import VendorLayout from "./VendorLayout";
 import theme from "./Theme";
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
 import Footer from "./components/footer/Footer";
@@ -45,6 +45,10 @@ import { DestinationList } from "./Destination/DestinationList";
 import ViewDetails from "./Package/ViewDetails";
 import { UserShow } from "./User/UserShow";
 import VendorDashboard from "./VendorDashboard/VendorDashboard";
+import AdminLayout from "./AdminLayout";
+import { VendorListAdmin } from "./VendorAdmin/VendorList";
+import { PackageAdminList } from "./PackageAdmin/PackageList";
+import DestinationCreate from "./Destination/DestinationCreate";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -56,14 +60,14 @@ const httpClient = (url: string, options: any = {}) => {
 };
 const dataProvider = jsonServerProvider(apiUrl, httpClient);
 
-const AdminRoute: React.FC = () => {
+const VendorRoute: React.FC = () => {
   return (
     <Admin
       basename="/admin"
       dataProvider={dataProviders}
       authProvider={authProvider}
       loginPage={MyLoginPage}
-      layout={MyLayout}
+      layout={VendorLayout}
       theme={theme}
       dashboard={VendorDashboard}
     >
@@ -94,6 +98,46 @@ const AdminRoute: React.FC = () => {
     </Admin>
   );
 };
+
+const AdminRoute: React.FC = () => {
+  return (
+    <Admin
+      basename="/admin"
+      dataProvider={dataProviders}
+      authProvider={authProvider}
+      loginPage={MyLoginPage}
+      layout={AdminLayout}
+      theme={theme}
+      // dashboard={VendorDashboard}
+    >
+      
+      <Resource
+        name="vendor"
+        list={VendorListAdmin}
+        create={VendorCreate}
+        edit={VendorUpdate}
+      />
+      <Resource
+        name="package"
+        list={PackageAdminList}
+        create={PackageCreate}
+        edit={PackageUpdate}
+        // show={ShowGuesser}
+        show={ViewDetails}
+      />
+      <Resource name="booking" list={BookingList} />
+      <Resource name="destination" list={DestinationList} create={DestinationCreate} />
+      <Resource
+      name="user"
+      list={UserList}
+      create={UserCreate}
+      show={UserShow}
+      edit={UserUpdate}
+    />
+    </Admin>
+  );
+};
+
 const OpenRoute: React.FC = () => (
   <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>
@@ -136,6 +180,7 @@ const App: React.FC = () => {
           <Route path="packages/:id" element={<PackageDetailsWrapper />} />
           <Route index element={<Home />} />
         </Route>
+        <Route path="Vendor/*" element={<VendorRoute />} />
         <Route path="admin/*" element={<AdminRoute />} />
         <Route path="/open/*" element={<OpenRoute />} />
       </Routes>

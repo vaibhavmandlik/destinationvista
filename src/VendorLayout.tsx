@@ -95,7 +95,7 @@ const MyAppBar: React.FC = (props) => {
 };
 
 // Custom Layout
-const MyLayout: React.FC<LayoutProps> = (props) => (
+const VendorLayout: React.FC<LayoutProps> = (props) => (
   <>
     {/* <MyNavbar /> */}
     <Layout
@@ -112,4 +112,4 @@ const MyLayout: React.FC<LayoutProps> = (props) => (
   </>
 );
 
-export default MyLayout;
+export default VendorLayout;
