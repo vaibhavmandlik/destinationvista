@@ -35,7 +35,6 @@ const Home: React.FC = () => {
       <HomeRegistration />
       <HomeBlogSection />
       <BackToTop />
-      <Footer />
     </>
   );
 };
