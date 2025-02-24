@@ -66,14 +66,11 @@ const createPackageFormData = (
   params.data.vendorId && formData.append("vendorId", params.data.vendorId);
   params.data.quickItinerary &&
     formData.append("quickItinerary", params.data.quickItinerary);
-     params.data.itinerary &&
-    formData.append("itinerary",JSON.stringify(params.data.itinerary));
-    params.data.inclusion &&
-    formData.append("inclusion", params.data.inclusion);
-    params.data.exclusion &&
-    formData.append("exclusion", params.data.exclusion);
-    params.data.otherInfo &&
-    formData.append("otherInfo", params.data.otherInfo);
+  params.data.itinerary &&
+    formData.append("itinerary", JSON.stringify(params.data.itinerary));
+  params.data.inclusion && formData.append("inclusion", params.data.inclusion);
+  params.data.exclusion && formData.append("exclusion", params.data.exclusion);
+  params.data.otherInfo && formData.append("otherInfo", params.data.otherInfo);
 
   return formData;
 };
@@ -87,8 +84,7 @@ export const dataProviders = {
         method: "POST",
         body: formData,
       }).then(({ json }) => ({ data: json }));
-    }
-    else if(resource === "destination"){
+    } else if (resource === "destination") {
       const formData = new FormData();
       formData.append("title", params.data.title);
       formData.append("description", params.data.description);
@@ -98,7 +94,6 @@ export const dataProviders = {
         body: formData,
       }).then(({ json }) => ({ data: json }));
     }
-    
 
     return baseDataProvider.create(resource, params);
   },
@@ -112,5 +107,10 @@ export const dataProviders = {
       }).then(({ json }) => ({ data: json }));
     }
     return baseDataProvider.update(resource, params);
+  },
+  approvePackage: async (id: string) => {
+    return httpClient(
+      `https://destinationvista-backend.onrender.com/package/approve/${id}`,
+    ).then(({ json }) => ({ data: json }));
   },
 };

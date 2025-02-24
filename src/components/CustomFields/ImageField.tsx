@@ -37,7 +37,7 @@ const ImageField: React.FC<ImageFieldProps> = ({ source }) => {
               style={{ width: 50, height: 50, objectFit: 'cover', cursor: 'pointer' }}
               onClick={() => handleClickOpen(image)}
             />
-          ))
+          ))[0]
         ) : (
           <img
             src="https://i.pravatar.cc/150"

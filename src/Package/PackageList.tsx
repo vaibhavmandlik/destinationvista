@@ -24,6 +24,7 @@ import {
   AccountBox as AccountBoxIcon,
 } from "@mui/icons-material";
 import ImageField from "../components/CustomFields/ImageField";
+import ApproveButton from "../PackageAdmin/ApproveButton";
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
 
@@ -154,7 +155,7 @@ export const PackageList = () => {
             source=""
             render={(record) => (
               <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
-                <ShowButton variant="bootstrap" label="Details" color="info" />
+                 
                 <EditButton variant="bootstrap" color="primary" />
                 <DeleteWithConfirmButton variant="bootstrap" color="danger" />
               </div>
