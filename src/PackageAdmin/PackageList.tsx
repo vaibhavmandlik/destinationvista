@@ -25,6 +25,7 @@ import {
 } from "@mui/icons-material";
 import ImageField from "../components/CustomFields/ImageField";
 import StatusDropdown from "./StatusDropdown";
+
 export const PackageAdminList = () => {
   const { data: user } = useGetIdentity();
 
@@ -114,7 +115,7 @@ export const PackageAdminList = () => {
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           
-          <ImageField source="images" />
+          <ImageField source="imagePaths" />
           {/* <ReferenceField source="vendorId" reference="vendor">
           <TextField source="agencyTitle" />
         </ReferenceField> */}

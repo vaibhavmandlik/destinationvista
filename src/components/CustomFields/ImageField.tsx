@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Button } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { useRecordContext } from 'react-admin';
-
+import { JSONTree } from 'react-json-tree';
+const apiUrl = import.meta.env.VITE_API_URL;
 interface ImageFieldProps {
     source: string;
 }
@@ -31,8 +32,8 @@ const ImageField: React.FC<ImageFieldProps> = ({ source }) => {
           images.map((image:string, index:number) => (
             <img
               key={index}
-              src={image || 'https://i.pravatar.cc/150'}
-              alt={`Image ${index + 1}`}
+              src={image? apiUrl + image : 'https://i.pravatar.cc/150'}
+              alt={ apiUrl + image}
               style={{ width: 50, height: 50, objectFit: 'cover', cursor: 'pointer' }}
               onClick={() => handleClickOpen(image)}
             />
