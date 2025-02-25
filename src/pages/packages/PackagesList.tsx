@@ -5,9 +5,9 @@ import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
-// import axios from "axios";
-// import {toast,ToastContainer } from "react-toastify";
-// const url = `${import.meta.env.VITE_API_URL}/package`;
+import axios from "axios";
+import {toast,ToastContainer } from "react-toastify";
+const url = `${import.meta.env.VITE_API_URL}/package`;
 
 // Define the `Package` type for type safety
 type Package = {
@@ -15,7 +15,7 @@ type Package = {
   title: string;
   description: string;
   price: string;
-  image: string;
+  imagePaths: string[];
 };
 
 interface TourPackagesProps {
@@ -91,31 +91,31 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   isSearchBar = true,
 }) => {
   const [packagesToShow, setPackagesToShow] = useState<Package[]>(initialPackages);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [errortext, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [errortext, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // useEffect(()=>{
-  //   const fetchPackagesData = async ()=>{
-  //     try {
-  //       const response = await axios.get(url);
-  //       setPackagesToShow(response.data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setError('Failed to fetch packages . Plaease try again');
-  //       toast.error(errortext,{
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //         closeOnClick: true,
-  //         theme: "light",
-  //         pauseOnHover: true,
-  //       });
-  //       setLoading(false);
-  //     }   
-  //   };
+  useEffect(()=>{
+    const fetchPackagesData = async ()=>{
+      try {
+        const response = await axios.get(url);
+        setPackagesToShow(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch packages . Plaease try again');
+        toast.error(errortext,{
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          theme: "light",
+          pauseOnHover: true,
+        });
+        setLoading(false);
+      }   
+    };
 
-  //   fetchPackagesData();
-  // },[]);
+    fetchPackagesData();
+  },[]);
 
   // Redirect to the details page
   const onDetailsBookNowClick = (pkg : Package) => {
@@ -128,8 +128,8 @@ const PackagesList: React.FC<TourPackagesProps> = ({
     setPackagesToShow((prevPackages) => [...prevPackages, ...morePackages]);
   };
 
-  // if (loading) return <p>Loading packages...</p>;
-  // if (errortext) return <ToastContainer/>;
+  if (loading) return <p>Loading packages...</p>;
+  if (errortext) return <ToastContainer/>;
 
   return (
     <>
@@ -161,50 +161,6 @@ const PackagesList: React.FC<TourPackagesProps> = ({
             </h6>
             <h1>{heading}</h1>
           </div>
-
-          {/* Package List */}
-          {/* <div className="row">
-            {packagesToShow.map((pkg) => (
-              <div className="col-lg-12 mb-4" key={pkg.id}>
-                <div className="card border-0 shadow" style={{ width: "100%" }}>
-                  <div className="row no-gutters">
-                    <div className="col-md-4">
-                      <img
-                        src={pkg.image}
-                        className="card-img"
-                        alt={`Image of ${pkg.title}`}
-                      />
-                    </div>
-                    <div className="col-md-8">
-                      <div className="card-body">
-                        <h5 className="card-title">{pkg.title}</h5>
-                        <p className="card-text">{pkg.description}</p>
-                        <p className="text-primary">
-                          <strong>Price: {pkg.price}</strong>
-                        </p>
-                        <div className="d-flex">
-                          <button
-                            className="btn btn-outline-primary"
-                            onClick={() => onDetailsBookNowClick(pkg)}
-                            aria-label={`View details of ${pkg.title}`}
-                          >
-                            Details
-                          </button>
-                          <button
-                            className="btn btn-primary ml-2"
-                            onClick={() => onDetailsBookNowClick(pkg)}
-                            aria-label={`Book now for ${pkg.title}`}
-                          >
-                            Book Now
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
           
           {packagesToShow.map((pkg)=>(
             <Typography
@@ -217,10 +173,11 @@ const PackagesList: React.FC<TourPackagesProps> = ({
               margin:'0'
             }}
           >
-            
-             <Box
+            {pkg.imagePaths && Array.isArray(pkg.imagePaths) && pkg.imagePaths.length > 0 ? (pkg.imagePaths.map((imagePath , index)=>(
+              <Box
+              key={index}
               component="img"
-              src={pkg.image}
+              src={`${import.meta.env.VITE_API_URL}${imagePath}`}
               sx={{
                 borderRadius:2,
                 width: "30%",
@@ -230,7 +187,11 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                 left: `${Number(pkg.id) % 2 === 0 ? '58%' :'12%'}`,
                 zIndex: "tooltip",
               }}
-            /> 
+              /> 
+            ))): (
+              <Typography>No images available</Typography>
+            )
+          }
             
             <Box
               component="div"
@@ -283,86 +244,6 @@ const PackagesList: React.FC<TourPackagesProps> = ({
         </div>
       </div>
 
-      {/* Destination Section */}
-      <div className="container-fluid py-5">
-        <div className="container pt-5 pb-3">
-          <div className="text-center mb-3 pb-3">
-            <h6
-              className="text-primary text-uppercase"
-              style={{ letterSpacing: "5px" }}
-            >
-              Destination
-            </h6>
-            <h1>Explore Top Destinations</h1>
-          </div>
-          <div
-            id="destinationCarousel"
-            className="carousel slide"
-            data-ride="carousel"
-          >
-            <div className="carousel-inner">
-              {[1, 2].map((_slide, idx) => (
-                <div
-                  className={`carousel-item ${idx === 0 ? "active" : ""}`}
-                  key={idx}
-                >
-                  <div className="row">
-                    {[
-                      {
-                        img: `img/destination-${3 * idx + 1}.jpg`,
-                        title: "Rajasthan",
-                        subtitle: "Where History Meet Grandure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 2}.jpg`,
-                        title: "Goa",
-                        subtitle: "Your Escape To Paradise!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 3}.jpg`,
-                        title: "Himachal",
-                        subtitle: "Where The Hills Come Alive With Adventure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 1}.jpg`,
-                        title: "Rajasthan",
-                        subtitle: "Where History Meet Grandure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 2}.jpg`,
-                        title: "Goa",
-                        subtitle: "Your Escape To Paradise!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 3}.jpg`,
-                        title: "Himachal",
-                        subtitle: "Where The Hills Come Alive With Adventure!",
-                      },
-                    ].map((destination, index) => (
-                      <div className="col-lg-4 col-md-6 mb-4" key={index}>
-                        <div className="destination-item position-relative overflow-hidden mb-2">
-                          <img
-                            className="img-fluid"
-                            src={destination.img}
-                            alt={destination.title}
-                          />
-                          <a
-                            className="destination-overlay text-white text-decoration-none"
-                            href=""
-                          >
-                            <h5 className="text-white">{destination.title}</h5>
-                            <span>{destination.subtitle}</span>
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 };

@@ -26,7 +26,6 @@ import DynamicHeader from "./components/header/DynamicHeader";
 import AboutUs from "./pages/about/AboutUs";
 import Blogs from "./pages/blogs/Blogs";
 import Contact from "./pages/contact/Contact";
-import LoginPage from "./pages/login/LoginPage";
 import PackageDetailsWrapper from "./pages/packages/PackageDetailsWrapper";
 import PackagesList from "./pages/packages/PackagesList";
 import Registration from "./pages/registration/Registration";
@@ -157,7 +156,7 @@ const App: React.FC = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="loginpage" element={<LoginPage />} />
+          <Route path="login" element={<MyLoginPage/>} />
           <Route path="bookingshistory" element={<BookingsHistory/>}/>
           <Route path="packagecart" element={<PackageCart/>}/>
           <Route path="profile" element={<Profile/>}/>

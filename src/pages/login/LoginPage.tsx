@@ -8,33 +8,7 @@ import { Button, Container, Grid, Typography, Box, Card, CardContent, CardMedia,
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
-
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  //   // try {
-  //   //   const response = await fetch('http://localhost:3000/api/login', {
-  //   //     method: 'POST',
-  //   //     headers: {
-  //   //       'Content-Type': 'application/json',
-  //   //     },
-  //   //     body: JSON.stringify({ email, password }),
-  //   //   });
-
-  //   //   if (response.ok) {
-  //   //     const data = await response.json();
-  //   //     localStorage.setItem('token', data.token);
-  //   //     alert('Login successful!');
-  //   //     window.location.href = '/';
-  //   //   } else {
-  //   //     const errorData = await response.json();
-  //   //     alert(`Login failed: ${errorData.message}`);
-  //   //   }
-  //   // } catch (error) {
-  //   //   alert('An error occurred. Please try again later.');
-  //   //   console.error('Error:', error);
-  //   // }
-  // };
+  
   type Input = {
     email: string;
     password: string;

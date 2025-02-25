@@ -84,10 +84,11 @@
 
 // export default Carousel;
 
-
 import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import Carousel from "bootstrap/js/dist/carousel";
+import Button from "@mui/material/Button";
+import { red } from "@mui/material/colors";
 
 const images = [
   {
@@ -152,11 +153,18 @@ const CarouselComponent: React.FC = () => {
                     <h1 className="display-3 text-white mb-md-4">
                       {image.text}
                     </h1>
-                    <Link
-                      to="/packages"
-                      className="btn  py-md-3 px-md-5 mt-2"
-                    >
-                      Book Now
+                    <Link to="/packages">
+                      <Button
+                        sx={{
+                          "borderColor":"#5232a8",
+                          "color": "#fff",
+                          "&:hover": { backgroundColor: "#5232a8" , border:"#5232a8 solid 1px" },
+                        }}
+                        variant="outlined"
+                        size="large"
+                      >
+                        Book Now
+                      </Button>
                     </Link>
                   </div>
                 </div>

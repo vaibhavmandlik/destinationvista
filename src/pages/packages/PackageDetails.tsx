@@ -5,45 +5,42 @@ import PageHeader from "../pageheader/pageHeader";
 
 // Define the types for the props
 type PackageDetailsProps = {
-  image: string;
+  id: number;
   title: string;
   description: string;
   price: string;
-  seatsAvailable: number;
-  highlights: string[];
-  itinerary: string[];
-  included: string[];
-  excluded: string[];
-  location: string;
-  duration: string;
-  bestTimeToVisit: string;
-  bookingLink: string;
+  durationDays: string;
+  destination: string;
+  availableSlots: number;
+  imagePaths: string[];
+  // highlights: string[];
+  // itinerary: string[];
+  // included: string[];
+  // excluded: string[];
+  // location: string;
+  // bestTimeToVisit: string;
+  // bookingLink: string;
 };
 
 const PackageDetails: React.FC<PackageDetailsProps> = ({
-  image,
   title,
   description,
   price,
-  seatsAvailable,
-  highlights,
-  itinerary,
-  included,
-  excluded,
-  location,
-  duration,
-  bestTimeToVisit,
+  durationDays,
+  destination,
+  availableSlots,
+  imagePaths,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<{
     title: string;
     description: string;
     price: string;
-    image: string;
+    imagePaths:string[]
   } | null>(null);
 
   const handleOpenBookingForm = () => {
-    setSelectedPackage({ title, description, price, image });
+    setSelectedPackage({ title, description, price, imagePaths });
     setIsDrawerOpen(true);
   };
 
@@ -64,92 +61,132 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
             <div className="col-lg-8">
               {/* Image and Details */}
               <div className="mb-5">
-                <img
-                  className="img-fluid w-100 mb-4 rounded shadow-lg"
-                  src={image}
-                  alt={title}
-                />
-                <Box >
-                <h2 className="mb-3 font-weight-bold text-dark">{title}</h2>
-                <p className="text-muted">{description}</p>
+                <Box>
+                  {Array.isArray(imagePaths) && imagePaths.length > 0 ? (
+                     imagePaths.map((imagepath , index)=>(
+                      <Box
+                      key={index}
+                      component= 'img'
+                      src={imagepath}
+                      sx={{
+                        borderRadius:2,
+                        width: "30%",
+                        height: "70%",
+                      }}
+                      >
+                    </Box>
+                     )
+                  )) : (
+                    <p>Image not available</p>
+                  )
+                }
+                
+                </Box>
+                <Box>
+                  <h2 className="mb-3 font-weight-bold text-dark">{title}</h2>
+                  <p className="text-muted">{description}</p>
 
-                <div className="d-flex align-items-center mb-4">
-                  <p className="h5 mb-0 mr-3">
-                    <strong>Price:</strong> {price}
-                  </p>
-                  <p className="h5 mb-0" style={{ color: "#28a745" }}>
-                    <strong>Seats Available:</strong> {seatsAvailable}
-                  </p>
-                </div>
+                  <div className="d-flex align-items-center mb-4">
+                    <p className="h5 mb-0 mr-3">
+                      <strong>Price:</strong> {price}
+                    </p>
+                    <p className="h5 mb-0" style={{ color: "#28a745" }}>
+                      <strong>Seats Available:</strong> {availableSlots}
+                    </p>
+                  </div>
                 </Box>
 
                 {/* Highlights */}
-                <Box sx={{width:'90%' , p:2 , boxShadow:5 , borderRadius:5}}>
-                <h4 className="mt-4 text-dark">Tour Highlights</h4>
-                <ul className="list-unstyled pl-3">
-                  {highlights.map((highlight, index) => (
-                    <li key={index}>
-                      <i
-                        className="fa fa-check-circle"
-                        style={{ color: "#28a745", marginRight: 5 }}
+                {/* <Box sx={{ width: "90%", p: 2, boxShadow: 5, borderRadius: 5 }}>
+                  <h4 className="mt-4 text-dark">Tour Highlights</h4>
+                  <ul className="list-unstyled pl-3">
+                    {highlights.map((highlight, index) => (
+                      <li key={index}>
+                        <i
+                          className="fa fa-check-circle"
+                          style={{ color: "#28a745", marginRight: 5 }}
                         ></i>
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
-                </Box>
+                        {highlight}
+                      </li>
+                    ))}
+                  </ul>
+                </Box> */}
 
                 {/* Itinerary */}
-                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
-                <h4 className="mt-4 text-dark">Itinerary</h4>
-                <div className="pl-3">
-                  {itinerary.map((day, index) => (
-                    <p key={index}>
-                      <strong>Day {index + 1}:</strong> {day}
-                    </p>
-                  ))}
-                </div>
-                </Box>
-                
-                {/* Includes and Excludes */}
-                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
-                <h4 className="mt-4 text-dark">What's Included</h4>
-                <ul className="list-unstyled pl-3">
-                  {included.map((item, index) => (
-                    <li key={index}>
-                      <i
-                        className="fa fa-plus-circle"
-                        style={{ color: "#28a745", marginRight: 5 }}
-                      ></i>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                </Box>
+                {/* <Box
+                  sx={{
+                    width: "90%",
+                    mt: 4,
+                    p: 2,
+                    boxShadow: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  <h4 className="mt-4 text-dark">Itinerary</h4>
+                  <div className="pl-3">
+                    {itinerary.map((day, index) => (
+                      <p key={index}>
+                        <strong>Day {index + 1}:</strong> {day}
+                      </p>
+                    ))}
+                  </div>
+                </Box> */}
 
-                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
-                <h4 className="mt-4 text-dark">What's Excluded</h4>
-                <ul className="list-unstyled pl-3">
-                  {excluded.map((item, index) => (
-                    <li key={index}>
-                      <i
-                        className="fa fa-minus-circle"
-                        style={{ color: "#28a745", marginRight: 5 }}
-                      ></i>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-                </Box>
+                {/* Includes and Excludes */}
+                {/* <Box
+                  sx={{
+                    width: "90%",
+                    mt: 4,
+                    p: 2,
+                    boxShadow: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  <h4 className="mt-4 text-dark">What's Included</h4>
+                  <ul className="list-unstyled pl-3">
+                    {included.map((item, index) => (
+                      <li key={index}>
+                        <i
+                          className="fa fa-plus-circle"
+                          style={{ color: "#28a745", marginRight: 5 }}
+                        ></i>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Box> */}
+
+                {/* <Box
+                  sx={{
+                    width: "90%",
+                    mt: 4,
+                    p: 2,
+                    boxShadow: 5,
+                    borderRadius: 5,
+                  }}
+                >
+                  <h4 className="mt-4 text-dark">What's Excluded</h4>
+                  <ul className="list-unstyled pl-3">
+                    {excluded.map((item, index) => (
+                      <li key={index}>
+                        <i
+                          className="fa fa-minus-circle"
+                          style={{ color: "#28a745", marginRight: 5 }}
+                        ></i>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </Box> */}
                 {/* Book Now Button */}
                 <Button
                   variant="contained"
                   color="success"
                   onClick={handleOpenBookingForm}
                   sx={{
-                    mt:4,
-                    px:5,
-                    py:2
+                    mt: 4,
+                    px: 5,
+                    py: 2,
                   }}
                 >
                   Book Now
@@ -165,14 +202,14 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                 </h4>
                 <ul className="list-unstyled">
                   <li>
-                    <strong>Location:</strong> {location}
+                    <strong>Location:</strong> {destination}
                   </li>
                   <li>
-                    <strong>Duration:</strong> {duration}
+                    <strong>Duration:</strong> {durationDays}
                   </li>
-                  <li>
+                  {/* <li>
                     <strong>Best Time to Visit:</strong> {bestTimeToVisit}
-                  </li>
+                  </li> */}
                 </ul>
               </div>
 

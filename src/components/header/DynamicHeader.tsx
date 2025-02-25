@@ -120,7 +120,7 @@ const DynamicHeader: React.FC = () => {
                     Destinations
                   </Link>
                   {isLogin == false ? 
-                 <Link to="/loginpage" className="nav-item nav-link active">
+                 <Link to="/login" className="nav-item nav-link active">
                    Login
                  </Link> : 
                  <div
