@@ -35,9 +35,9 @@ const ImageField: React.FC<ImageFieldProps> = ({ source }) => {
               src={image? apiUrl + image : 'https://i.pravatar.cc/150'}
               alt={ apiUrl + image}
               style={{ width: 50, height: 50, objectFit: 'cover', cursor: 'pointer' }}
-              onClick={() => handleClickOpen(image)}
+              onClick={() => handleClickOpen(image? apiUrl + image : 'https://i.pravatar.cc/300')}
             />
-          ))[0]
+          ))
         ) : (
           <img
             src="https://i.pravatar.cc/150"

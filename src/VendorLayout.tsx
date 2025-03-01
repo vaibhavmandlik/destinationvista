@@ -52,28 +52,28 @@ export const MyMenu = () => {
       <hr />
 
       <Menu.Item
-        to="/admin/vendor"
+        to="/vendor/vendor"
         primaryText="Agency"
         leftIcon={<PiSuitcaseBold />}
       />
       {hasVendors && (
         <>
           <Menu.Item
-            to="/admin/package"
+            to="/vendor/package"
             primaryText="Package"
             leftIcon={<PiPackageBold />}
           />
           <Menu.Item
-            to="/admin/booking"
+            to="/vendor/booking"
             primaryText="Booking"
             leftIcon={<PiTicket />}
           />
           <Menu.Item
-            to="/admin/destination"
+            to="/vendor/destination"
             primaryText="Destination"
             leftIcon={<PiMountains />}
           />
-          {/* <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
+          {/* <Menu.Item to="/vendor/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
         </>
       )}
 

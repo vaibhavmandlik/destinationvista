@@ -117,7 +117,7 @@ export const VendorListAdmin = () => {
           <TextField source="agencytitle" />
           <EmailField source="email" />
           <TextField source="contactNumber" />
-          <EditButton variant="bootstrap" color="primary" />
+          <EditButton variant="text" color="primary" />
           <DeleteWithConfirmButton variant="bootstrap" color="danger" />
         </Datagrid>
       </List>

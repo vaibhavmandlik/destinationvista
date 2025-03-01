@@ -114,7 +114,7 @@ export const UserList = () => {
           {/* <DateField source="createdOn" /> */}
           {/* <DateField source="updatedOn" /> */}
           {/* <CustomBooleanField source="enabled"  /> */}
-          <EditButton variant="bootstrap" color="primary" />
+          <EditButton variant="text" color="primary" />
           <DeleteWithConfirmButton variant="bootstrap" color="danger" />
         </Datagrid>
       </List>

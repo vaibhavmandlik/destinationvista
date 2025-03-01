@@ -39,13 +39,14 @@ const ApproveButton = ({ record }) => {
 
   return (
     <>
-      <IconButton
+      {/* <IconButton
         color="primary"
         onClick={handleClickOpen}
         sx={{ backgroundColor: theme.palette.primary.main + "1A" }} // Light background with transparency
       >
         <CheckIcon />
-      </IconButton>
+      </IconButton> */}
+      <Button startIcon={<CheckIcon/>}>Approve</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Confirm Approval</DialogTitle>
         <DialogContent>

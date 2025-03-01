@@ -131,7 +131,7 @@ export const VendorList = () => {
           <FunctionField render={(record) => <IconButton onClick={()=>{localStorage.setItem('selectedVendor',record.id); window.location.reload()}} color="primary">
             <PiUserSwitchBold />
           </IconButton>} />
-          <EditButton variant="bootstrap" color="primary" />
+          <EditButton variant="text" color="primary" />
           {/* <DeleteWithConfirmButton variant="bootstrap" color="danger" /> */}
         </Datagrid>
       </List>

@@ -63,7 +63,7 @@ const dataProvider = jsonServerProvider(apiUrl, httpClient);
 const VendorRoute: React.FC = () => {
   return (
     <Admin
-      basename="/admin"
+      basename="/vendor"
       dataProvider={dataProviders}
       authProvider={authProvider}
       loginPage={MyLoginPage}
@@ -120,7 +120,6 @@ const AdminRoute: React.FC = () => {
       <Resource
         name="package"
         list={PackageAdminList}
-        create={PackageCreate}
         edit={PackageUpdate}
         // show={ShowGuesser}
         show={ViewDetails}
