@@ -311,7 +311,7 @@ const Register = () => {
               </form>
               <p className="text-center mt-3 text-muted">
                 Do you have an account?{" "}
-                <a href="/admin/login" className="text-primary">
+                <a href="/vendor/login" className="text-primary">
                   Login
                 </a>
               </p>
