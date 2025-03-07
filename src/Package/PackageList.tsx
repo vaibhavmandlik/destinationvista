@@ -1,4 +1,5 @@
 import {
+  BooleanField,
   Datagrid,
   DateField,
   DeleteWithConfirmButton,
@@ -24,28 +25,12 @@ import {
   AccountBox as AccountBoxIcon,
 } from "@mui/icons-material";
 import ImageField from "../components/CustomFields/ImageField";
+import ApproveButton from "../PackageAdmin/ApproveButton";
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
 
   return (
     <>
-      <div>
-        <br />
-        <Breadcrumbs aria-label="breadcrumb">
-          <Link
-            component={RouterLink}
-            to="/"
-            color="inherit"
-            startIcon={<HomeIcon />}
-          >
-            Packages
-          </Link>
-          {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
-          Account
-        </Link> */}
-          <Typography color="textPrimary">Package List</Typography>
-        </Breadcrumbs>
-      </div>
       {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
       <h2>Package Operations</h2>
     
@@ -113,7 +98,7 @@ export const PackageList = () => {
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           
-          <ImageField source="images" />
+          <ImageField source="imagePaths" />
           {/* <ReferenceField source="vendorId" reference="vendor">
           <TextField source="agencyTitle" />
         </ReferenceField> */}
@@ -121,7 +106,11 @@ export const PackageList = () => {
           {/* <TextField source="description" /> */}
           <CurrencyField locale="en-IN" currency="INR" source="price" />
           <NumberField label={"duration"} source="durationDays" />
-          <TextField source="destination" />
+
+          <ReferenceField source="destination" reference="destination">
+            <TextField source="title" /> 
+          </ReferenceField>
+
           <ReferenceManyCount
             label="Booking"
             reference="booking"
@@ -129,7 +118,7 @@ export const PackageList = () => {
             link
           />
           <NumberField label="available" source="availableSlots" />
-
+          <BooleanField source="approved" />
           {/* <NumberField source="approvedBy" /> */}
           {/* <DateField source="approvedOn" /> */}
           {/* <FunctionField
@@ -154,8 +143,8 @@ export const PackageList = () => {
             source=""
             render={(record) => (
               <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
-                <ShowButton variant="bootstrap" label="Details" color="info" />
-                <EditButton variant="bootstrap" color="primary" />
+                 
+                <EditButton variant="text" color="primary" />
                 <DeleteWithConfirmButton variant="bootstrap" color="danger" />
               </div>
             )}

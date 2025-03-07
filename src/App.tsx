@@ -48,6 +48,7 @@ import AdminLayout from "./AdminLayout";
 import { VendorListAdmin } from "./VendorAdmin/VendorList";
 import { PackageAdminList } from "./PackageAdmin/PackageList";
 import DestinationCreate from "./Destination/DestinationCreate";
+import { PackageShow } from "./PackageAdmin/PackageShow";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -62,7 +63,7 @@ const dataProvider = jsonServerProvider(apiUrl, httpClient);
 const VendorRoute: React.FC = () => {
   return (
     <Admin
-      basename="/admin"
+      basename="/vendor"
       dataProvider={dataProviders}
       authProvider={authProvider}
       loginPage={MyLoginPage}
@@ -119,10 +120,9 @@ const AdminRoute: React.FC = () => {
       <Resource
         name="package"
         list={PackageAdminList}
-        create={PackageCreate}
         edit={PackageUpdate}
-        // show={ShowGuesser}
-        show={ViewDetails}
+        show={PackageShow}
+        // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />
