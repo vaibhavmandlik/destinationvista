@@ -15,7 +15,7 @@ export const UserList = () => {
       <List>
         <Datagrid>
           <TextField source="id" />
-          <ImageField source="profileImagePath" />
+          <ImageField source="profileImagePath" label={"Pic"} />
           <TextField source="category" label={'Role'} />
           <TextField source="firstName" />
           <TextField source="lastName" />
