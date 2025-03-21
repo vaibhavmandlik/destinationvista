@@ -10016,3 +10016,52 @@ h6,
   padding: 0;
   list-style-type: none;
 }
+
+/* custom component css */
+
+.signup-input{
+    border-radius: 30px;
+}
+
+.slogan{
+  width: 140px;
+  font-size: 40px;
+  /* background: linear-gradient(to top right, #22ff22 20%, #002200 100%); */
+  /* -webkit-background-clip: text; */
+  /* -webkit-text-fill-color: transparent; */
+  color: black
+}
+
+.user-icon{
+  background-color: greenyellow;
+  border: 2px solid greenyellow;
+  border-radius: 50%;
+  color: white;
+  
+}
+
+.user-icon:hover{
+  background-color: white;
+  color: greenyellow;
+}
+
+.signup-card{
+  background-image: url("https://i.pinimg.com/564x/a8/72/14/a872140102e7673359f30afcdf6083e4.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+.bg-cart{
+  background-color: #85e085;
+  color: #000;
+}
+
+.profile-picture{
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  object-position: 30%;
+}

@@ -5,14 +5,11 @@ const apiUrl = import.meta.env.VITE_API_URL;
 const authProvider: AuthProvider = {
   // called when the user attempts to log in
   // { username, password }
-  login: async () => {
+  login: async (data) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-      email: "avi@yopmail.com",
-      password: "Welcome@100",
-    });
+    const raw = JSON.stringify(data);
 
     const requestOptions: RequestInit = {
       method: "POST",
@@ -22,7 +19,7 @@ const authProvider: AuthProvider = {
     };
 
     try {
-      const response = await fetch(apiUrl + "/login", requestOptions);
+      const response = await fetch(apiUrl + "/user/login", requestOptions);
       if (response.status < 200 || response.status >= 300) {
         throw new Error(response.statusText);
       }
@@ -34,26 +31,31 @@ const authProvider: AuthProvider = {
   },
   // called when the user clicks on the logout button
   logout: () => {
-    localStorage.removeItem("username");
+    localStorage.removeItem("auth");
     return Promise.resolve();
   },
   // called when the API returns an error
   checkError: ({ status }) => {
     if (status === 401 || status === 403) {
-      localStorage.removeItem("username");
+      localStorage.removeItem("auth");
       return Promise.reject();
     }
     return Promise.resolve();
   },
   // called when the user navigates to a new location, to check for authentication
   checkAuth: () => {
-    return localStorage.getItem("username")
-      ? Promise.resolve()
-      : Promise.reject();
+    return localStorage.getItem("auth") ? Promise.resolve() : Promise.reject();
   },
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
     return Promise.resolve();
+  },
+  async getIdentity() {
+    const authData = localStorage.getItem("auth");
+    const authCredentials = authData ? JSON.parse(authData) : null;
+    const { id, fullName, avatar } = authCredentials?.data;
+    const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
+    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor") };
   },
 };
 

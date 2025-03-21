@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
+// import axios from "axios";
+// import {toast,ToastContainer } from "react-toastify";
+// const url = `${import.meta.env.VITE_API_URL}/package`;
 
 // Define the `Package` type for type safety
 type Package = {
-  id: string | number;
+  id: number | string ;
   title: string;
   description: string;
   price: string;
@@ -85,19 +90,46 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   isShowHeader = true,
   isSearchBar = true,
 }) => {
-  const [packagesToShow, setPackagesToShow] =
-    useState<Package[]>(initialPackages);
+  const [packagesToShow, setPackagesToShow] = useState<Package[]>(initialPackages);
+  // const [loading, setLoading] = useState<boolean>(true);
+  // const [errortext, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  // useEffect(()=>{
+  //   const fetchPackagesData = async ()=>{
+  //     try {
+  //       const response = await axios.get(url);
+  //       setPackagesToShow(response.data);
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setError('Failed to fetch packages . Plaease try again');
+  //       toast.error(errortext,{
+  //         position: "top-right",
+  //         autoClose: 3000,
+  //         closeOnClick: true,
+  //         theme: "light",
+  //         pauseOnHover: true,
+  //       });
+  //       setLoading(false);
+  //     }   
+  //   };
+
+  //   fetchPackagesData();
+  // },[]);
+
   // Redirect to the details page
-  const onDetailsBookNowClick = (pkg: Package) => {
+  const onDetailsBookNowClick = (pkg : Package) => {
     navigate(`/packages/${pkg.id}`);
+    debugger;
   };
 
   // Appends more packages to the list
   const onExploreMoreClick = () => {
     setPackagesToShow((prevPackages) => [...prevPackages, ...morePackages]);
   };
+
+  // if (loading) return <p>Loading packages...</p>;
+  // if (errortext) return <ToastContainer/>;
 
   return (
     <>
@@ -131,7 +163,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
           </div>
 
           {/* Package List */}
-          <div className="row">
+          {/* <div className="row">
             {packagesToShow.map((pkg) => (
               <div className="col-lg-12 mb-4" key={pkg.id}>
                 <div className="card border-0 shadow" style={{ width: "100%" }}>
@@ -172,7 +204,71 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
+          
+          {packagesToShow.map((pkg)=>(
+            <Typography
+            component="div"
+            variant="body1"
+            style={{
+              width: "100%",
+              height:"40ch",
+              position: "relative",
+              margin:'0'
+            }}
+          >
+            
+             <Box
+              component="img"
+              src={pkg.image}
+              sx={{
+                borderRadius:2,
+                width: "30%",
+                height: "70%",
+                position: "absolute",
+                top:'8%',
+                left: `${Number(pkg.id) % 2 === 0 ? '58%' :'12%'}`,
+                zIndex: "tooltip",
+              }}
+            /> 
+            
+            <Box
+              component="div"
+              sx={{
+                color:'#000',
+                borderRadius:4,
+                width: "50%",
+                height:"35ch",
+                boxShadow:4,
+                position: "absolute",
+                top: 0,
+                left: `${Number(pkg.id) % 2 === 0 ? '10%' :'40%'}`,
+                zIndex: `modal`,
+                p:5
+              }}
+            >
+              <p>
+              <strong>
+              {pkg.title}
+              </strong>
+              </p>
+              <p>
+              {pkg.description}
+              </p>
+              <p>
+                <strong>
+                 Price:{pkg.price}
+                </strong>
+              </p>
+              <div>
+              <Button sx={{m:1}} color="success" variant="outlined" onClick={()=>{onDetailsBookNowClick(pkg)}}>More Details</Button>
+              <Button color="success" variant="contained" onClick={()=>{onDetailsBookNowClick(pkg)}}>Book Now</Button>
+              </div>
+            </Box>
+          </Typography>
+          ))
+          }
+          
 
           {/* Explore More Packages Button */}
           <div className="text-center mt-4">

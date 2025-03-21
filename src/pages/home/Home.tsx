@@ -7,6 +7,7 @@ import DestinationCategory from "../destinations/DestinationCategory";
 import BackToTop from "../backtotop/BackToTop";
 import HomeRegistration from "../registration/HomeRegistration";
 import HomeBlogSection from "../blogs/HomeBlogSection";
+import CarouselComponent from "../carousel/Carousel";
 
 const Home: React.FC = () => {
   const images = [
@@ -16,7 +17,7 @@ const Home: React.FC = () => {
   return (
     <>
       {/* <DynamicHeader /> */}
-      <Carousel images={images} />
+      <CarouselComponent />
       <DestinationCategory />
       <PackagesList
         isShowHeader={false}

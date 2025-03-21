@@ -69,6 +69,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                   src={image}
                   alt={title}
                 />
+                <Box >
                 <h2 className="mb-3 font-weight-bold text-dark">{title}</h2>
                 <p className="text-muted">{description}</p>
 
@@ -80,8 +81,10 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     <strong>Seats Available:</strong> {seatsAvailable}
                   </p>
                 </div>
+                </Box>
 
                 {/* Highlights */}
+                <Box sx={{width:'90%' , p:2 , boxShadow:5 , borderRadius:5}}>
                 <h4 className="mt-4 text-dark">Tour Highlights</h4>
                 <ul className="list-unstyled pl-3">
                   {highlights.map((highlight, index) => (
@@ -89,13 +92,15 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                       <i
                         className="fa fa-check-circle"
                         style={{ color: "#28a745", marginRight: 5 }}
-                      ></i>
+                        ></i>
                       {highlight}
                     </li>
                   ))}
                 </ul>
+                </Box>
 
                 {/* Itinerary */}
+                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
                 <h4 className="mt-4 text-dark">Itinerary</h4>
                 <div className="pl-3">
                   {itinerary.map((day, index) => (
@@ -104,8 +109,10 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     </p>
                   ))}
                 </div>
-
+                </Box>
+                
                 {/* Includes and Excludes */}
+                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
                 <h4 className="mt-4 text-dark">What's Included</h4>
                 <ul className="list-unstyled pl-3">
                   {included.map((item, index) => (
@@ -118,7 +125,9 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     </li>
                   ))}
                 </ul>
+                </Box>
 
+                <Box sx={{width:'90%', mt:4 , p:2 , boxShadow:5 , borderRadius:5}}>
                 <h4 className="mt-4 text-dark">What's Excluded</h4>
                 <ul className="list-unstyled pl-3">
                   {excluded.map((item, index) => (
@@ -131,12 +140,17 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     </li>
                   ))}
                 </ul>
-
+                </Box>
                 {/* Book Now Button */}
                 <Button
+                  variant="contained"
+                  color="success"
                   onClick={handleOpenBookingForm}
-                  className="btn btn-success btn-lg px-5 py-3 mt-5 font-weight-bold"
-                  style={{ backgroundColor: "#28a745" }}
+                  sx={{
+                    mt:4,
+                    px:5,
+                    py:2
+                  }}
                 >
                   Book Now
                 </Button>

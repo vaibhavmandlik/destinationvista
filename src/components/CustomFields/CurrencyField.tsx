@@ -22,7 +22,7 @@ const formatCurrency = (
 const CurrencyField: React.FC<CurrencyFieldProps> = ({
   source,
   locale = "en-US",
-  currency = "USD",
+  currency = "INR",
   ...rest
 }) => {
   const record = useRecordContext();
