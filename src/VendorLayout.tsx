@@ -5,24 +5,15 @@ import {
   LayoutProps,
   AppBar,
   TitlePortal,
-  useGetList,
-  useGetIdentity,
 } from "react-admin";
-import Sidebar from "./Sidebar";
-import { FaBookMedical } from "react-icons/fa";
 import {
   PiMountains,
   PiPackageBold,
   PiSuitcaseBold,
   PiTicket,
-  PiUserBold,
-  PiUsers,
 } from "react-icons/pi";
-import { Drawer } from "@mui/material";
-import { SidebarClasses, useLocale, useSidebarState } from "react-admin";
-import "./mylayout.css";
-import { Box } from "@mui/material";
-import SearchBar from "./Search";
+import {useLocale, useSidebarState } from "react-admin";
+require('./mylayout.css');
 import logo from "./assets/logo.svg";
 import { SwitchVendor } from "./SwitchVendor";
 import useHasVendors from "./hook/useHasvendors";
@@ -31,8 +22,6 @@ import useHasVendors from "./hook/useHasvendors";
 export const MySidebar = ({ children }) => {
   const [open, setOpen] = useSidebarState();
   useLocale(); // force redraw on locale change
-
-  const toggleSidebar = () => setOpen(!open);
 
   return (
     <>
