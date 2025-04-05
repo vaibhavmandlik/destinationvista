@@ -23,7 +23,7 @@ export type FormInputVendorType = {
   pincode: string;
   secondaryContactNumber: string;
 };
-const Register = () => {
+const Register = ({userType='2'}) => {
   const notify = useNotify();
   const {
     register,
@@ -35,7 +35,7 @@ const Register = () => {
     console.log(data);
     const newData = {
       ...data,
-      category: "2",
+      category: userType,
     };
     create(
       "user",
