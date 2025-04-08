@@ -73,6 +73,7 @@ export const MyMenu = () => {
             primaryText="Destination"
             leftIcon={<PiMountains />}
           />
+          <Menu.Item to="/vendor/support-ticket" primaryText="Support Ticket" leftIcon={<FaBookMedical />} />
           {/* <Menu.Item to="/vendor/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
         </>
       )}

@@ -50,6 +50,7 @@ import { VendorListAdmin } from "./VendorAdmin/VendorList";
 import { PackageAdminList } from "./PackageAdmin/PackageList";
 import DestinationCreate from "./Destination/DestinationCreate";
 import PackageShow from "./PackageAdmin/PackageShow";
+import SupportTicket from "./SupportTicket/SupportTicket";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -72,7 +73,7 @@ const VendorRoute: React.FC = () => {
       theme={theme}
       dashboard={VendorDashboard}
     >
-      
+
       <Resource
         name="vendor"
         list={VendorList}
@@ -90,12 +91,15 @@ const VendorRoute: React.FC = () => {
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} />
       <Resource
-      name="user"
-      list={UserList}
-      create={UserCreate}
-      show={UserShow}
-      edit={UserUpdate}
-    />
+        name="user"
+        list={UserList}
+        create={UserCreate}
+        show={UserShow}
+        edit={UserUpdate}
+      />
+      <CustomRoutes>
+        <Route path="/support-ticket" element={<SupportTicket />} />
+      </CustomRoutes>
     </Admin>
   );
 };
@@ -109,9 +113,9 @@ const AdminRoute: React.FC = () => {
       loginPage={MyLoginPage}
       layout={AdminLayout}
       theme={theme}
-      // dashboard={VendorDashboard}
+    // dashboard={VendorDashboard}
     >
-      
+
       <Resource
         name="vendor"
         list={VendorListAdmin}
@@ -123,17 +127,18 @@ const AdminRoute: React.FC = () => {
         list={PackageAdminList}
         edit={PackageUpdate}
         show={PackageShow}
-        // show={ViewDetails}
+      // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />
       <Resource
-      name="user"
-      list={UserList}
-      create={UserCreate}
-      show={UserShow}
-      edit={UserUpdate}
-    />
+        name="user"
+        list={UserList}
+        create={UserCreate}
+        show={UserShow}
+        edit={UserUpdate}
+      />
+      
     </Admin>
   );
 };
@@ -160,9 +165,9 @@ const App: React.FC = () => {
           <Route path="about" element={<AboutUs />} />
           <Route path="registration" element={<Registration />} />
           <Route path="loginpage" element={<LoginPage />} />
-          <Route path="bookingshistory" element={<BookingsHistory/>}/>
-          <Route path="packagecart" element={<PackageCart/>}/>
-          <Route path="profile" element={<Profile/>}/>
+          <Route path="bookingshistory" element={<BookingsHistory />} />
+          <Route path="packagecart" element={<PackageCart />} />
+          <Route path="profile" element={<Profile />} />
           <Route
             path="packages"
             element={
