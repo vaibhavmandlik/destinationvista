@@ -8,8 +8,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Select,
-  MenuItem,
+  Chip,
 } from "@mui/material";
 
 interface Ticket {
@@ -22,15 +21,22 @@ interface Ticket {
 
 interface TicketListProps {
   tickets: Ticket[];
-  onStatusChange: (index: number, newStatus: string) => void;
 }
 
-const statusOptions = ["Open", "In Progress", "Resolved"];
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case "Open":
+      return "success"; // green
+    case "In Progress":
+      return "warning"; // amber
+    case "Resolved":
+      return "primary"; // blue
+    default:
+      return "default";
+  }
+};
 
-export default function TicketList({
-  tickets,
-  onStatusChange,
-}: TicketListProps) {
+export default function TicketList({ tickets }: TicketListProps) {
   return (
     <TableContainer component={Paper}>
       <Table>
@@ -49,18 +55,11 @@ export default function TicketList({
               <TableCell>{ticket.category}</TableCell>
               <TableCell>{ticket.priority}</TableCell>
               <TableCell>
-                <Select
-                  value={ticket.status}
-                  onChange={(e) => onStatusChange(index, e.target.value)}
-                  fullWidth
-                  variant="standard"
-                >
-                  {statusOptions.map((status) => (
-                    <MenuItem key={status} value={status}>
-                      {status}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Chip
+                  label={ticket.status}
+                  color={getStatusColor(ticket.status)}
+                  variant="outlined"
+                />
               </TableCell>
             </TableRow>
           ))}
