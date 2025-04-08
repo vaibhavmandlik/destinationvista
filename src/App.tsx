@@ -51,6 +51,7 @@ import { PackageAdminList } from "./PackageAdmin/PackageList";
 import DestinationCreate from "./Destination/DestinationCreate";
 import PackageShow from "./PackageAdmin/PackageShow";
 import SupportTicket from "./SupportTicket/SupportTicket";
+import AdminSupport from "./AdminSupport/AdminSupport";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -138,7 +139,9 @@ const AdminRoute: React.FC = () => {
         show={UserShow}
         edit={UserUpdate}
       />
-      
+      <CustomRoutes>
+      <Route path="/support" element={<AdminSupport />} />
+      </CustomRoutes>
     </Admin>
   );
 };
