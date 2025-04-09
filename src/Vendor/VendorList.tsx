@@ -14,6 +14,7 @@ import useHasVendors from "../hook/useHasvendors";
 import ImageField from "../components/CustomFields/ImageField";
 import {
   Breadcrumbs,
+  Chip,
   IconButton,
   Link,
   Switch,
@@ -30,7 +31,6 @@ import { PiUserSwitchBold } from "react-icons/pi";
 export const VendorList = () => {
   const hasVendors = useHasVendors();
   const { data: user } = useGetIdentity();
-  const isSmall = useMediaQuery(theme => theme.breakpoints.down('sm'));
   if (!hasVendors)
     return (
       <>
@@ -39,10 +39,6 @@ export const VendorList = () => {
     );
   return (
     <>
-      {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
-      <h2>Vendor Operations</h2>
-      <button className="btn btn-primary">Email all Vendors</button>
-    </div> */}
       <div>
         <br />
         <Breadcrumbs aria-label="breadcrumb">
@@ -54,85 +50,39 @@ export const VendorList = () => {
           >
             My Agency
           </Link>
-          {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
-          Account
-        </Link> */}
           <Typography color="textPrimary">Agency List</Typography>
         </Breadcrumbs>
       </div>
 
-      {/* <div className="row m-2 ">
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title medium">Total Vendors</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">2,420</h2>
-              <i
-                className="bi bi-people-fill"
-                style={{ fontSize: "2rem", color: "blue" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card  shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Active Vendors </h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">1,890</h2>
-              <i
-                className="bi bi-person-check-fill"
-                style={{ fontSize: "2rem", color: "green" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card  shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Inactive Vendors</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">530</h2>
-              <i
-                className="bi bi-person-fill-slash"
-                style={{ fontSize: "2rem", color: "red" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Average Session</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">24m</h2>
-              <i
-                className="bi bi-clock-history"
-                style={{ fontSize: "2rem", color: "#555" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> */}
-
       <List filter={{ userId: user?.id }} title="Agency List">
         <Datagrid rowClick={false} bulkActionButtons={false}>
-          
+
           <TextField source="id" />
           <ImageField source="images" />
           <TextField source="agencytitle" />
           <EmailField source="email" />
           <TextField source="contactNumber" />
-          <FunctionField render={(record) => <IconButton onClick={()=>{localStorage.setItem('selectedVendor',record.id); window.location.reload()}} color="primary">
+          <FunctionField
+            label="Approval Status"
+            render={(record) => {
+              const status = record.approvalStatus;
+
+              const statusMap:any = {
+                approved: { label: "Approved", color: "success" },
+                rejected: { label: "Rejected", color: "error" },
+                pending: { label: "Pending", color: "warning" },
+              };
+
+              const { label, color } = statusMap[status] || statusMap["pending"];
+
+              return <Chip label={label} color={color} size="small" />;
+            }}
+          />
+          <FunctionField render={(record) => <IconButton onClick={() => { localStorage.setItem('selectedVendor', record.id); window.location.reload() }} color="primary">
             <PiUserSwitchBold />
           </IconButton>} />
+
           <EditButton variant="text" color="primary" />
-          {/* <DeleteWithConfirmButton variant="bootstrap" color="danger" /> */}
         </Datagrid>
       </List>
     </>
