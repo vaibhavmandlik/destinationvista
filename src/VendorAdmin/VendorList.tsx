@@ -5,31 +5,37 @@ import {
   EmailField,
   List,
   TextField,
-  ReferenceField,
   useGetIdentity,
-  FunctionField,
 } from "react-admin";
-import AgencyManagement from "./AgencyManagement ";
-import useHasVendors from "../hook/useHasvendors";
 import ImageField from "../components/CustomFields/ImageField";
 import {
   Breadcrumbs,
-  IconButton,
   Link,
-  Switch,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import {
   Home as HomeIcon,
-  AccountBox as AccountBoxIcon,
 } from "@mui/icons-material";
-import { PiUserSwitchBold } from "react-icons/pi";
-
+import {
+  Menu,
+  MenuItem,
+  IconButton,
+  Chip,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import React, { useState } from "react";
+import {
+  useNotify,
+  useDataProvider,
+  useRefresh,
+  FunctionField,
+} from "react-admin";
+import { Button} from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 export const VendorListAdmin = () => {
   const { data: user } = useGetIdentity();
- 
+
   return (
     <>
       <div>
@@ -43,80 +49,101 @@ export const VendorListAdmin = () => {
           >
             My Agency
           </Link>
-          {/* <Link component={RouterLink} to="/account" color="inherit" startIcon={<AccountBoxIcon />}>
-          Account
-        </Link> */}
           <Typography color="textPrimary">Agency List</Typography>
         </Breadcrumbs>
       </div>
-
-      {/* <div className="row m-2 ">
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title medium">Total Vendors</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">2,420</h2>
-              <i
-                className="bi bi-people-fill"
-                style={{ fontSize: "2rem", color: "blue" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card  shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Active Vendors </h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">1,890</h2>
-              <i
-                className="bi bi-person-check-fill"
-                style={{ fontSize: "2rem", color: "green" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card  shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Inactive Vendors</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">530</h2>
-              <i
-                className="bi bi-person-fill-slash"
-                style={{ fontSize: "2rem", color: "red" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Average Session</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">24m</h2>
-              <i
-                className="bi bi-clock-history"
-                style={{ fontSize: "2rem", color: "#555" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> */}
-
       <List filter={{ userId: user?.id }} title="Agency List">
         <Datagrid rowClick={false} bulkActionButtons={false}>
-          
+
           <TextField source="id" />
           <ImageField source="images" />
           <TextField source="agencytitle" />
           <EmailField source="email" />
           <TextField source="contactNumber" />
+          <FunctionField
+            label="Actions"
+            render={(record: any) => {
+              const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+              const open = Boolean(anchorEl);
+              const dataProvider = useDataProvider();
+              const notify = useNotify();
+              const refresh = useRefresh();
+
+              const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+                setAnchorEl(event.currentTarget);
+              };
+
+              const handleClose = () => {
+                setAnchorEl(null);
+              };
+
+              const handleStatusChange = async (status: "approved" | "rejected" | "cancelled") => {
+                const confirmMessage = `Are you sure you want to mark this as ${status}?`;
+                if (!window.confirm(confirmMessage)) return;
+
+                try {
+                  await dataProvider.update("vendor", {
+                    id: record.id,
+                    data: { approvalStatus: status },
+                    previousData: record,
+                  });
+                  notify(`Status updated to ${status}`, { type: "success" });
+                  refresh();
+                } catch (err) {
+                  notify("Error updating status", { type: "error" });
+                } finally {
+                  handleClose();
+                }
+              };
+
+              const statusColors: Record<string, string> = {
+                approved: "#4caf50",    // green
+                rejected: "#f44336",    // red
+                cancelled: "#f44336",   // red (same as rejected)
+                pending: "#ff9800",     // orange
+              };
+
+              const statusLabel: string =
+                {
+                  approved: "Approved",
+                  rejected: "Rejected",
+                  cancelled: "Cancelled",
+                  pending: "Pending",
+                }[record.approvalStatus] || "Pending";
+
+              const color = statusColors[record.approvalStatus] || "#000";
+
+              return (
+                <>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleClick}
+                    endIcon={<ArrowDropDownIcon />}
+                    sx={{
+                      color,
+                      borderColor: color,
+                      textTransform: "capitalize",
+                      fontWeight: "bold",
+                      '&:hover': {
+                        backgroundColor: `${color}20`, // light background on hover
+                        borderColor: color,
+                      }
+                    }}
+                  >
+                    {statusLabel}
+                  </Button>
+                  <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                    <MenuItem disabled dense>Change Status</MenuItem>
+                    <MenuItem onClick={() => handleStatusChange("approved")}>Approve</MenuItem>
+                    <MenuItem onClick={() => handleStatusChange("rejected")}>Reject</MenuItem>
+                    <MenuItem onClick={() => handleStatusChange("cancelled")}>Cancel</MenuItem>
+                  </Menu>
+                </>
+              );
+            }}
+          />
+
           <EditButton variant="text" color="primary" />
           <DeleteWithConfirmButton variant="bootstrap" color="danger" />
         </Datagrid>
