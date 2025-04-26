@@ -74,6 +74,44 @@ const createPackageFormData = (
 
   return formData;
 };
+
+
+function convertToFormData(data: any): FormData {
+  const formData = new FormData();
+
+  const appendFormData = (formData: FormData, data: any, parentKey?: string) => {
+    if (data && typeof data === 'object') {
+      if (data instanceof File) {
+        // If it's already a File object
+        formData.append(parentKey!, data);
+      } else if (isFileLike(data)) {
+        // If it's a "file-like" object (rawFile detected)
+        const fakeFile = new File([""], data.rawFile.path.split('/').pop(), { type: 'application/pdf' });
+        formData.append(parentKey!, fakeFile);
+      } else {
+        // Recursively handle nested objects
+        Object.keys(data).forEach(key => {
+          const value = data[key];
+          const newKey = parentKey ? `${parentKey}[${key}]` : key;
+          appendFormData(formData, value, newKey);
+        });
+      }
+    } else {
+      if (data !== undefined && data !== null) {
+        formData.append(parentKey!, data);
+      }
+    }
+  };
+
+  const isFileLike = (obj: any): boolean => {
+    return obj && typeof obj === 'object' && obj.rawFile && obj.rawFile.path;
+  };
+
+  appendFormData(formData, data);
+
+  return formData;
+}
+
 export const dataProviders = {
   ...baseDataProvider,
   create: (resource, params) => {
@@ -89,6 +127,13 @@ export const dataProviders = {
       formData.append("title", params.data.title);
       formData.append("description", params.data.description);
       formData.append("image", params.data.image.rawFile);
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
+    }else if (resource === "vendor"){
+      const formData = convertToFormData(params.data);
+      debugger;
       return httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
         body: formData,
