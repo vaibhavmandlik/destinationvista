@@ -1,4 +1,7 @@
 import React from "react";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import {
   Layout,
   Menu,
@@ -11,11 +14,18 @@ import {
 import Sidebar from "./Sidebar";
 import { FaBookMedical } from "react-icons/fa";
 import {
+  PiChartBarBold,
+  PiChatCircleDotsBold,
+  PiCreditCardBold,
+  PiEnvelopeSimpleBold,
+  PiLockKeyBold,
   PiMountains,
   PiPackageBold,
   PiSuitcaseBold,
   PiTicket,
+  PiTicketBold,
   PiUserBold,
+  PiUserCircleBold,
   PiUsers,
 } from "react-icons/pi";
 import { Drawer } from "@mui/material";
@@ -40,8 +50,16 @@ export const MySidebar = ({ children }) => {
     </>
   );
 };
+
+
+
+
 export const MyMenu = () => {
   const hasVendors = useHasVendors();
+  
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+  const [open3, setOpen3] = useState(false);
 
   return (
     <Menu>
@@ -51,36 +69,172 @@ export const MyMenu = () => {
       <SwitchVendor />
       <hr />
 
-      <Menu.Item
-        to="/vendor/vendor"
-        primaryText="Agency"
-        leftIcon={<PiSuitcaseBold />}
-      />
-      {hasVendors && (
-        <>
-          <Menu.Item
-            to="/vendor/package"
-            primaryText="Package"
-            leftIcon={<PiPackageBold />}
-          />
-          <Menu.Item
-            to="/vendor/booking"
-            primaryText="Booking"
-            leftIcon={<PiTicket />}
-          />
-          <Menu.Item
-            to="/vendor/destination"
-            primaryText="Destination"
-            leftIcon={<PiMountains />}
-          />
-          <Menu.Item to="/vendor/support-ticket" primaryText="Support Ticket" leftIcon={<FaBookMedical />} />
-          {/* <Menu.Item to="/vendor/user" primaryText="Users" leftIcon={<PiUserBold />} /> */}
-        </>
-      )}
+      {/* Dashboard 1 */}
+      <div className="menu-section">
+        <div
+          className="menu-section-header"
+          onClick={() => setOpen1((prev) => !prev)}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            padding: "8px 0",
+            fontWeight: "600",
+            fontSize: "16px",
+          }}
+        >
+          <span>Dashboard 1</span>
+          <span style={{ marginLeft: "auto" }}>
+            {open1 ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </span>
+        </div>
 
-      {/* <Menu.Item to="/comments" primaryText="Comments" leftIcon={<ChatBubbleIcon />}/>
-      <Menu.Item to="/users" primaryText="Users" leftIcon={<PeopleIcon />}/>
-      <Menu.Item to="/custom-route" primaryText="Miscellaneous" leftIcon={<LabelIcon />}/> */}
+        <AnimatePresence initial={false}>
+          {open1 && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
+            >
+              <Menu.Item
+                to="/vendor/vendor"
+                primaryText="Agency"
+                leftIcon={<PiSuitcaseBold />}
+              />
+              {hasVendors && (
+                <>
+                  <Menu.Item
+                    to="/vendor/package"
+                    primaryText="Package"
+                    leftIcon={<PiPackageBold />}
+                  />
+                  <Menu.Item
+                    to="/vendor/booking"
+                    primaryText="Booking"
+                    leftIcon={<PiTicket />}
+                  />
+                  <Menu.Item
+                    to="/vendor/destination"
+                    primaryText="Destination"
+                    leftIcon={<PiMountains />}
+                  />
+                  <Menu.Item
+                    to="/vendor/support-ticket"
+                    primaryText="Support Ticket"
+                    leftIcon={<FaBookMedical />}
+                  />
+                </>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Dashboard 2 */}
+      <div className="menu-section">
+        <div
+          className="menu-section-header"
+          onClick={() => setOpen2((prev) => !prev)}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            padding: "8px 0",
+            fontWeight: "600",
+            fontSize: "16px",
+          }}
+        >
+          <span>Dashboard 2</span>
+          <span style={{ marginLeft: "auto" }}>
+            {open2 ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </span>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {open2 && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
+            >
+              <Menu.Item
+                to="/profile/edit"
+                primaryText="Edit Profile"
+                leftIcon={<PiUserCircleBold />}
+              />
+              <Menu.Item
+                to="/profile/forgot-password"
+                primaryText="Forget Password"
+                leftIcon={<PiLockKeyBold />}
+              />
+              <Menu.Item
+                to="/vendor/statistics"
+                primaryText="Vendor Statistics"
+                leftIcon={<PiChartBarBold />}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Dashboard 3 */}
+      <div className="menu-section">
+        <div
+          className="menu-section-header"
+          onClick={() => setOpen3((prev) => !prev)}
+          style={{
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            padding: "8px 0",
+            fontWeight: "600",
+            fontSize: "16px",
+          }}
+        >
+          <span>Dashboard 3</span>
+          <span style={{ marginLeft: "auto" }}>
+            {open3 ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+          </span>
+        </div>
+
+        <AnimatePresence initial={false}>
+          {open3 && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
+            >
+              <Menu.Item
+                to="/admin/mailing-services"
+                primaryText="Mailing Services"
+                leftIcon={<PiEnvelopeSimpleBold />}
+              />
+              <Menu.Item
+                to="/admin/connection"
+                primaryText="Admin Connection"
+                leftIcon={<PiChatCircleDotsBold />}
+              />
+              <Menu.Item
+                to="/admin/tickets"
+                primaryText="Ticket Rising"
+                leftIcon={<PiTicketBold />}
+              />
+              <Menu.Item
+                to="/admin/payments"
+                primaryText="Payments Received"
+                leftIcon={<PiCreditCardBold />}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
     </Menu>
   );
 };
