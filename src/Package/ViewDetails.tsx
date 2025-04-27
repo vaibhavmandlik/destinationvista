@@ -1,90 +1,136 @@
-import React, { useEffect, useState } from "react";
-import { 
-  Container, Card, CardContent, Typography, Grid, CircularProgress 
-} from "@mui/material";
-import Carousel from "react-material-ui-carousel"; 
+import { Card, CardHeader, CardContent, Grid, Stack, Typography } from "@mui/material";
+import * as React from "react";
+import {
+  ShowBase,
+  SimpleShowLayout,
+  TextField,
+  NumberField,
+  useRecordContext,
+  RichTextField,
+  Title,
+  ArrayField,
+  DateField,
+} from "react-admin";
+import { JSONTree } from "react-json-tree";
+const apiUrl = import.meta.env.VITE_API_URL;
 
-// Dummy Data (Replace this with API data)
-const dummyPackage = {
-  packageName: "Himalayan Adventure",
-  destination: "Manali, Himachal Pradesh",
-  description: "A thrilling trek to the Himalayas with breathtaking views.",
-  price: "₹25,000",
-  duration: "10 Days",
-  availableSlots: 20,
-  images: [
-    "https://source.unsplash.com/800x400/?mountains,travel",
-    "https://source.unsplash.com/800x400/?adventure,hiking",
-    "https://source.unsplash.com/800x400/?trekking,nature",
-  ],
-};
-
-const ViewDetails = () => {
-  const [record, setRecord] = useState<any>(null);
-
-  useEffect(() => {
-    // Simulating API call
-    setTimeout(() => {
-      setRecord(dummyPackage);
-    }, 1000);
-  }, []);
-
-  if (!record) {
-    return (
-      <Container sx={{ textAlign: "center", mt: 5 }}>
-        <CircularProgress />
-        <Typography variant="h6" sx={{ mt: 2 }}>Loading package details...</Typography>
-      </Container>
-    );
-  }
-
+export const ViewDetails = () => {
+  const record = useRecordContext();
+  return <JSONTree data={record} />;
   return (
-    <Container sx={{ mt: 5 }}>
-      <Card sx={{ maxWidth: 800, mx: "auto", boxShadow: 3 }}>
-        
-        {/* Image Carousel */}
-        <Carousel animation="slide" navButtonsAlwaysVisible>
-          {record.images.map((image: string, index: number) => (
-            <img 
-              key={index} 
-              src={image} 
-              alt="Package" 
-              style={{ width: "100%", height: "300px", objectFit: "cover", borderRadius: "5px" }}
-            />
-          ))}
-        </Carousel>
+    <ShowBase>
+      <div className="my-5">
+        <Title title="Package Details" />
+        <Grid container justifyContent="center">
+          <Grid item xs={12} md={8}>
+            <Card sx={{ p: 2 }}>
+              <CardHeader title="Package Information" />
+              <CardContent>
+                <SimpleShowLayout>
+                  <Stack spacing={3}>
+                    {/* Top Info */}
+                    <Stack direction="row" spacing={2}>
+                      <TextField source="title" label="Title" />
+                      <NumberField source="price" label="Price (₹)" />
+                      <NumberField source="durationDays" label="Duration (Days)" />
+                    </Stack>
 
-        {/* Package Details */}
-        <CardContent>
-          <Typography variant="h5" fontWeight="bold">{record.packageName}</Typography>
-          <Typography variant="subtitle1" color="text.secondary">
-            {record.destination}
-          </Typography>
+                    <Stack direction="row" spacing={2}>
+                      <TextField source="destination" label="Destination" />
+                      <NumberField source="availableSlots" label="Available Slots" />
+                    </Stack>
 
-          <Typography variant="body1" sx={{ mt: 2 }}>{record.description}</Typography>
+                    {/* Description */}
+                    <div>
+                      <Typography variant="h6">Description</Typography>
+                      <RichTextField source="description" label="Description" />
+                    </div>
 
-          <Grid container spacing={2} sx={{ mt: 2 }}>
-            <Grid item xs={6}>
-              <Typography variant="subtitle2" fontWeight="bold">Price:</Typography>
-              <Typography variant="body2">{record.price}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="subtitle2" fontWeight="bold">Duration:</Typography>
-              <Typography variant="body2">{record.duration}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="subtitle2" fontWeight="bold">Available Slots:</Typography>
-              <Typography variant="body2">{record.availableSlots}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="subtitle2" fontWeight="bold">Package Name:</Typography>
-              <Typography variant="body2">{record.packageName}</Typography>
-            </Grid>
+                    {/* Images without library */}
+                    <div>
+                      <Typography variant="h6" sx={{ mb: 1 }}>Package Images</Typography>
+                      <Grid container spacing={2}>
+                        
+                        <JSONTree data={record} />
+                        {record?.imagePaths?.map((img: any, index: number) => (
+                          <Grid item xs={6} md={4} key={index}>
+                            <img
+                             src={img? apiUrl + img : 'https://i.pravatar.cc/150'}
+                              alt={img.title || `Image ${index + 1}`}
+                              style={{
+                                width: '100%',
+                                height: 200,
+                                objectFit: 'cover',
+                                borderRadius: 8,
+                                border: '1px solid #ccc',
+                              }}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </div>
+
+                    {/* Quick Itinerary */}
+                    <TextField source="quickItinerary" label="Quick Itinerary Summary" />
+
+                    {/* Detailed Itinerary */}
+                    <div>
+                      <Typography variant="h6">Detailed Itinerary</Typography>
+                      <ArrayField source="itinerary" label="Day-wise Itinerary">
+                        <Grid container spacing={2}>
+                          {record?.itinerary?.map((item: any, index: number) => (
+                            <Grid item xs={12} key={index}>
+                              <Card variant="outlined" sx={{ p: 2 }}>
+                                <Typography variant="subtitle1">Day {index + 1}: {item.title}</Typography>
+                                <RichTextField source="discription" record={item} label="Description" />
+                              </Card>
+                            </Grid>
+                          ))}
+                        ))}
+                      </Grid>
+                    </ArrayField>
+                    </div>
+
+                    {/* Inclusion */}
+                    <div>
+                      <Typography variant="h6">Inclusions</Typography>
+                      <RichTextField source="inclusion" label="Inclusions" />
+                    </div>
+
+                    {/* Exclusion */}
+                    <div>
+                      <Typography variant="h6">Exclusions</Typography>
+                      <RichTextField source="exclusion" label="Exclusions" />
+                    </div>
+
+                    {/* Other Important Fields */}
+                    <Stack direction="row" spacing={2}>
+                      <TextField source="vendor_discount" label="Vendor Discount (%)" />
+                      <TextField source="pickup_location" label="Pickup Location" />
+                    </Stack>
+
+                    <Stack direction="row" spacing={2}>
+                      <TextField source="start_point" label="Starting Point" />
+                      <TextField source="end_point" label="Ending Point" />
+                    </Stack>
+
+                    <Stack direction="row" spacing={2}>
+                      <TextField source="mode_of_travel" label="Mode of Travel" />
+                      <DateField source="package_valid_to" label="Valid Until" />
+                    </Stack>
+
+                    {/* Other Info */}
+                    <div>
+                      <Typography variant="h6">Other Information</Typography>
+                      <RichTextField source="otherInfo" label="Other Info" />
+                    </div>
+                  </Stack>
+                </SimpleShowLayout>
+              </CardContent>
+            </Card>
           </Grid>
-        </CardContent>
-      </Card>
-    </Container>
+        </Grid>
+      </div>
+    </ShowBase>
   );
 };
-
-export default ViewDetails;

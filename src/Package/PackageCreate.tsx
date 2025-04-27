@@ -19,6 +19,7 @@ import {
   ArrayInput,
   SimpleFormIterator,
   number,
+  DateInput,
 } from "react-admin";
 import {
   ClearButtons,
@@ -83,40 +84,35 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required(),unique({filter:{vendorId: user?.vendorId }})]}
+                      validate={[required(), unique({ filter: { vendorId: user?.vendorId } })]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="price"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="durationDays"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
-                    <ReferenceInput
+                    <TextInput
+                      fullWidth
                       source="destination"
-                      reference="destination"
-                    >
-                      <SelectInput
-                        fullWidth
-                        optionText="title"
-                        validate={[required()]}
-                      />
-                    </ReferenceInput>
+                      validate={[required(), number()]}
+                    />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="availableSlots"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-12">
@@ -199,22 +195,6 @@ export const PackageCreate = () => {
                       }
                       fullWidth
                       source={"inclusion"}
-                      validate={[required()]}
-                    />
-                  </div>
-                  <div className="col-md-12">
-                  <RichTextInput
-                      toolbar={
-                        <RichTextInputToolbar>
-                          <FormatButtons size={"small"} />
-                          <ListButtons size={"small"} />
-                          <LinkButtons size={"small"} />
-                          <ClearButtons size={"small"} />
-                        </RichTextInputToolbar>
-                      }
-                      fullWidth
-                      source={"exclusion"}
-                      validate={[required()]}
                     />
                   </div>
                   <div className="col-md-12">
@@ -228,8 +208,64 @@ export const PackageCreate = () => {
                         </RichTextInputToolbar>
                       }
                       fullWidth
+                      source={"exclusion"}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="vendor_discount"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="pickup_location"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="start_point"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="end_point"
+                    />
+                  </div>
+                  <div className="col-md-12">
+                    <TextInput
+                      fullWidth
+                      source="mode_of_travel"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <DateInput
+                      fullWidth
+                      source="start_date"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <DateInput
+                      fullWidth
+                      source="end_date"
+                    />
+                  </div>
+                  
+                  <div className="col-md-12">
+                    <RichTextInput
+                      toolbar={
+                        <RichTextInputToolbar>
+                          <FormatButtons size={"small"} />
+                          <ListButtons size={"small"} />
+                          <LinkButtons size={"small"} />
+                          <ClearButtons size={"small"} />
+                        </RichTextInputToolbar>
+                      }
+                      fullWidth
                       source={"otherInfo"}
-                      validate={[required()]}
                     />
                   </div>
                 </div>
