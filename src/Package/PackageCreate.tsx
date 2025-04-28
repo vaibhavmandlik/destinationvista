@@ -105,7 +105,7 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="destination"
-                      validate={[required(), number()]}
+                      validate={[required()]}
                     />
                   </div>
                   <div className="col-md-6">
