@@ -74,6 +74,30 @@ const createPackageFormData = (
 
   return formData;
 };
+
+
+function jsonToFormData(obj:any, form = new FormData(), namespace = '') {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const formKey = namespace ? `${namespace}[${key}]` : key;
+      const value = obj[key];
+
+      if (value?.rawFile instanceof File || value?.rawFile instanceof Blob) {
+        // Directly append files
+        form.append(formKey, value.rawFile);
+      } else if (typeof value === 'object' && value !== null) {
+        // Recursively handle nested objects
+        jsonToFormData(value, form, formKey);
+      } else if (value !== undefined && value !== null) {
+        // Append primitives (string, number, boolean)
+        form.append(formKey, value);
+      }
+    }
+  }
+  return form;
+}
+
+
 export const dataProviders = {
   ...baseDataProvider,
   create: (resource, params) => {
@@ -93,6 +117,13 @@ export const dataProviders = {
         method: "POST",
         body: formData,
       }).then(({ json }) => ({ data: json }));
+    }else if (resource === "vendor"){
+      const formData = jsonToFormData(params.data);
+      debugger;
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
     }
 
     return baseDataProvider.create(resource, params);
@@ -101,6 +132,13 @@ export const dataProviders = {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       formData.append("id", params.id);
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "PUT",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
+    }else if (resource === "vendor"){
+      const formData = jsonToFormData(params.data);
+      debugger;
       return httpClient(`${apiUrl}/${resource}`, {
         method: "PUT",
         body: formData,

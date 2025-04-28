@@ -1,12 +1,9 @@
 import { Card, CardHeader } from "@mui/material";
-import * as React from "react";
+
 import {
-  Edit,
   SimpleForm,
   TextInput,
   required,
-  NumberInput,
-  FileInput,
   useGetIdentity,
   Title,
   ImageInput,
@@ -18,6 +15,7 @@ import {
   SimpleFormIterator,
   number,
   EditBase,
+  DateInput,
 } from "react-admin";
 import {
   ClearButtons,
@@ -201,7 +199,6 @@ export const PackageUpdate = () => {
                       }
                       fullWidth
                       source={"inclusion"}
-                      validate={[required()]}
                     />
                   </div>
                   <div className="col-md-12">
@@ -216,7 +213,42 @@ export const PackageUpdate = () => {
                       }
                       fullWidth
                       source={"exclusion"}
-                      validate={[required()]}
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="vendor_discount"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="pickup_location"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="start_point"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="end_point"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <TextInput
+                      fullWidth
+                      source="mode_of_travel"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <DateInput
+                      fullWidth
+                      source="package_valid_to"
                     />
                   </div>
                   <div className="col-md-12">
@@ -231,7 +263,6 @@ export const PackageUpdate = () => {
                       }
                       fullWidth
                       source={"otherInfo"}
-                      validate={[required()]}
                     />
                   </div>
                 </div>

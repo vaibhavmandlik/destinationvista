@@ -42,7 +42,6 @@ import MyLoginPage from "./pages/login/LoginPage";
 import { dataProviders } from "./DataProviders";
 import { BookingList } from "./Booking/BookingList";
 import { DestinationList } from "./Destination/DestinationList";
-import ViewDetails from "./Package/ViewDetails";
 import { UserShow } from "./User/UserShow";
 import VendorDashboard from "./VendorDashboard/VendorDashboard";
 import AdminLayout from "./AdminLayout";
@@ -53,6 +52,7 @@ import PackageShow from "./PackageAdmin/PackageShow";
 import SupportTicket from "./SupportTicket/SupportTicket";
 import AdminSupport from "./AdminSupport/AdminSupport";
 import UserLoginPage from "./pages/login/UserLoginPage";
+import { ViewDetails } from "./Package/ViewDetails";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -87,8 +87,8 @@ const VendorRoute: React.FC = () => {
         list={PackageList}
         create={PackageCreate}
         edit={PackageUpdate}
-        // show={ShowGuesser}
-        show={ViewDetails}
+        show={ShowGuesser}
+        // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} />

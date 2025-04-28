@@ -8,6 +8,7 @@ import {
   NumberField,
   ReferenceField,
   ReferenceManyCount,
+  ShowButton,
   TextField,
   useDataProvider,
   useGetIdentity,
@@ -18,6 +19,7 @@ import { Switch } from "@mui/material";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 
 import ImageField from "../components/CustomFields/ImageField";
+import RatingStars from "./RatingStarts";
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
 
@@ -28,12 +30,13 @@ export const PackageList = () => {
           <TextField source="id" />
           <ImageField source="imagePaths" />
           <TextField source="title" />
+          <FunctionField render={record => (<RatingStars rating={record.rating} />)} />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
           <NumberField label={"duration"} source="durationDays" />
 
-          <ReferenceField source="destination" reference="destination">
-            <TextField source="title" />
-          </ReferenceField>
+          {/* <ReferenceField source="destination" reference="destination"> */}
+            <TextField source="destination" />
+          {/* </ReferenceField> */}
 
           <ReferenceManyCount
             label="Booking"
@@ -82,6 +85,7 @@ export const PackageList = () => {
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
 
                 <EditButton variant="text" color="primary" />
+                <ShowButton variant="text" />
               </div>
             )}
           />
