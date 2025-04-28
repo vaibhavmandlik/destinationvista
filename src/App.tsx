@@ -52,6 +52,7 @@ import DestinationCreate from "./Destination/DestinationCreate";
 import PackageShow from "./PackageAdmin/PackageShow";
 import SupportTicket from "./SupportTicket/SupportTicket";
 import AdminSupport from "./AdminSupport/AdminSupport";
+import UserLoginPage from "./pages/login/UserLoginPage";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -167,7 +168,7 @@ const App: React.FC = () => {
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="registration" element={<Registration />} />
-          <Route path="loginpage" element={<LoginPage />} />
+          <Route path="loginpage" element={<UserLoginPage/>} />
           <Route path="bookingshistory" element={<BookingsHistory />} />
           <Route path="packagecart" element={<PackageCart />} />
           <Route path="profile" element={<Profile />} />

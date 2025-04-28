@@ -5,9 +5,9 @@ import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
-// import axios from "axios";
-// import {toast,ToastContainer } from "react-toastify";
-// const url = `${import.meta.env.VITE_API_URL}/package`;
+import axios from "axios";
+import {toast,ToastContainer } from "react-toastify";
+const url = `${import.meta.env.VITE_API_URL}/package`;
 
 // Define the `Package` type for type safety
 type Package = {
@@ -91,31 +91,31 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   isSearchBar = true,
 }) => {
   const [packagesToShow, setPackagesToShow] = useState<Package[]>(initialPackages);
-  // const [loading, setLoading] = useState<boolean>(true);
-  // const [errortext, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [errortext, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // useEffect(()=>{
-  //   const fetchPackagesData = async ()=>{
-  //     try {
-  //       const response = await axios.get(url);
-  //       setPackagesToShow(response.data);
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setError('Failed to fetch packages . Plaease try again');
-  //       toast.error(errortext,{
-  //         position: "top-right",
-  //         autoClose: 3000,
-  //         closeOnClick: true,
-  //         theme: "light",
-  //         pauseOnHover: true,
-  //       });
-  //       setLoading(false);
-  //     }   
-  //   };
+  useEffect(()=>{
+    const fetchPackagesData = async ()=>{
+      try {
+        const response = await axios.get(url);
+        setPackagesToShow(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Failed to fetch packages . Plaease try again');
+        toast.error(errortext,{
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          theme: "light",
+          pauseOnHover: true,
+        });
+        setLoading(false);
+      }   
+    };
 
-  //   fetchPackagesData();
-  // },[]);
+    fetchPackagesData();
+  },[]);
 
   // Redirect to the details page
   const onDetailsBookNowClick = (pkg : Package) => {
@@ -128,8 +128,8 @@ const PackagesList: React.FC<TourPackagesProps> = ({
     setPackagesToShow((prevPackages) => [...prevPackages, ...morePackages]);
   };
 
-  // if (loading) return <p>Loading packages...</p>;
-  // if (errortext) return <ToastContainer/>;
+  if (loading) return <p>Loading packages...</p>;
+  if (errortext) return <ToastContainer/>;
 
   return (
     <>
@@ -244,7 +244,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                 top: 0,
                 left: `${Number(pkg.id) % 2 === 0 ? '10%' :'40%'}`,
                 zIndex: `modal`,
-                p:5
+                p:5,
               }}
             >
               <p>
@@ -252,9 +252,12 @@ const PackagesList: React.FC<TourPackagesProps> = ({
               {pkg.title}
               </strong>
               </p>
-              <p>
+              <Box sx={{overflow:'hidden',
+                width:'50ch',
+                height:'10ch'
+              }}>
               {pkg.description}
-              </p>
+              </Box>
               <p>
                 <strong>
                  Price:{pkg.price}
