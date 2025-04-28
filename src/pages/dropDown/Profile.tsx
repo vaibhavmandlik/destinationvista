@@ -26,7 +26,7 @@ interface ProfileDetails {
 
 const Profile: React.FC = () => {
   const navigate = useNavigate();
-  const id = localStorage.getItem("userid");
+  const id = localStorage.getItem("id");
   const token = localStorage.getItem("token");
 
   const [data, setData] = useState<ProfileDetails | null>(null);
@@ -49,8 +49,8 @@ const Profile: React.FC = () => {
         position: "top-right",
         autoClose: 3000,
       });
-      localStorage.clear();
-      navigate("/loginpage");
+      // localStorage.clear();
+      navigate("/home");
       return;
     }
 
@@ -73,7 +73,7 @@ const Profile: React.FC = () => {
           position: "top-right",
           autoClose: 3000,
         });
-        navigate("/loginpage");
+        navigate("/home");
       }
     };
 

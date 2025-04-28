@@ -86,7 +86,6 @@ export const ViewDetails = () => {
                               </Card>
                             </Grid>
                           ))}
-                        ))}
                       </Grid>
                     </ArrayField>
                     </div>

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { LoginContext } from '../../LoginContext';
 
 const url = `${import.meta.env.VITE_API_URL}/user/login`;
 
 const UserLoginPage: React.FC = () => {
+  const {setIsLogin} = useContext(LoginContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,10 +20,11 @@ const UserLoginPage: React.FC = () => {
 
     try {
       const response = await axios.post(url, { email, password });
-      const { token } = response.data;
-
-      localStorage.setItem('token', token);
+      const accessToken  = response.data.data.accessToken;
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('id',response.data.data.id);
       toast.success('Login successful!');
+      setIsLogin(true);
       setTimeout(() => navigate('/'), 1500);
     } catch (error: any) {
       console.error('Login error:', error);

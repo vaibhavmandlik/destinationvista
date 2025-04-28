@@ -3,8 +3,6 @@ import {
   Admin,
   CustomRoutes,
   fetchUtils,
-  List,
-  ListGuesser,
   Resource,
   ShowGuesser,
 } from "react-admin";
@@ -21,12 +19,12 @@ import { PackageUpdate } from "./Package/PackageUpdate";
 import VendorLayout from "./VendorLayout";
 import theme from "./Theme";
 import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { LoginProvider } from "./LoginContext";
 import Footer from "./components/footer/Footer";
 import DynamicHeader from "./components/header/DynamicHeader";
 import AboutUs from "./pages/about/AboutUs";
 import Blogs from "./pages/blogs/Blogs";
 import Contact from "./pages/contact/Contact";
-import LoginPage from "./pages/login/LoginPage";
 import PackageDetailsWrapper from "./pages/packages/PackageDetailsWrapper";
 import PackagesList from "./pages/packages/PackagesList";
 import Registration from "./pages/registration/Registration";
@@ -129,7 +127,7 @@ const AdminRoute: React.FC = () => {
         list={PackageAdminList}
         edit={PackageUpdate}
         show={PackageShow}
-      // show={ViewDetails}
+        // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />
@@ -160,6 +158,8 @@ const OpenRoute: React.FC = () => (
 const App: React.FC = () => {
   return (
     <Router>
+      <LoginProvider>
+
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="home" element={<Home />} />
@@ -176,24 +176,25 @@ const App: React.FC = () => {
             path="packages"
             element={
               <PackagesList
-                heading={""}
-                subheading={""}
-                packages={[]}
-                onDetailsBookNowClick={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
-                onExploreMoreClick={function (): void {
-                  throw new Error("Function not implemented.");
-                }}
+              heading={""}
+              subheading={""}
+              packages={[]}
+              onDetailsBookNowClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
+              onExploreMoreClick={function (): void {
+                throw new Error("Function not implemented.");
+              }}
               />
             }
-          />
+            />
           <Route path="packages/:id" element={<PackageDetailsWrapper />} />
           <Route index element={<Home />} />
         </Route>
         <Route path="Vendor/*" element={<VendorRoute />} />
         <Route path="admin/*" element={<AdminRoute />} />
       </Routes>
+    </LoginProvider>
     </Router>
   );
 }
