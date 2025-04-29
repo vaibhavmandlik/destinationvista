@@ -11,7 +11,7 @@ interface Package {
   title: string;
   description: string;
   price: string;
-  image: string;
+  imagePaths: string[];
 }
 interface BookingFormProps {
   pkg: Package;

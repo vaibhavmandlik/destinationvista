@@ -3,6 +3,7 @@ import { useParams, Navigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import PackageDetails from "./PackageDetails";
 import axios from "axios";
+import Spinner from "../../components/Loader/Spinner";
 
 const url = `${import.meta.env.VITE_API_URL}/package`;
 
@@ -61,7 +62,6 @@ const PackageDetailsWrapper: React.FC = () => {
 
       try {
         const response = await axios.get(`${url}/${id}`);
-        console.log(response.data);
         setPackageDetails(mapApiDataToPacksgeDetails(response.data));
       } catch (error) {
         setError("Failed to fetch package details");
@@ -81,7 +81,7 @@ const PackageDetailsWrapper: React.FC = () => {
 
   const selectedPackage = packageDetails;
 
-  if (loading) return <p>Loading package details...</p>;
+  if (loading) return <div className="text-center h4 m-3 p-5"> <Spinner/></div>;
   if (error) return <p>{error}</p>;
   if (!selectedPackage) return <Navigate to="/packages" />;
   return <PackageDetails {...selectedPackage} />;

@@ -7,6 +7,7 @@ import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
 import axios from "axios";
 import {toast,ToastContainer } from "react-toastify";
+import Spinner from "../../components/Loader/Spinner";
 const url = `${import.meta.env.VITE_API_URL}/package`;
 
 // Define the `Package` type for type safety
@@ -15,7 +16,7 @@ type Package = {
   title: string;
   description: string;
   price: string;
-  image: string;
+  imagePaths: string[];
 };
 
 interface TourPackagesProps {
@@ -23,46 +24,46 @@ interface TourPackagesProps {
   subheading: string;
   packages: Package[]; // Array of package objects
   onDetailsBookNowClick: (pkg: Package) => void;
-  // onBookNowClick: (pkg: Package) => void;
+  onBookNowClick: (pkg: Package) => void;
   onExploreMoreClick: () => void;
   isShowHeader?: boolean;
   isSearchBar?: boolean;
 }
 // Initial tour packages
-const initialPackages: Package[] = [
-  {
-    id: 1,
-    title: "Delhi City Tour",
-    description:
-      "Explore the vibrant city of Delhi, known for its bustling streets, historic sites, and the iconic India Gate.",
-    price: "₹4,500",
-    image: "/img/delhi.jpg",
-  },
-  {
-    id: 2,
-    title: "Mumbai City Tour",
-    description:
-      "Explore the vibrant city of Mumbai, known for its bustling streets, historic sites, and the iconic Gateway of India.",
-    price: "₹3,500",
-    image: "/img/mumbai-tour.jpg",
-  },
-  {
-    id: 3,
-    title: "Lonavala Weekend Getaway",
-    description:
-      "Enjoy a peaceful weekend amidst the scenic beauty of Lonavala, with mesmerizing views and tranquil surroundings.",
-    price: "₹5,000",
-    image: "/img/lonavla.jpg",
-  },
-  {
-    id: 4,
-    title: "Mahabaleshwar Nature Retreat",
-    description:
-      "Experience the beauty of Mahabaleshwar, known for its strawberry farms, waterfalls, and breathtaking landscapes.",
-    price: "₹6,500",
-    image: "/img/mahabaleshwar.jpg",
-  },
-];
+// const initialPackages: Package[] = [
+//   {
+//     id: 1,
+//     title: "Delhi City Tour",
+//     description:
+//       "Explore the vibrant city of Delhi, known for its bustling streets, historic sites, and the iconic India Gate.",
+//     price: "₹4,500",
+//     image: "/img/delhi.jpg",
+//   },
+//   {
+//     id: 2,
+//     title: "Mumbai City Tour",
+//     description:
+//       "Explore the vibrant city of Mumbai, known for its bustling streets, historic sites, and the iconic Gateway of India.",
+//     price: "₹3,500",
+//     image: "/img/mumbai-tour.jpg",
+//   },
+//   {
+//     id: 3,
+//     title: "Lonavala Weekend Getaway",
+//     description:
+//       "Enjoy a peaceful weekend amidst the scenic beauty of Lonavala, with mesmerizing views and tranquil surroundings.",
+//     price: "₹5,000",
+//     image: "/img/lonavla.jpg",
+//   },
+//   {
+//     id: 4,
+//     title: "Mahabaleshwar Nature Retreat",
+//     description:
+//       "Experience the beauty of Mahabaleshwar, known for its strawberry farms, waterfalls, and breathtaking landscapes.",
+//     price: "₹6,500",
+//     image: "/img/mahabaleshwar.jpg",
+//   },
+// ];
 
 // Additional tour packages
 const morePackages: Package[] = [
@@ -72,7 +73,7 @@ const morePackages: Package[] = [
     description:
       "Relax and unwind at the beautiful beaches of Goa, famous for its coastal beauty and vibrant nightlife.",
     price: "₹7,000",
-    image: "/img/goa.jpg",
+    imagePaths: ["/img/goa.jpg"],
   },
   {
     id: 6,
@@ -80,7 +81,7 @@ const morePackages: Package[] = [
     description:
       "Explore the tranquil backwaters of Kerala in a houseboat cruise, amidst lush green landscapes.",
     price: "₹9,000",
-    image: "/img/kerla.jpeg",
+    imagePaths: ["/img/kerla.jpeg"],
   },
 ];
 
@@ -90,7 +91,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   isShowHeader = true,
   isSearchBar = true,
 }) => {
-  const [packagesToShow, setPackagesToShow] = useState<Package[]>(initialPackages);
+  const [packagesToShow, setPackagesToShow] = useState<Package[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errortext, setError] = useState<string | null>(null);
   const navigate = useNavigate();
@@ -120,15 +121,16 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   // Redirect to the details page
   const onDetailsBookNowClick = (pkg : Package) => {
     navigate(`/packages/${pkg.id}`);
-    debugger;
   };
+
+  const onBoolNoeClick = (pkg:Package)=>{}
 
   // Appends more packages to the list
   const onExploreMoreClick = () => {
     setPackagesToShow((prevPackages) => [...prevPackages, ...morePackages]);
   };
 
-  if (loading) return <p>Loading packages...</p>;
+  if (loading) return  <Spinner/>;
   if (errortext) return <ToastContainer/>;
 
   return (
@@ -162,50 +164,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
             <h1>{heading}</h1>
           </div>
 
-          {/* Package List */}
-          {/* <div className="row">
-            {packagesToShow.map((pkg) => (
-              <div className="col-lg-12 mb-4" key={pkg.id}>
-                <div className="card border-0 shadow" style={{ width: "100%" }}>
-                  <div className="row no-gutters">
-                    <div className="col-md-4">
-                      <img
-                        src={pkg.image}
-                        className="card-img"
-                        alt={`Image of ${pkg.title}`}
-                      />
-                    </div>
-                    <div className="col-md-8">
-                      <div className="card-body">
-                        <h5 className="card-title">{pkg.title}</h5>
-                        <p className="card-text">{pkg.description}</p>
-                        <p className="text-primary">
-                          <strong>Price: {pkg.price}</strong>
-                        </p>
-                        <div className="d-flex">
-                          <button
-                            className="btn btn-outline-primary"
-                            onClick={() => onDetailsBookNowClick(pkg)}
-                            aria-label={`View details of ${pkg.title}`}
-                          >
-                            Details
-                          </button>
-                          <button
-                            className="btn btn-primary ml-2"
-                            onClick={() => onDetailsBookNowClick(pkg)}
-                            aria-label={`Book now for ${pkg.title}`}
-                          >
-                            Book Now
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div> */}
-          
+         {/* Package crads showing*/}
           {packagesToShow.map((pkg)=>(
             <Typography
             component="div"
@@ -220,7 +179,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
             
              <Box
               component="img"
-              src={pkg.image}
+              src={pkg.imagePaths[0]}
               sx={{
                 borderRadius:2,
                 width: "30%",
@@ -248,17 +207,14 @@ const PackagesList: React.FC<TourPackagesProps> = ({
               }}
             >
               <p>
-              <strong>
-              {pkg.title}
-              </strong>
+              <strong dangerouslySetInnerHTML={{__html : pkg.title}}/>
               </p>
               <Box sx={{overflow:'hidden',
                 width:'50ch',
                 height:'10ch'
-              }}>
-              {pkg.description}
-              </Box>
-              <p>
+              }} dangerouslySetInnerHTML={{__html: pkg.description}}>
+                </Box>
+              <p className="mt-2">
                 <strong>
                  Price:{pkg.price}
                 </strong>

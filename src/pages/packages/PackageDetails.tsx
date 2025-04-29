@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Drawer, Box } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, Drawer, Box, Collapse } from "@mui/material";
 import BookingForm from "./BookingForm"; // Ensure correct import path
 import PageHeader from "../pageheader/pageHeader";
 import Carousel from "bootstrap/js/dist/carousel";
@@ -63,8 +63,18 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
     setIsDrawerOpen(false);
   };
 
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const toggleDescription = () => {
+    setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
+
   const includedItems = inclusion ? inclusion.split("\n") : [];
   const excludedItems = exclusion ? exclusion.split("\n") : [];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
@@ -92,22 +102,27 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                           index === 0 ? "active" : " "
                         } `}
                       >
-                        <img src={`${url}/image`} 
+                        <img src={`${url}/${image}`} 
                         className="img-fluid w-100 mb-4 rounded shadow-lg"
                         alt={title}
                         />
                       </div>
                     ))}
                 </div>
-                {/* <img
-              className="img-fluid w-100 mb-4 rounded shadow-lg"
-              src={imagePaths[0]}
-              alt={title}
-              /> */}
 
                 <Box>
                   <h2 className="mb-3 font-weight-bold text-dark">{title}</h2>
-                  <div dangerouslySetInnerHTML={{ __html: description }} />
+                  <Box sx={{mb:2}}>
+                    <Collapse in={isDescriptionExpanded} collapsedSize={120}>
+                    <div dangerouslySetInnerHTML={{__html:description}}/>
+                    </Collapse>
+                    {description.length > 300 && (
+                      <Button size="small" onClick={toggleDescription}
+                      sx={{textTransform:'none',mt:1}} color="success">
+                      {isDescriptionExpanded ? "Read Less" : "Read More"}
+                    </Button>
+                    )}
+                  </Box>
 
                   <div className="d-flex align-items-center mb-4">
                     <p className="h5 mb-0 mr-3">
@@ -181,11 +196,14 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                   <ul className="list-unstyled pl-3">
                     {includedItems.map((item, index) => (
                       <li key={index}>
+                        <div className="d-flex ">
                         <i
                           className="fa fa-plus-circle"
                           style={{ color: "#28a745", marginRight: 5 }}
-                        ></i>
-                        {item}
+                          >
+                        </i>
+                       <div className="h6" dangerouslySetInnerHTML={{__html:item}}/>
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -205,11 +223,13 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                   <ul className="list-unstyled pl-3">
                     {excludedItems.map((item, index) => (
                       <li key={index}>
+                        <div className="d-flex">
                         <i
                           className="fa fa-minus-circle"
                           style={{ color: "#28a745", marginRight: 5 }}
-                        ></i>
-                        {item}
+                          ></i>
+                        <div className="h6" dangerouslySetInnerHTML={{__html:item}}/>
+                        </div>
                       </li>
                     ))}
                   </ul>
