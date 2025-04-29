@@ -71,7 +71,7 @@ const VendorRoute: React.FC = () => {
       loginPage={MyLoginPage}
       layout={VendorLayout}
       theme={theme}
-      dashboard={VendorDashboard}
+      // dashboard={VendorDashboard}
     >
 
       <Resource
@@ -193,6 +193,7 @@ const App: React.FC = () => {
         </Route>
         <Route path="Vendor/*" element={<VendorRoute />} />
         <Route path="admin/*" element={<AdminRoute />} />
+        <Route path="open/*" element={<OpenRoute />} />
       </Routes>
     </LoginProvider>
     </Router>

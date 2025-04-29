@@ -101,16 +101,11 @@ export const PackageUpdate = () => {
                     />
                   </div>
                   <div className="col-md-6">
-                    <ReferenceInput
+                    <TextInput
+                      fullWidth
                       source="destination"
-                      reference="destination"
-                    >
-                      <SelectInput
-                        fullWidth
-                        optionText="title"
-                        validate={[required()]}
-                      />
-                    </ReferenceInput>
+                      validate={[required()]}
+                    />
                   </div>
                   <div className="col-md-6">
                     <TextInput
