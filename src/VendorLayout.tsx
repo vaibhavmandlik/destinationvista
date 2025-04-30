@@ -227,7 +227,7 @@ export const MyMenu = () => {
                   leftIcon={<PiChatCircleDotsBold />}
                 />
                 <Menu.Item
-                      to="/vendor/support-ticket"
+                      to="/vendor/ticket"
                       primaryText="Support Ticket"
                       leftIcon={<FaBookMedical />}
                     />

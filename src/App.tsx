@@ -3,6 +3,7 @@ import {
   Admin,
   CustomRoutes,
   fetchUtils,
+  ListGuesser,
   Resource,
   ShowGuesser,
 } from "react-admin";
@@ -51,6 +52,8 @@ import SupportTicket from "./SupportTicket/SupportTicket";
 import AdminSupport from "./AdminSupport/AdminSupport";
 import UserLoginPage from "./pages/login/UserLoginPage";
 import { ViewDetails } from "./Package/ViewDetails";
+import CreateTicket from "./SupportTicket/CreateTicket";
+import { TicketList } from "./SupportTicket/Ticket";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -97,6 +100,7 @@ const VendorRoute: React.FC = () => {
         show={UserShow}
         edit={UserUpdate}
       />
+      <Resource name="ticket" list={TicketList} create={CreateTicket}/>
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
       </CustomRoutes>
