@@ -37,7 +37,7 @@ import logo from "./assets/logo.svg";
 import { SwitchVendor } from "./SwitchVendor";
 import useHasVendors from "./hook/useHasvendors";
 import { JSONTree } from "react-json-tree";
-import { Home } from "@mui/icons-material";
+import { Dashboard, Home } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 // Custom Sidebar (Optional)
@@ -104,37 +104,25 @@ export const MyMenu = () => {
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
               >
-               <Menu.Item to={"/vendor/"} primaryText="Home" leftIcon={<Home/>}/>
+                {/* <Menu.Item to={"/vendor/"} primaryText="Home" leftIcon={<Home/>}/> */}
+                <Menu.Item to={"/vendor/"} primaryText="Home" leftIcon={<Dashboard />} />
                 <Menu.Item
-                to="/vendor/vendor"
-                primaryText="Agency"
-                leftIcon={<PiSuitcaseBold />}
-              />
+                  to="/vendor/vendor"
+                  primaryText="Agency"
+                  leftIcon={<PiSuitcaseBold />}
+                />
+                <Menu.Item
+                  to="/vendor/package"
+                  primaryText="Package"
+                  leftIcon={<PiPackageBold />}
+                />
+                <Menu.Item
+                  to="/vendor/booking"
+                  primaryText="Booking"
+                  leftIcon={<PiTicket />}
+                />
+                
 
-                {(
-                  <>
-                    <Menu.Item
-                      to="/vendor/package"
-                      primaryText="Package"
-                      leftIcon={<PiPackageBold />}
-                    />
-                    <Menu.Item
-                      to="/vendor/booking"
-                      primaryText="Booking"
-                      leftIcon={<PiTicket />}
-                    />
-                    {/* <Menu.Item
-                      to="/vendor/destination"
-                      primaryText="Destination"
-                      leftIcon={<PiMountains />}
-                    />
-                    <Menu.Item
-                      to="/vendor/support-ticket"
-                      primaryText="Support Ticket"
-                      leftIcon={<FaBookMedical />}
-                    /> */}
-                  </>
-                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -170,7 +158,7 @@ export const MyMenu = () => {
                 style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
               >
                 <Menu.Item
-                  to={'/vendor/vendor/'+hasVendors}
+                  to={'/vendor/vendor/' + hasVendors}
                   primaryText="Edit Profile"
                   leftIcon={<PiUserCircleBold />}
                 />
@@ -223,16 +211,16 @@ export const MyMenu = () => {
                   primaryText="Mailing Services"
                   leftIcon={<PiEnvelopeSimpleBold />}
                 />
-                <Menu.Item
-                  to="/admin/connection"
-                  primaryText="Chat with super Admin"
-                  leftIcon={<PiChatCircleDotsBold />}
+               <Menu.Item
+                  to="/vendor/vendor-chat"
+                  primaryText="Chat with admin"
+                  leftIcon={<PiTicket />}
                 />
                 <Menu.Item
-                      to="/vendor/ticket"
-                      primaryText="Support Ticket"
-                      leftIcon={<FaBookMedical />}
-                    />
+                  to="/vendor/ticket"
+                  primaryText="Support Ticket"
+                  leftIcon={<FaBookMedical />}
+                />
                 {/* <Menu.Item
                   to="/admin/tickets"
                   primaryText="Ticket Rising"
