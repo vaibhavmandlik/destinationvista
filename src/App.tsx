@@ -54,6 +54,7 @@ import UserLoginPage from "./pages/login/UserLoginPage";
 import { ViewDetails } from "./Package/ViewDetails";
 import CreateTicket from "./SupportTicket/CreateTicket";
 import { TicketList } from "./SupportTicket/Ticket";
+import { VendorChat } from "./Vendor/VendorChat";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -74,7 +75,7 @@ const VendorRoute: React.FC = () => {
       loginPage={MyLoginPage}
       layout={VendorLayout}
       theme={theme}
-      // dashboard={VendorDashboard}
+      dashboard={VendorDashboard}
     >
 
       <Resource
@@ -103,6 +104,7 @@ const VendorRoute: React.FC = () => {
       <Resource name="ticket" list={TicketList} create={CreateTicket}/>
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
+        <Route path="/vendor-chat" element={<VendorChat />} />
       </CustomRoutes>
     </Admin>
   );
