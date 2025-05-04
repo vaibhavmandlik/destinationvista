@@ -38,6 +38,7 @@ import { SwitchVendor } from "./SwitchVendor";
 import useHasVendors from "./hook/useHasvendors";
 import { JSONTree } from "react-json-tree";
 import { Home } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 // Custom Sidebar (Optional)
 export const MySidebar = ({ children }) => {
@@ -65,6 +66,7 @@ export const MyMenu = () => {
   const { data: user } = useGetIdentity();
   const { data: VendorList } = useGetList('vendor', { filter: { 'userId': user?.id } });
   const data = VendorList?.map((item: any) => ({ value: item.id, label: item.agencytitle })) || [];
+  const navigate = useNavigate();
   return (
     <Menu>
       <br />
@@ -168,7 +170,7 @@ export const MyMenu = () => {
                 style={{ overflow: "hidden", marginLeft: "10px", marginTop: "8px" }}
               >
                 <Menu.Item
-                  to="/profile/edit"
+                  to={'/vendor/vendor/'+hasVendors}
                   primaryText="Edit Profile"
                   leftIcon={<PiUserCircleBold />}
                 />

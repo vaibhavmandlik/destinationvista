@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 
 const useHasVendors = () => {
   const getVendorFromLocalStorage = () => {
-    return !!localStorage.getItem('selectedVendor');
+    return localStorage.getItem('selectedVendor');
   };
 
-  const [hasVendor, setHasVendor] = useState<boolean>(getVendorFromLocalStorage());
+  const [hasVendor, setHasVendor] = useState<string | null>(getVendorFromLocalStorage());
 
   // Update the state whenever the localStorage changes within the same window
   const handleStorageChange = () => {
@@ -28,7 +28,7 @@ const useHasVendors = () => {
     // Watch for changes across different windows/tabs using the storage event
     const handleStorageEvent = (event: StorageEvent) => {
       if (event.key === 'selectedVendor') {
-        setHasVendor(!!event.newValue);
+        setHasVendor(event.newValue);
       }
     };
 
