@@ -17,6 +17,8 @@ import {
   TextInput,
   NumberInput,
   required,
+  Toolbar,
+  SaveButton,
 } from 'react-admin';
 import {
   Dialog,
@@ -135,11 +137,18 @@ export const PackageList = () => {
       </List>
 
       {/* Withdrawal Request Dialog */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Request Withdrawal</DialogTitle>
         <DialogContent>
           {selectedRecord && (
-            <SimpleForm onSubmit={handleSubmit}  record={selectedRecord}>
+            <SimpleForm onSubmit={handleSubmit} toolbar={
+              <Toolbar>
+                <SaveButton label="Submit" />
+                <Button onClick={handleClose} style={{ marginLeft: '1rem' }}>
+                  Cancel
+                </Button>
+              </Toolbar>
+            } record={selectedRecord}>
               <NumberInput
                 source="amount"
                 label="Amount"
@@ -153,10 +162,6 @@ export const PackageList = () => {
             </SimpleForm>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          
-        </DialogActions>
       </Dialog>
     </>
   );
