@@ -3,7 +3,7 @@ import { Button, Drawer, Box, Collapse } from "@mui/material";
 import BookingForm from "./BookingForm"; // Ensure correct import path
 import PageHeader from "../pageheader/pageHeader";
 import Carousel from "bootstrap/js/dist/carousel";
-const url = `${import.meta.env.VITE_API_URL}/package`;
+const url = `${import.meta.env.VITE_API_URL}`;
 
 // Define the types for the props
 type PackageDetailsProps = {
