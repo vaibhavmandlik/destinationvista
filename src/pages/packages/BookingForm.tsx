@@ -87,18 +87,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
         <div className="container py-5">
           <h2 className="mb-4 text-center font-weight-bold text-dark">
             {pkg.title}
-          </h2>
-          <p className="text-center text-muted mb-4">
-            Please{" "}
-            <Link
-              to="/loginPage"
-              className="text-primary"
-              onClick={handleLoginRedirect}
-            >
-              log in here
-            </Link>{" "}
-            to proceed with booking. Logging in is compulsory.
-          </p>
+          </h2> 
 
           <div className="bg-white p-5 rounded shadow-lg">
             <h4 className="mb-4 text-dark">Passenger Information</h4>
@@ -146,7 +135,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
               <div key={index} className="mb-4 passenger-section">
                 <h5 className="text-dark">Passenger {index + 1}</h5>
                 <div className="form-row">
-                  <div className="form-group col-md-6">
+                  <div className="form-group col">
                     <label>Full Name</label>
                     <input
                       type="text"
@@ -159,44 +148,20 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
                       }
                     />
                   </div>
-                  <div className="form-group col-md-6">
-                    <label>Age</label>
-                    <input
-                      type="number"
-                      placeholder="Enter age"
-                      min="1"
-                      required
-                      className="form-control"
-                      value={passenger.age}
-                      onChange={(e) =>
-                        handlePassengerChange(
-                          index,
-                          "age",
-                          parseInt(e.target.value, 10),
-                        )
-                      }
-                    />
-                  </div>
+                  
                 </div>
                 <div className="form-row">
-                  <div className="form-group col-md-6">
-                    <label>Gender</label>
-                    <select
-                      className="form-control"
-                      required
-                      value={passenger.gender}
-                      onChange={(e) =>
-                        handlePassengerChange(index, "gender", e.target.value)
-                      }
-                    >
-                      <option value="" disabled>
-                        Select gender
-                      </option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
+                <div className="form-group col-md-6">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  required
+                  className="form-control"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
                   <div className="form-group col-md-6">
                     <label>Contact Number</label>
                     <input
@@ -216,17 +181,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
 
             <h4 className="text-dark">Payment Information</h4>
             <div className="form-row mb-3">
-              <div className="form-group col-md-6">
-                <label>Email Address</label>
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  required
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
+              
               <div className="form-group col-md-6">
                 <label>Total Price</label>
                 <input

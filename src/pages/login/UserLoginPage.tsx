@@ -74,15 +74,7 @@ const UserLoginPage: React.FC = () => {
           <p className="text-center mt-3">
             <a href="#">Forgot Password?</a>
           </p>
-          <p className="text-center mt-2">Or login with</p>
-          <div className="text-center">
-            <button type="button" className="btn btn-outline-primary mr-2">
-              <i className="fab fa-facebook-f"></i> Facebook
-            </button>
-            <button type="button" className="btn btn-outline-danger">
-              <i className="fab fa-google"></i> Google
-            </button>
-          </div>
+          <p className="text-center mt-2">Or login with</p> 
           <p className="text-center mt-3">
             Don’t have an account? <a href="/registration">Sign Up</a>
           </p>

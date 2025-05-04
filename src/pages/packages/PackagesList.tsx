@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import Button from '@mui/material/Button';
 import { useNavigate } from "react-router-dom";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
 import axios from "axios";
 import {toast,ToastContainer } from "react-toastify";
 import Spinner from "../../components/Loader/Spinner";
-const url = `${import.meta.env.VITE_API_URL}/package`;
+import { Button, Drawer, Box, Collapse } from "@mui/material";
+import BookingForm from "./BookingForm"; 
+const url = `${import.meta.env.VITE_API_URL}`;
 
 // Define the `Package` type for type safety
 type Package = {
@@ -24,7 +24,6 @@ interface TourPackagesProps {
   subheading: string;
   packages: Package[]; // Array of package objects
   onDetailsBookNowClick: (pkg: Package) => void;
-  onBookNowClick: (pkg: Package) => void;
   onExploreMoreClick: () => void;
   isShowHeader?: boolean;
   isSearchBar?: boolean;
@@ -94,12 +93,14 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   const [packagesToShow, setPackagesToShow] = useState<Package[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errortext, setError] = useState<string | null>(null);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(()=>{
     const fetchPackagesData = async ()=>{
       try {
-        const response = await axios.get(url);
+        const response = await axios.get(`${url}/package`);
         setPackagesToShow(response.data);
         setLoading(false);
       } catch (error) {
@@ -123,7 +124,17 @@ const PackagesList: React.FC<TourPackagesProps> = ({
     navigate(`/packages/${pkg.id}`);
   };
 
-  const onBoolNoeClick = (pkg:Package)=>{}
+  const handleBookNowClick = (pkg: Package) =>{
+    setSelectedPackage(pkg);
+    setIsDrawerOpen(true);
+  }
+
+  const handleCloseBookingForm = () => {
+    setSelectedPackage(null);
+    setIsDrawerOpen(false);
+  };
+
+
 
   // Appends more packages to the list
   const onExploreMoreClick = () => {
@@ -166,9 +177,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
 
          {/* Package crads showing*/}
           {packagesToShow.map((pkg)=>(
-            <Typography
-            component="div"
-            variant="body1"
+            <div 
             style={{
               width: "100%",
               height:"40ch",
@@ -179,7 +188,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
             
              <Box
               component="img"
-              src={pkg.imagePaths[0]}
+              src={`${url}${pkg.imagePaths[0]}`}
               sx={{
                 borderRadius:2,
                 width: "30%",
@@ -221,13 +230,13 @@ const PackagesList: React.FC<TourPackagesProps> = ({
               </p>
               <div>
               <Button sx={{m:1}} color="success" variant="outlined" onClick={()=>{onDetailsBookNowClick(pkg)}}>More Details</Button>
-              <Button color="success" variant="contained" onClick={()=>{onDetailsBookNowClick(pkg)}}>Book Now</Button>
+              <Button color="success" variant="contained" onClick={()=>{handleBookNowClick(pkg)}}>Book Now</Button>
               </div>
             </Box>
-          </Typography>
+          </div>
           ))
           }
-          
+           
 
           {/* Explore More Packages Button */}
           <div className="text-center mt-4">
@@ -241,6 +250,40 @@ const PackagesList: React.FC<TourPackagesProps> = ({
           </div>
         </div>
       </div>
+
+      <ToastContainer/>
+
+      <Drawer
+                    anchor="right"
+                    open={isDrawerOpen}
+                    onClose={handleCloseBookingForm}
+                    sx={{
+                      "& .MuiDrawer-paper": {
+                        width: { xs: "100%", sm: 600 },
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        zIndex: `modal`,
+                        position:'absolute'
+                      },
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        padding: 2,
+                        overflowY: "auto",
+                        height: "100%",
+                        marginLeft: 1,
+                      }}
+                    >
+                      {selectedPackage && (
+                        <BookingForm
+                          pkg={selectedPackage}
+                          onClose={handleCloseBookingForm}
+                        />
+                      )}
+                    </Box>
+                  </Drawer>
 
       {/* Destination Section */}
       <div className="container-fluid py-5">
