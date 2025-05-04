@@ -33,7 +33,7 @@ export const CustomSelectInput = ({ register, label, placeholder, type, id, erro
                         }}
                     />
                 </div>
-                {showAddButton && (
+                {/* {showAddButton && (
                     <IconButton
                         size="small"
                         onClick={onAddClick}
@@ -41,7 +41,7 @@ export const CustomSelectInput = ({ register, label, placeholder, type, id, erro
                     >
                         <AddIcon />
                     </IconButton>
-                )}
+                )} */}
             </div>
             {errors && <div className="text-danger">{errors}</div>}
         </>

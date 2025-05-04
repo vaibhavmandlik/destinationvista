@@ -1,13 +1,13 @@
 // CreateTicket.tsx
 import React, { useState } from "react";
 import {
-  TextField,
   Button,
   Grid,
   MenuItem,
   Paper,
   Box,
 } from "@mui/material";
+import { Create, required, SimpleForm, TextInput } from "react-admin";
 
 interface CreateTicketProps {
   onAddTicket: (ticket: {
@@ -42,68 +42,64 @@ export default function CreateTicket({ onAddTicket }: CreateTicketProps) {
   };
 
   return (
-    <Paper elevation={3} sx={{ p: 3 }}>
-      <Box component="form" onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              fullWidth
-              label="Description"
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              select
-              fullWidth
-              label="Category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            >
-              {categories.map((cat) => (
-                <MenuItem key={cat} value={cat}>
-                  {cat}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              select
-              fullWidth
-              label="Priority"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              required
-            >
-              {priorities.map((p) => (
-                <MenuItem key={p} value={p}>
-                  {p}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-          <Grid item xs={12} display="flex" justifyContent="flex-end">
-            <Button type="submit" variant="contained">
-              Submit Ticket
-            </Button>
-          </Grid>
-        </Grid>
-      </Box>
-    </Paper>
+    <Create>
+      <SimpleForm>
+        <Paper elevation={3} sx={{ p: 3 }}>
+          <Box>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextInput
+                  fullWidth
+                  label="Subject"
+                  source="subject"
+                  validate={[required()]}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextInput
+                  fullWidth
+                  label="Description"
+                  multiline
+                  rows={4}
+                  source="description"
+                  validate={[required()]}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextInput
+                  select
+                  fullWidth
+                  label="Category"
+                  source="category"
+                  validate={[required()]}
+                >
+                  {categories.map((cat) => (
+                    <MenuItem key={cat} value={cat}>
+                      {cat}
+                    </MenuItem>
+                  ))}
+                </TextInput>
+              </Grid>
+              <Grid item xs={6}>
+                <TextInput
+                  select
+                  fullWidth
+                  label="Priority"
+                  source="priority"
+                  validate={[required()]}
+                >
+                  {priorities.map((p) => (
+                    <MenuItem key={p} value={p}>
+                      {p}
+                    </MenuItem>
+                  ))}
+                </TextInput>
+              </Grid>
+
+            </Grid>
+          </Box>
+        </Paper>
+      </SimpleForm>
+    </Create>
   );
 }

@@ -54,7 +54,7 @@ export const VendorList = () => {
         </Breadcrumbs>
       </div>
 
-      <List filter={{ userId: user?.id }} title="Agency List">
+      <List actions={false} filter={{ userId: user?.id }} title="Agency List">
         <Datagrid rowClick={false} bulkActionButtons={false}>
 
           <TextField source="id" />
