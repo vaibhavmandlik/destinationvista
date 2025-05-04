@@ -196,7 +196,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                 position: "absolute",
                 top:'8%',
                 left: `${Number(pkg.id) % 2 === 0 ? '58%' :'12%'}`,
-                zIndex: "tooltip",
+                zIndex: "1",
               }}
             /> 
             
@@ -211,7 +211,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                 position: "absolute",
                 top: 0,
                 left: `${Number(pkg.id) % 2 === 0 ? '10%' :'40%'}`,
-                zIndex: `modal`,
+                zIndex: `0`,
                 p:5,
               }}
             >
@@ -253,7 +253,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
 
       <ToastContainer/>
 
-      <Drawer
+              <Drawer
                     anchor="right"
                     open={isDrawerOpen}
                     onClose={handleCloseBookingForm}
@@ -263,8 +263,8 @@ const PackagesList: React.FC<TourPackagesProps> = ({
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        zIndex: `modal`,
-                        position:'absolute'
+                        zIndex: '1',
+                        position:'absolute'  
                       },
                     }}
                   >
