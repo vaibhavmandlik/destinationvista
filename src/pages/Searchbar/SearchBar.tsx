@@ -9,18 +9,11 @@ type SearchQuery = {
   city: string;
   departDate: string;
   duration: string;
-  priceRange?: string;
-  travelType?: string;
 };
 
 const SearchBar: React.FC<SearchBarProps> = () => {
-  const [showAdvancedFilters, setShowAdvancedFilters] =
-    useState<boolean>(false);
+  
 
-  // Handlers
-  const toggleAdvancedFilters = () => {
-    setShowAdvancedFilters(!showAdvancedFilters);
-  };
 
   return (
     <div className="container-fluid booking mt-5 pb-5">
@@ -194,87 +187,9 @@ const SearchBar: React.FC<SearchBarProps> = () => {
             </div>
           </div>
 
-          {/* Advanced Filters (Initially Hidden) */}
-          {showAdvancedFilters && (
-            <div
-              id="advanced-filters"
-              className="row align-items-center mt-4 w-100"
-            >
-              <div className="col-md-3 px-1">
-                <div
-                  className="input-group"
-                  style={{
-                    border: "1px solid var(--primary)",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <div
-                    className="input-group-prepend"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.9)",
-                      borderRight: "1px solid var(--primary)",
-                      borderRadius: "8px 0 0 8px",
-                    }}
-                  >
-                    <span className="input-group-text border-0">
-                      <i
-                        className="fas fa-dollar-sign"
-                        style={{ color: "var(--primary)" }}
-                      ></i>
-                    </span>
-                  </div>
-                  <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Price Range"
-                    style={{
-                      border: "none",
-                      borderRadius: "0 8px 8px 0",
-                      fontSize: "16px",
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3 px-1">
-                <div
-                  className="input-group"
-                  style={{
-                    border: "1px solid var(--primary)",
-                    borderRadius: "8px",
-                  }}
-                >
-                  <div
-                    className="input-group-prepend"
-                    style={{
-                      background: "rgba(255, 255, 255, 0.9)",
-                      borderRight: "1px solid var(--primary)",
-                      borderRadius: "8px 0 0 8px",
-                    }}
-                  >
-                    <span className="input-group-text border-0">
-                      <i
-                        className="fas fa-suitcase-rolling"
-                        style={{ color: "var(--primary)" }}
-                      ></i>
-                    </span>
-                  </div>
-                  <select
-                    className="form-control"
-                    style={{
-                      border: "none",
-                      borderRadius: "0 8px 8px 0",
-                      fontSize: "16px",
-                    }}
-                  >
-                    <option selected>Travel Type</option>
-                    <option value="adventure">Adventure</option>
-                    <option value="leisure">Leisure</option>
-                    <option value="business">Business</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          )}
+         
+          
+           
 
           {/* Submit Button and More Filters Button */}
           <div
@@ -295,21 +210,6 @@ const SearchBar: React.FC<SearchBarProps> = () => {
                 }}
               >
                 <i className="fas fa-search mr-2"></i> Search
-              </button>
-              <button
-                id="filter-toggle"
-                className="btn btn-outline-primary w-50"
-                style={{
-                  height: "48px",
-                  borderRadius: "8px",
-                  fontSize: "16px",
-                }}
-                onClick={toggleAdvancedFilters}
-              >
-                <i className="fas fa-filter mr-2"></i>
-                <span id="filter-text">
-                  {showAdvancedFilters ? "- Less Filters" : "+ More Filters"}
-                </span>
               </button>
             </div>
           </div>
