@@ -100,7 +100,7 @@ function jsonToFormData(obj:any, form = new FormData(), namespace = '') {
 
 export const dataProviders = {
   ...baseDataProvider,
-  create: (resource, params) => {
+  create: (resource: any, params: any) => {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       debugger;
@@ -128,7 +128,7 @@ export const dataProviders = {
 
     return baseDataProvider.create(resource, params);
   },
-  update: (resource, params) => {
+  update: (resource: any, params: any) => {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       formData.append("id", params.id);
@@ -145,6 +145,14 @@ export const dataProviders = {
       }).then(({ json }) => ({ data: json }));
     }
     return baseDataProvider.update(resource, params);
+  },
+  getList:(resource: any, params: any)=>{
+    if(resource === "statistics"){
+      return httpClient(`${apiUrl}/vendor/${resource}?vendorId=${params.filter.vendorId}`, {
+        method: "GET",
+      }).then(({ json }) => ({ data: [{id:1,data:json}] ,total:1 }));
+    }
+    return baseDataProvider.getList(resource, params);
   },
   approvePackage: async (id: string) => {
     return httpClient(

@@ -106,11 +106,11 @@ export const MyMenu = () => {
               >
                 {/* <Menu.Item to={"/vendor/"} primaryText="Home" leftIcon={<Home/>}/> */}
                 <Menu.Item to={"/vendor/"} primaryText="Home" leftIcon={<Dashboard />} />
-                <Menu.Item
+                {/* <Menu.Item
                   to="/vendor/vendor"
                   primaryText="Agency"
                   leftIcon={<PiSuitcaseBold />}
-                />
+                /> */}
                 <Menu.Item
                   to="/vendor/package"
                   primaryText="Package"
