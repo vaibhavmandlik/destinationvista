@@ -8,6 +8,7 @@ import {toast,ToastContainer } from "react-toastify";
 import Spinner from "../../components/Loader/Spinner";
 import { Button, Drawer, Box, Collapse } from "@mui/material";
 import BookingForm from "./BookingForm"; 
+import { AwardIcon } from "lucide-react";
 const url = `${import.meta.env.VITE_API_URL}`;
 
 // Define the `Package` type for type safety
@@ -28,41 +29,6 @@ interface TourPackagesProps {
   isShowHeader?: boolean;
   isSearchBar?: boolean;
 }
-// Initial tour packages
-// const initialPackages: Package[] = [
-//   {
-//     id: 1,
-//     title: "Delhi City Tour",
-//     description:
-//       "Explore the vibrant city of Delhi, known for its bustling streets, historic sites, and the iconic India Gate.",
-//     price: "₹4,500",
-//     image: "/img/delhi.jpg",
-//   },
-//   {
-//     id: 2,
-//     title: "Mumbai City Tour",
-//     description:
-//       "Explore the vibrant city of Mumbai, known for its bustling streets, historic sites, and the iconic Gateway of India.",
-//     price: "₹3,500",
-//     image: "/img/mumbai-tour.jpg",
-//   },
-//   {
-//     id: 3,
-//     title: "Lonavala Weekend Getaway",
-//     description:
-//       "Enjoy a peaceful weekend amidst the scenic beauty of Lonavala, with mesmerizing views and tranquil surroundings.",
-//     price: "₹5,000",
-//     image: "/img/lonavla.jpg",
-//   },
-//   {
-//     id: 4,
-//     title: "Mahabaleshwar Nature Retreat",
-//     description:
-//       "Experience the beauty of Mahabaleshwar, known for its strawberry farms, waterfalls, and breathtaking landscapes.",
-//     price: "₹6,500",
-//     image: "/img/mahabaleshwar.jpg",
-//   },
-// ];
 
 // Additional tour packages
 const morePackages: Package[] = [
@@ -95,6 +61,7 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   const [errortext, setError] = useState<string | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [morePackages , setMorePackages] = useState<Package[]>([]);
   const navigate = useNavigate();
 
   useEffect(()=>{
@@ -137,8 +104,33 @@ const PackagesList: React.FC<TourPackagesProps> = ({
 
 
   // Appends more packages to the list
-  const onExploreMoreClick = () => {
-    setPackagesToShow((prevPackages) => [...prevPackages, ...morePackages]);
+  const onExploreMoreClick = async () => { 
+    try {
+      const start = packagesToShow.length + 1;
+      const end = packagesToShow.length + 10;
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${url}/package?start=${start}&end=${end}`,
+        {
+            headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if(response.status === 200)
+      {
+          setMorePackages(response.data);
+          setPackagesToShow((prev)=>[...prev , ...morePackages]);
+      }
+    } catch (error) {
+      setError('Failed to fetch packages . Plaease try again');
+        toast.error(errortext,{
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          theme: "light",
+          pauseOnHover: true,
+        });
+        setLoading(false);
+    }
   };
 
   if (loading) return  <Spinner/>;

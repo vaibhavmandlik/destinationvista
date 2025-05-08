@@ -1,5 +1,9 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { number } from "react-admin";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+const url = `${import.meta.env.VITE_API_URL}`;
 
 interface Passenger {
   name: string;
@@ -8,10 +12,17 @@ interface Passenger {
   contact: string;
 }
 interface Package {
+  id:number;
   title: string;
   description: string;
   price: string;
   imagePaths: string[];
+}
+interface Booking{
+  packageId:number;
+  bookingDate:string;
+  totalPrice:number;
+  totalSlots:number;
 }
 interface BookingFormProps {
   pkg: Package;
@@ -26,6 +37,12 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
   const [email, setEmail] = useState("");
   // usenavigate to navigate
   const navigate = useNavigate();
+  const [booking , setBooking] = useState<Booking>({
+    packageId:pkg.id,
+    bookingDate:new Date().toISOString().split('T')[0],
+    totalPrice:Number(pkg.price),
+    totalSlots:numPassengers
+  });
   const handlePassengerChange = (
     index: number,
     field: keyof Passenger,
@@ -39,6 +56,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
   const addPassenger = () => {
     if (numPassengers < 10) {
       setNumPassengers(numPassengers + 1);
+      debugger;
       setPassengers([
         ...passengers,
         { name: "", age: 0, gender: "", contact: "" },
@@ -53,40 +71,101 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!email) {
+          toast.error("Email is required", {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            theme: "light",
+            pauseOnHover: true,
+          });
+          return;
+        }
+      
+        // Check if all passenger fields are filled (name, contact, etc.)
+        for (let i = 0; i < passengers.length; i++) {
+          const passenger = passengers[i];
+          if (!passenger.name || !passenger.contact) {
+            toast.error(`Passenger ${i + 1} is missing required fields. Please fill out all information.`, {
+              position: "top-right",
+              autoClose: 3000,
+              closeOnClick: true,
+              theme: "light",
+              pauseOnHover: true,
+            });
+            return;
+          }
+        }
+        const token = localStorage.getItem('token');
+        if(!token)
+        {
+          toast.error("Please Login before booking your package",{
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    theme: "light",
+                    pauseOnHover: true,
+                  });
+            navigate('/login');
+            onClose();
+        }
 
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address.");
-      return;
-    }
+        try {
+          setBooking({
+            packageId:pkg.id,
+            bookingDate:new Date().toISOString().split("T")[0],
+            totalPrice:Number(pkg.price),
+            totalSlots:numPassengers
+            })
+            {
+              toast.success("Email is required",{
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: "light",
+                pauseOnHover: true,
+              });
+              return;
+            }
+          const response = await axios.post<Booking>(`${url}/booking`,booking,
+            {
+              headers:{
+                Authorization:`Bearer ${token}`,
+              }
+            }
+            )
 
-    const isValid = passengers.every(
-      (p) => p.name && p.age > 0 && p.gender && p.contact,
-    );
-
-    if (!isValid) {
-      alert("Please fill out all passenger details correctly.");
-      return;
-    }
-
-    console.log({ passengers, email });
-    onClose();
+            if(response.status === 200)
+            {
+              toast.success("Your Package booked successfully",{
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true,
+                theme: "light",
+                pauseOnHover: true,
+              });
+            }
+        } catch (error) {
+          console.log(error);
+          toast.error("Failed to book yoour package",{
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    theme: "light",
+                    pauseOnHover: true,
+                  });
+        }
   };
 
-  // login redirect
-  const handleLoginRedirect = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault(); // Prevent default anchor behavior
-    navigate("/loginPage");
-  };
   return (
     <>
       {/* its not rendering  */}
       <div className="container-fluid py-5 bg-light ">
         <div className="container py-5">
           <h2 className="mb-4 text-center font-weight-bold text-dark">
-            {pkg.title}
+            {pkg.title}{pkg.id}
           </h2> 
 
           <div className="bg-white p-5 rounded shadow-lg">

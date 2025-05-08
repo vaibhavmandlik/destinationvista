@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import dayjs from 'dayjs';
 
 // Get API URL from environment variables
 const url = `${import.meta.env.VITE_API_URL}/booking`;
@@ -10,7 +11,7 @@ interface Booking {
     packageId: number;
     totalPrice: number;
     totalSlots: number;
-    bookedDate: string; // Store date as a string to prevent serialization issues
+    bookingDate: string; // Store date as a string to prevent serialization issues
     status: "0" | "1" | "2"; // Assuming 0 = Pending, 1 = Confirmed, 2 = Cancelled
 }
 
@@ -34,8 +35,7 @@ const BookingsHistory: React.FC = () => {
                     headers:{
                         Authorization:`Bearer ${token}`,
                     }
-                });
-
+                });      
                 console.log("Response Data:", response.data); // Debugging log
 
                 // Handle cases where response is empty
@@ -78,7 +78,7 @@ const BookingsHistory: React.FC = () => {
                                      <strong className="fs-5 ">Package Id: {item.packageId}</strong> 
                                      </p>
                                      <p className="mb-0">
-                                     <strong className="">Booking Date : <span>{new Date(item.bookedDate).toLocaleDateString()}</span> </strong>
+                                     <strong className="">Booking Date : <span>{dayjs(item.bookingDate).format("DD MMMM YYYY")}</span> </strong>
                                      </p>
                                  </div>
                                  <div className="d-flex justify-content-between  p-2 border-bottom border-right border-left rounded m-auto">
