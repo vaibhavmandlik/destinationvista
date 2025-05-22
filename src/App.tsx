@@ -55,6 +55,8 @@ import { ViewDetails } from "./Package/ViewDetails";
 import CreateTicket from "./SupportTicket/CreateTicket";
 import { TicketList } from "./SupportTicket/Ticket";
 import { VendorChat } from "./Vendor/VendorChat";
+import { createBlog } from "./Blog/createBlog";
+import { listBlog } from "./Blog/listBlog";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -134,6 +136,11 @@ const AdminRoute: React.FC = () => {
         edit={PackageUpdate}
         show={PackageShow}
         // show={ViewDetails}
+      />
+      <Resource
+      name="blog"
+      create={createBlog}
+      list={listBlog}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />

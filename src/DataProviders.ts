@@ -125,6 +125,15 @@ export const dataProviders = {
         body: formData,
       }).then(({ json }) => ({ data: json }));
     }
+    else if (resource === "blog"){
+     const formData = jsonToFormData(params.data);
+     debugger;
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
+    }
+
 
     return baseDataProvider.create(resource, params);
   },

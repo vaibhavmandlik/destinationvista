@@ -71,6 +71,10 @@ export const MyMenu = () => {
             primaryText="Destination"
             leftIcon={<PiMountains />}
           />
+          <Menu.Item
+            to="/admin/blog"
+            primaryText="Blog"
+          />
           <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} />
           <Menu.Item to="/admin/support" primaryText="Support" leftIcon={<PiTicket />} />
         </>
