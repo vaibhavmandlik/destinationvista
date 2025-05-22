@@ -28,7 +28,6 @@ export const BookingList = () => {
         <DateField source="bookingDate" />
         <CurrencyField source="totalPrice" />
         <NumberField source="totalSlots" />
-        <StatusDropdown source="status" />
         {/* <EditButton variant="bootstrap" color="primary" />
         <DeleteWithConfirmButton variant="bootstrap" color="danger" /> */}
       </Datagrid>
