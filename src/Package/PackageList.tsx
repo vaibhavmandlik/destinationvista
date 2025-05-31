@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   BooleanField,
   Datagrid,
@@ -34,6 +34,26 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CurrencyField from '../components/CustomFields/CurrencyField';
 import RatingStars from './RatingStarts';
 
+// Define an interface for the Package record
+interface PackageRecord {
+  id: string | number;
+  title: string;
+  rating: number;
+  price: number;
+  walletAmount: number;
+  durationDays: number;
+  availableSlots: number;
+  approved: boolean;
+  active: boolean;
+  // Add other fields from your package record as needed
+}
+
+// Define an interface for the Withdrawal Form values
+interface WithdrawalFormValues {
+  amount: number;
+  notes?: string;
+}
+
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
   const dataProvider = useDataProvider();
@@ -41,19 +61,23 @@ export const PackageList = () => {
   const refresh = useRefresh();
 
   const [open, setOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+  const [selectedRecord, setSelectedRecord] = useState<PackageRecord | null>(null);
 
-  const handleOpen = (record: any) => {
+  const handleOpen = useCallback((record: PackageRecord) => {
     setSelectedRecord(record);
     setOpen(true);
-  };
+  }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setOpen(false);
     setSelectedRecord(null);
-  };
+  }, []);
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmitWithdrawal = useCallback(async (values: WithdrawalFormValues) => {
+    if (!selectedRecord || !user?.vendorId) {
+      notify('Error: Missing required information for withdrawal.', { type: 'error' });
+      return;
+    }
     try {
       await dataProvider.create('withdrawalRequest', {
         data: {
@@ -66,10 +90,24 @@ export const PackageList = () => {
       notify('Withdrawal request submitted', { type: 'success' });
       handleClose();
       refresh();
-    } catch (error) {
-      notify('Error submitting request', { type: 'error' });
+    } catch (error: any) {
+      notify(error?.message || 'Error submitting withdrawal request', { type: 'error' });
     }
-  };
+  }, [dataProvider, notify, refresh, handleClose, selectedRecord, user?.vendorId]);
+
+  const handleToggleActiveStatus = useCallback(async (record: PackageRecord) => {
+    try {
+      await dataProvider.update('package', {
+        id: record.id,
+        data: { active: !record.active },
+        previousData: record,
+      });
+      notify(`Package ${record.active ? 'deactivated' : 'activated'} successfully`, { type: 'success' });
+      refresh();
+    } catch (error: any) {
+      notify(error?.message || 'Error toggling status', { type: 'error' });
+    }
+  }, [dataProvider, notify, refresh]);
 
   return (
     <>
@@ -77,7 +115,7 @@ export const PackageList = () => {
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <TextField source="title" />
-          <FunctionField render={record => (<RatingStars rating={record.rating} />)} />
+          <FunctionField<PackageRecord> render={record => record && <RatingStars rating={record.rating} />} />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
           <FunctionField
             label="Wallet"
@@ -103,22 +141,11 @@ export const PackageList = () => {
           <BooleanField source="approved" />
           <FunctionField
             label="Status"
-            render={(record) => (
+            render={(record: PackageRecord) => record && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Switch
                   checked={record.active}
-                  onChange={() => {
-                    dataProvider.update('package', {
-                      id: record.id,
-                      data: { active: !record.active },
-                      previousData: record,
-                    })
-                      .then(() => {
-                        notify(`Package ${record.active ? 'deactivated' : 'activated'} successfully`, { type: 'success' });
-                        refresh();
-                      })
-                      .catch(() => notify('Error toggling status', { type: 'error' }));
-                  }}
+                  onChange={() => handleToggleActiveStatus(record)}
                   color="primary"
                 />
                 <span>{record.active ? 'Active' : 'Inactive'}</span>
@@ -141,7 +168,7 @@ export const PackageList = () => {
         <DialogTitle>Request Withdrawal</DialogTitle>
         <DialogContent>
           {selectedRecord && (
-            <SimpleForm onSubmit={handleSubmit} toolbar={
+            <SimpleForm onSubmit={handleSubmitWithdrawal} toolbar={
               <Toolbar>
                 <SaveButton label="Submit" />
                 <Button onClick={handleClose} style={{ marginLeft: '1rem' }}>
@@ -153,7 +180,7 @@ export const PackageList = () => {
                 source="amount"
                 label="Amount"
                 validate={[required(), value =>
-                  value > selectedRecord.walletAmount
+                  (selectedRecord && value > selectedRecord.walletAmount)
                     ? 'Cannot request more than wallet amount'
                     : undefined
                 ]}
