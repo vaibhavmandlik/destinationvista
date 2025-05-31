@@ -50,10 +50,10 @@ interface PackageRecord {
 }
 
 // Define an interface for the Withdrawal Form values
-interface WithdrawalFormValues {
-  amount: number;
-  notes?: string;
-}
+// interface WithdrawalFormValues {
+//   amount: number;
+//   notes?: string;
+// }
 
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
