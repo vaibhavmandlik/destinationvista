@@ -8,7 +8,7 @@ import {
   useGetList,
   useGetIdentity,
 } from "react-admin";
-import { FaBookMedical } from "react-icons/fa";
+import { FaBookMedical, FaChartArea, FaChartLine, FaHome } from "react-icons/fa";
 import {
   PiEnvelopeSimpleBold,
   PiLockKeyBold,
@@ -34,7 +34,7 @@ export const MySidebar = ({ children }) => {
   useLocale(); // force redraw on locale change
   return (
     <>
-        <div className="RaSidebar-fixed">{children}</div>{" "}
+      <div className="RaSidebar-fixed">{children}</div>{" "}
     </>
   );
 };
@@ -61,46 +61,48 @@ export const MyMenu = () => {
       {hasVendors && data.length > 0 && (
         <>
           <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
             to={"/vendor/"}
-            primaryText="Home"
-            leftIcon={<Dashboard />}
+            primaryText="Dashboard"
+            leftIcon={<FaChartArea size={22} />}
           />
 
           <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
             to="/vendor/package"
             primaryText="Package"
-            leftIcon={<PiPackageBold size={24} />}
+            leftIcon={<PiPackageBold size={22} />}
           />
           <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
             to="/vendor/booking"
             primaryText="Booking"
-            leftIcon={<PiTicket size={24} />}
+            leftIcon={<PiTicket size={22} />}
           />
 
           <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
             to={"/vendor/vendor/" + hasVendors}
             primaryText="Edit Profile"
-            leftIcon={<PiUserCircleBold size={24} />}
+            leftIcon={<PiUserCircleBold size={22} />}
           />
           <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
             to="/profile/forgot-password"
             primaryText="Forget Password"
-            leftIcon={<PiLockKeyBold size={24} />}
+            leftIcon={<PiLockKeyBold size={22} />}
           />
           <Menu.Item
-            to="/admin/mailing-services"
+            sx={{ fontSize: "0.875rem" }}
+            to="/vendor/email"
             primaryText="Mailing Services"
-            leftIcon={<PiEnvelopeSimpleBold size={24} />}
-          />
-          <Menu.Item
-            to="/vendor/vendor-chat"
-            primaryText="Chat with admin"
-            leftIcon={<PiTicket size={24} />}
+            leftIcon={<PiEnvelopeSimpleBold size={22} />}
           />
           <Menu.Item
             to="/vendor/ticket"
+            sx={{ fontSize: "0.875rem" }}
             primaryText="Support Ticket"
-            leftIcon={<FaBookMedical size={24} />}
+            leftIcon={<FaBookMedical size={22} />}
           />
         </>
       )}
