@@ -162,7 +162,6 @@ export const PackageList = () => {
               </div>
             )}
           />
-          <NumberField label="duration" source="durationDays" />
           <ReferenceManyCount
             label="Booking"
             reference="booking"
