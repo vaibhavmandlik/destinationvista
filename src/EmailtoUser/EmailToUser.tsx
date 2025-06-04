@@ -56,7 +56,7 @@ const EmailToUsers: React.FC = () => {
   const handleSubmit = (values: any) => {
     console.log("Form Values:", values);
     // You can handle file upload and form submission here
-    create("sendMail", {
+    create("vendor/sendMail", {
       data: {
         customer: values.customer,
         subject: values.subject,
