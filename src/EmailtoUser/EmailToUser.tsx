@@ -9,6 +9,8 @@ import {
   Toolbar,
   required,
   SelectArrayInput,
+  useCreate,
+  useGetList,
 } from "react-admin";
 import { Box, Button, Typography } from "@mui/material";import {
   ClearButtons,
@@ -18,6 +20,7 @@ import { Box, Button, Typography } from "@mui/material";import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
+import { JSONTree } from "react-json-tree";
 const customers = [
   { id: "Van Henry", name: "Van Henry" },
   { id: "John Doe", name: "John Doe" },
@@ -48,11 +51,18 @@ const CustomToolbar = (props) => (
 
 const EmailToUsers: React.FC = () => {
   const notify = useNotify();
-  const redirect = useRedirect();
-
+  const [create]=useCreate();
+  const {data:customers}= useGetList("user")
   const handleSubmit = (values: any) => {
     console.log("Form Values:", values);
     // You can handle file upload and form submission here
+    create("sendMail", {
+      data: {
+        customer: values.customer,
+        subject: values.subject,
+        body: values.body,
+      }
+    });
     notify("Email sent!", { type: "success" });
     // redirect("/"); // redirect to dashboard or any page
   };
@@ -84,7 +94,11 @@ const EmailToUsers: React.FC = () => {
           <div className="col-md-12 col-lg-12">
              <SelectArrayInput
               source="customer"
-              choices={customers}
+              choices={customers?.map((customer) => ({
+                id: customer.id,
+                name: customer.firstName + " " + customer.lastName,
+              }))}
+              validate={[required()]}
               fullWidth
             />
           </div>
