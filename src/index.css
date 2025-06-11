@@ -10065,3 +10065,40 @@ h6,
   object-fit: cover;
   object-position: 30%;
 }
+
+
+@media (max-width: 768px) {
+  .MuiTableRow-root {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin-bottom: 16px !important;
+    border: 1px solid #eee !important;
+  }
+
+  .MuiTableRow-root .MuiTableCell-root,
+  .MuiTableCell-root {
+    width: 100%;
+    flex: 0 0 50%;
+    box-sizing: border-box;
+    border-bottom: 1px solid #eee !important;
+  }
+
+  .RaDatagrid-root .RaDatagrid-row {
+    position: relative;
+    padding-right: 30px;
+    background: #fff;
+  }
+
+  /* Hide table header on mobile */
+  .MuiTableHead-root {
+    display: none !important;
+  }
+
+  /* Add some spacing between rows */
+  .MuiTableBody-root .MuiTableRow-root {
+    margin-bottom: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+}
+
