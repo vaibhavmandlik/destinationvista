@@ -154,6 +154,7 @@ const AdminRoute: React.FC = () => {
       />
       <CustomRoutes>
       <Route path="/support" element={<AdminSupport />} />
+        <Route path="/email" element={<EmailToUsers isAdmin={true} />} />
       </CustomRoutes>
     </Admin>
   );

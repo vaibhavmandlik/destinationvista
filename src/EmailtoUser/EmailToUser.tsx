@@ -43,10 +43,16 @@ const CustomToolbar = (props) => (
   </Toolbar>
 );
 
-const EmailToUsers: React.FC = () => {
+interface EmailToUsersProps {
+  isAdmin?: boolean;
+}
+
+
+const EmailToUsers: React.FC<EmailToUsersProps> = ({isAdmin=false}) => {
   const notify = useNotify();
   const [create]=useCreate();
-  const {data:customers}= useGetList("user",{filter:{vendorId:localStorage.getItem("selectedVendor")}})
+  const filter = isAdmin ? {} : {vendorId: localStorage.getItem("selectedVendor")};
+  const {data:customers} = useGetList("user", {filter});
   const handleSubmit = (values: any) => {
     console.log("Form Values:", values);
     // You can handle file upload and form submission here
