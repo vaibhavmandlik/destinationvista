@@ -20,12 +20,6 @@ import { Box, Button, Typography } from "@mui/material";import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
-import { JSONTree } from "react-json-tree";
-const customers = [
-  { id: "Van Henry", name: "Van Henry" },
-  { id: "John Doe", name: "John Doe" },
-  { id: "Jane Smith", name: "Jane Smith" },
-];
 
 const CustomToolbar = (props) => (
   <Toolbar {...props}>
@@ -52,7 +46,7 @@ const CustomToolbar = (props) => (
 const EmailToUsers: React.FC = () => {
   const notify = useNotify();
   const [create]=useCreate();
-  const {data:customers}= useGetList("user")
+  const {data:customers}= useGetList("user",{filter:{vendorId:localStorage.getItem("selectedVendor")}})
   const handleSubmit = (values: any) => {
     console.log("Form Values:", values);
     // You can handle file upload and form submission here
