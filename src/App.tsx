@@ -57,6 +57,7 @@ import { TicketList } from "./SupportTicket/Ticket";
 import { VendorChat } from "./Vendor/VendorChat";
 import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
+import EmailToUsers from "./EmailtoUser/EmailToUser";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -106,7 +107,7 @@ const VendorRoute: React.FC = () => {
       <Resource name="ticket" list={TicketList} create={CreateTicket}/>
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
-        <Route path="/vendor-chat" element={<VendorChat />} />
+        <Route path="/email" element={<EmailToUsers />} />
       </CustomRoutes>
     </Admin>
   );
@@ -153,6 +154,7 @@ const AdminRoute: React.FC = () => {
       />
       <CustomRoutes>
       <Route path="/support" element={<AdminSupport />} />
+        <Route path="/email" element={<EmailToUsers isAdmin={true} />} />
       </CustomRoutes>
     </Admin>
   );

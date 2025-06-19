@@ -156,6 +156,89 @@ const theme = createTheme({
         },
       ],
     },
+    MuiTableHead: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#f0f4f8",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        head: {
+          fontWeight: 700,
+          fontSize: "1rem",
+          color: "#222",
+        },
+        root: {
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: 16,
+          paddingRight: 16,
+          fontSize: "0.97rem",
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          transition: "background 0.2s",
+          "&:hover": {
+            backgroundColor: "#f5f7fa",
+          },
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+        },
+      },
+    },
+    MuiCssBaseline: {
+      styleOverrides: {
+        // Stronger specificity for Datagrid header cells
+        ".RaDatagrid-headerCell, .RaDatagrid-headerCell.MuiTableCell-head": {
+          backgroundColor: "#007bff !important", // Changed to #007bff
+          color: "#fff !important",
+          fontWeight: 700,
+          fontSize: "1rem",
+        },
+        // Ensure sorted header text stays white
+        ".RaDatagrid-headerCell .MuiTableSortLabel-root.Mui-active, .RaDatagrid-headerCell .MuiTableSortLabel-root.Mui-active .MuiTableSortLabel-icon": {
+          color: "#fff !important",
+          fill: "#fff !important",
+        },
+        // Datagrid body cells
+        ".RaDatagrid-cell": {
+          paddingTop: 12,
+          paddingBottom: 12,
+          paddingLeft: 16,
+          paddingRight: 16,
+          fontSize: "0.97rem",
+        },
+        // Datagrid rows
+        ".RaDatagrid-row": {
+          transition: "background 0.2s",
+        },
+        ".RaDatagrid-row:hover": {
+          backgroundColor: "#f5f7fa",
+        },
+        // Alternate row color (zebra striping)
+        ".RaDatagrid-row:nth-of-type(even)": {
+          backgroundColor: "#f9fafb",
+        },
+        ".RaDatagrid-row:nth-of-type(odd)": {
+          backgroundColor: "#fff",
+        },
+        // Optional: round the corners of the datagrid container
+        ".RaDatagrid-root": {
+          borderRadius: 12,
+          overflow: "hidden",
+        },
+      },
+    },
   },
 });
 
