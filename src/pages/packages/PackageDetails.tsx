@@ -28,6 +28,7 @@ type PackageDetailsProps = {
 };
 
 const PackageDetails: React.FC<PackageDetailsProps> = ({
+  id,
   title,
   description,
   price,
@@ -42,6 +43,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<{
+    id:number;
     title: string;
     description: string;
     price: string;
@@ -50,6 +52,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
 
   const handleOpenBookingForm = () => {
     setSelectedPackage({
+      id,
       title,
       description,
       price,
