@@ -163,8 +163,8 @@ const AdminRoute: React.FC = () => {
 const OpenRoute: React.FC = () => (
   <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>
-      <Route path="/vendorRegistration" element={<VendorResistration />} />
-      <Route path="/UserRegistration" element={<VendorResistration userType="1" />} />
+      <Route path="/vendorRegistration" element={<VendorResistration userType="1" />} />
+      <Route path="/UserRegistration" element={<VendorResistration  />} />
       <Route path="/login" element={<VendorResistration />} />
     </CustomRoutes>
   </Admin>
