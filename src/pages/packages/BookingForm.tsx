@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { number } from "react-admin";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 const url = `${import.meta.env.VITE_API_URL}`;
@@ -56,7 +55,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
   const addPassenger = () => {
     if (numPassengers < 10) {
       setNumPassengers(numPassengers + 1);
-      debugger;
       setPassengers([
         ...passengers,
         { name: "", age: 0, gender: "", contact: "" },
@@ -119,16 +117,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
             totalPrice:Number(pkg.price),
             totalSlots:numPassengers
             })
-            {
-              toast.success("Email is required",{
-                position: "top-right",
-                autoClose: 3000,
-                closeOnClick: true,
-                theme: "light",
-                pauseOnHover: true,
-              });
-              return;
-            }
           const response = await axios.post<Booking>(`${url}/booking`,booking,
             {
               headers:{
