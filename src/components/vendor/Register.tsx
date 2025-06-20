@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CustomTextInput } from "../common/CustomInputFields/TextInput";
-import { useCreate, useNotify } from "react-admin";
+import { useCreate, useNotify, useRedirect } from "react-admin";
 import Button from "@mui/material/Button";
 import CheckIcon from "@mui/icons-material/Check";
 import { Cancel, Check } from "@mui/icons-material";
@@ -31,6 +31,7 @@ const Register = ({userType='2'}) => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormInputVendorType>();
+  const redirect = useRedirect();
   const onSubmit: SubmitHandler<FormInputVendorType> = (data) => {
     console.log(data);
     const newData = {
@@ -41,7 +42,7 @@ const Register = ({userType='2'}) => {
       "user",
       { data: newData },
       {
-        onSuccess: () => notify("User Created Successfully", { type: "success" }),
+        onSuccess: () => {notify("User Created Successfully", { type: "success" }); redirect("vendor/login"); },
         onError: (error:any) => {
           notify(`Failed to create user: reason ${(error?.body?.error)}`, { type: "error" })},
       }
