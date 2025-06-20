@@ -1,25 +1,10 @@
 import { Card, CardHeader } from "@mui/material";
 
-import * as React from "react";
 import {
-  Create,
   SimpleForm,
   TextInput,
-  required,
-  NumberInput,
-  FileInput,
-  useGetIdentity,
   CreateBase,
   Title,
-  ImageInput,
-  ImageField,
-  useUnique,
-  ReferenceInput,
-  SelectInput,
-  ArrayInput,
-  SimpleFormIterator,
-  number,
-  DateInput,
 } from "react-admin";
 import {
   ClearButtons,
@@ -29,20 +14,12 @@ import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
-import { Height } from "@mui/icons-material";
-type itineraryType = {
-  title: string;
-  discription: string;
-};
+
 type PackageParams = {
-  id: string;
   title: string;
   body: string;
 };
 export const createBlog = () => {
-  const { data: user } = useGetIdentity();
-
-  const unique = useUnique();
   return (
     <CreateBase
       redirect={"list"}
@@ -66,10 +43,6 @@ export const createBlog = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[
-                        required(),
-                        unique({ filter: { vendorId: user?.vendorId } }),
-                      ]}
                     />
                   </div>
 
