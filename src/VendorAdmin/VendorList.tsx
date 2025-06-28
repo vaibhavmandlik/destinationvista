@@ -52,7 +52,7 @@ export const VendorListAdmin = () => {
           <Typography color="textPrimary">Agency List</Typography>
         </Breadcrumbs>
       </div>
-      <List filter={{ userId: user?.id }} title="Agency List">
+      <List title="Agency List">
         <Datagrid rowClick={false} bulkActionButtons={false}>
 
           <TextField source="id" />
@@ -77,14 +77,18 @@ export const VendorListAdmin = () => {
                 setAnchorEl(null);
               };
 
-              const handleStatusChange = async (status: "approved" | "rejected" | "cancelled") => {
+              const handleStatusChange = async (status: "approved" | "rejected") => {
                 const confirmMessage = `Are you sure you want to mark this as ${status}?`;
                 if (!window.confirm(confirmMessage)) return;
-
+                const statusValue={
+                  approved:1,
+                  rejected:0,
+                }
+                
                 try {
-                  await dataProvider.update("vendor", {
+                  await dataProvider.update(`vendor` , {
                     id: record.id,
-                    data: { approvalStatus: status },
+                    data: {...record, isApproved: statusValue[status] },
                     previousData: record,
                   });
                   notify(`Status updated to ${status}`, { type: "success" });
@@ -103,16 +107,17 @@ export const VendorListAdmin = () => {
                 pending: "#ff9800",     // orange
               };
 
-              const statusLabel: string =
-                {
-                  approved: "Approved",
-                  rejected: "Rejected",
-                  cancelled: "Cancelled",
-                  pending: "Pending",
-                }[record.approvalStatus] || "Pending";
-
               const color = statusColors[record.approvalStatus] || "#000";
-
+             // if already approved show only the status
+              if (record.isApproved === "1") { 
+                return (
+                  <Chip
+                    label={"Approved"}
+                    style={{ backgroundColor: "#4caf50", color: "#fff" }}
+                    size="small"
+                  />
+                );
+              }
               return (
                 <>
                   <Button
@@ -131,13 +136,12 @@ export const VendorListAdmin = () => {
                       }
                     }}
                   >
-                    {statusLabel}
+                    Pending
                   </Button>
                   <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                     <MenuItem disabled dense>Change Status</MenuItem>
                     <MenuItem onClick={() => handleStatusChange("approved")}>Approve</MenuItem>
                     <MenuItem onClick={() => handleStatusChange("rejected")}>Reject</MenuItem>
-                    <MenuItem onClick={() => handleStatusChange("cancelled")}>Cancel</MenuItem>
                   </Menu>
                 </>
               );

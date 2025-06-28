@@ -24,9 +24,15 @@ const authProvider: AuthProvider = {
         throw new Error(response.statusText);
       }
       const auth = await response.json();
+      debugger;
+      if (auth?.data?.isApproved !== 1) {
+        alert("Your account is not approved yet. Please wait for approval.");
+      throw new Error("Your account is not approved yet.");
+    }
       localStorage.setItem("auth", JSON.stringify(auth));
     } catch (error) {
       console.error(error);
+      return Promise.reject(error);
     }
   },
   // called when the user clicks on the logout button

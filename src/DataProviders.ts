@@ -145,13 +145,15 @@ export const dataProviders = {
         method: "PUT",
         body: formData,
       }).then(({ json }) => ({ data: json }));
-    }else if (resource === "vendor"){
-      const formData = jsonToFormData(params.data);
-      return httpClient(`${apiUrl}/${resource}`, {
-        method: "PUT",
-        body: formData,
-      }).then(({ json }) => ({ data: json }));
     }
+    // else if (resource === "vendor"){
+    //   const formData = jsonToFormData(params.data);
+    //   debugger;
+    //   return httpClient(`${apiUrl}/${resource}/${params.data.vendorId}`, {
+    //     method: "PUT",
+    //     body: formData,
+    //   }).then(({ json }) => ({ data: json }));
+    // }
     return baseDataProvider.update(resource, params);
   },
   getList:(resource: any, params: any)=>{
