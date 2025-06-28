@@ -58,6 +58,7 @@ import { VendorChat } from "./Vendor/VendorChat";
 import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
 import EmailToUsers from "./EmailtoUser/EmailToUser";
+import authProviderAdmin from "./authProviderAdmin";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -118,7 +119,7 @@ const AdminRoute: React.FC = () => {
     <Admin
       basename="/admin"
       dataProvider={dataProviders}
-      authProvider={authProvider}
+      authProvider={authProviderAdmin}
       loginPage={MyLoginPage}
       layout={AdminLayout}
       theme={theme}
