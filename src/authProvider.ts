@@ -25,10 +25,10 @@ const authProvider: AuthProvider = {
       }
       const auth = await response.json();
       debugger;
-      if (auth?.data?.isApproved !== 1) {
-        alert("Your account is not approved yet. Please wait for approval.");
-      throw new Error("Your account is not approved yet.");
-    }
+    //   if (auth?.data?.isApproved !== 1) {
+    //     alert("Your account is not approved yet. Please wait for approval.");
+    //   throw new Error("Your account is not approved yet.");
+    // }
       localStorage.setItem("auth", JSON.stringify(auth));
     } catch (error) {
       console.error(error);
@@ -50,7 +50,12 @@ const authProvider: AuthProvider = {
   },
   // called when the user navigates to a new location, to check for authentication
   checkAuth: () => {
-    return localStorage.getItem("auth") ? Promise.resolve() : Promise.reject();
+    const authData = localStorage.getItem("auth");
+    const authCredentials = authData ? JSON.parse(authData) : null;
+    if (authCredentials?.data?.userRole !== "1") {
+      return Promise.reject("Access not allowed. Only vendor can login.");
+    } 
+    return Promise.resolve();
   },
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
@@ -61,7 +66,7 @@ const authProvider: AuthProvider = {
     const authCredentials = authData ? JSON.parse(authData) : null;
     const { id, fullName, avatar } = authCredentials?.data;
     const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
-    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor") };
+    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole };
   },
 };
 

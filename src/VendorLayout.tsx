@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Layout,
   Menu,
@@ -7,6 +7,7 @@ import {
   TitlePortal,
   useGetList,
   useGetIdentity,
+  useLogout,
 } from "react-admin";
 import { FaBookMedical, FaChartArea, FaChartLine, FaHome } from "react-icons/fa";
 import {
@@ -42,7 +43,8 @@ export const MySidebar = ({ children }) => {
 export const MyMenu = () => {
   const hasVendors = useHasVendors();
   const { data: user } = useGetIdentity();
-  const { data: VendorList } = useGetList("vendor", {
+  const logout = useLogout();
+  const { data: VendorList,isLoading } = useGetList("vendor", {
     filter: { userId: user?.id },
   });
   const [open] = useSidebarState();
@@ -51,11 +53,22 @@ export const MyMenu = () => {
       value: item.id,
       label: item.agencytitle,
     })) || [];
+    const approvedVendors = VendorList?.filter(
+      (vendor: any) => vendor.isApproved === "1"
+    );
+    useEffect(() => {
+      if (isLoading) return;
+      if (data.length === 1 && approvedVendors?.length == 0) {
+        debugger;
+        logout();
+      }
+    }, [data,isLoading]);
   return (
     <Menu>
       <br />
       <br />
       <img src={logo} alt="logo" className="logo" />
+      <JSONTree data={user}/>
       {open && <SwitchVendor />}
       <hr />
       {hasVendors && data.length > 0 && (

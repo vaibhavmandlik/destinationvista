@@ -81,8 +81,8 @@ export const VendorListAdmin = () => {
                 const confirmMessage = `Are you sure you want to mark this as ${status}?`;
                 if (!window.confirm(confirmMessage)) return;
                 const statusValue={
-                  approved:1,
-                  rejected:0,
+                  approved:"1",
+                  rejected:"0",
                 }
                 
                 try {
