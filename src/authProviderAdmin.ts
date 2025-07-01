@@ -23,8 +23,9 @@ const authProviderAdmin: AuthProvider = {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(response.statusText);
       }
+      debugger;
       const auth = await response.json();
-      if (auth?.data?.userRole !== 1) {
+      if (auth?.data?.userRole !== "0") {
         alert("Access not allowed. Only admin can login.");
         throw new Error("Access not allowed. Only admin can login..");
       }
