@@ -68,7 +68,6 @@ export const MyMenu = () => {
       <br />
       <br />
       <img src={logo} alt="logo" className="logo" />
-      <JSONTree data={user}/>
       {open && <SwitchVendor />}
       <hr />
       {hasVendors && data.length > 0 && (
