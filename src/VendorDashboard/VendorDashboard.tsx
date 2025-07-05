@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
-import { useGetList } from 'react-admin';
+import { Button, useGetIdentity, useGetList } from 'react-admin';
 import { JSONTree } from 'react-json-tree';
 import DashboardStats from './StatCard';
 import {
@@ -26,6 +26,11 @@ const offlineSales = [10000, 13000, 22000, 7000, 13000, 15000, 12000];
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const VendorDashboard = () => {
+  const { data: user } = useGetIdentity();
+  const { data: VendorList,isLoading } = useGetList("vendor", {
+    filter: { userId: user?.id },
+  });
+
   // Dummy data for demonstration
   const totalPackagesCreated = 150;
   const totalBookingsReceived = 120;
@@ -48,7 +53,32 @@ const VendorDashboard = () => {
     { month: 'Dec', bookings: 120 },
   ];
 
-  
+  if(isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!VendorList || VendorList.length === 0) {
+    return (
+      <Box sx={{ p: 4 , textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <Typography variant="h5" color="textSecondary">
+          No vendor data available. Please create a vendor first.
+          {/* add button to create  */}
+       
+        </Typography>
+           <Button
+            variant="contained"
+            color="primary"
+            sx={{ mt: 4 ,padding: '10px 20px'}}
+            onClick={() => {
+              // Navigate to vendor creation page
+              window.location.href = '/vendor/vendor/create';
+            }}
+          >
+            Add Your Agency
+          </Button>
+      </Box>
+    );
+  }
   return (
     // <Box sx={{ flexGrow: 1, p: 3 }}>
     //   <Typography variant="h4" gutterBottom>

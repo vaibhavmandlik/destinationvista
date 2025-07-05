@@ -42,7 +42,7 @@ export const MySidebar = ({ children }) => {
 
 export const MyMenu = () => {
   const hasVendors = useHasVendors();
-  const { data: user } = useGetIdentity();
+  const { data: user,isLoading:isUserLoading } = useGetIdentity();
   const logout = useLogout();
   const { data: VendorList,isLoading } = useGetList("vendor", {
     filter: { userId: user?.id },
@@ -53,16 +53,23 @@ export const MyMenu = () => {
       value: item.id,
       label: item.agencytitle,
     })) || [];
-    const approvedVendors = VendorList?.filter(
-      (vendor: any) => vendor.isApproved === "1"
-    );
+    // const approvedVendors = VendorList?.filter(
+    //   (vendor: any) => vendor.isApproved === "1"
+    // );
+    // useEffect(() => {
+    //   if (isLoading) return;
+    //   debugger;
+    //   if (data.length === 1 && approvedVendors?.length == 0) {
+    //     debugger;
+    //     logout();
+    //   }
+    // }, [data,isLoading]);
     useEffect(() => {
-      if (isLoading) return;
-      if (data.length === 1 && approvedVendors?.length == 0) {
-        debugger;
-        logout();
-      }
-    }, [data,isLoading]);
+    if (isLoading || isUserLoading) return;
+    if (data.length >= 1 && user?.isApproved !== "1") {
+      logout();
+    }
+  }, [isLoading,isUserLoading]);
   return (
     <Menu>
       <br />

@@ -66,7 +66,7 @@ const authProvider: AuthProvider = {
     const authCredentials = authData ? JSON.parse(authData) : null;
     const { id, fullName, avatar } = authCredentials?.data;
     const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
-    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole };
+    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole, isApproved: authCredentials?.data?.isApproved };
   },
 };
 

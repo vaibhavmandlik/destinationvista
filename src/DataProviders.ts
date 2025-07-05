@@ -41,7 +41,16 @@ type PackageParams = {
   inclusion: string;
   exclusion: string;
   otherInfo: string;
+  start_date: string;
+  end_date?: string;
 };
+function formatDateToYYYYMMDD(dateString: string) {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 const createPackageFormData = (
   params: CreateParams<PackageParams> | UpdateParams<PackageParams>
 ) => {
@@ -71,12 +80,23 @@ const createPackageFormData = (
   params.data.inclusion && formData.append("inclusion", params.data.inclusion);
   params.data.exclusion && formData.append("exclusion", params.data.exclusion);
   params.data.otherInfo && formData.append("otherInfo", params.data.otherInfo);
-
+  debugger;
+  formData.append(
+    "startDate",
+    params.data.start_date
+      ? formatDateToYYYYMMDD(params.data.start_date)
+      : formatDateToYYYYMMDD(new Date().toISOString())
+  );
+  formData.append(
+    "endDate",
+    params.data.end_date
+      ? formatDateToYYYYMMDD(params.data.end_date)
+      : formatDateToYYYYMMDD(new Date().toISOString())
+  );
   return formData;
 };
 
-
-function jsonToFormData(obj:any, form = new FormData(), namespace = '') {
+function jsonToFormData(obj: any, form = new FormData(), namespace = "") {
   for (let key in obj) {
     if (obj.hasOwnProperty(key)) {
       const formKey = namespace ? `${namespace}[${key}]` : key;
@@ -85,7 +105,7 @@ function jsonToFormData(obj:any, form = new FormData(), namespace = '') {
       if (value?.rawFile instanceof File || value?.rawFile instanceof Blob) {
         // Directly append files
         form.append(formKey, value.rawFile);
-      } else if (typeof value === 'object' && value !== null) {
+      } else if (typeof value === "object" && value !== null) {
         // Recursively handle nested objects
         jsonToFormData(value, form, formKey);
       } else if (value !== undefined && value !== null) {
@@ -96,7 +116,6 @@ function jsonToFormData(obj:any, form = new FormData(), namespace = '') {
   }
   return form;
 }
-
 
 export const dataProviders = {
   ...baseDataProvider,
@@ -117,7 +136,7 @@ export const dataProviders = {
         method: "POST",
         body: formData,
       }).then(({ json }) => ({ data: json }));
-    }else if (resource === "vendor"){
+    } else if (resource === "vendor") {
       const formData = jsonToFormData(params.data);
       debugger;
       return httpClient(`${apiUrl}/${resource}`, {
@@ -133,7 +152,6 @@ export const dataProviders = {
     //     body: formData,
     //   }).then(({ json }) => ({ data: json }));
     // }
-
 
     return baseDataProvider.create(resource, params);
   },
@@ -156,17 +174,20 @@ export const dataProviders = {
     // }
     return baseDataProvider.update(resource, params);
   },
-  getList:(resource: any, params: any)=>{
-    if(resource === "statistics"){
-      return httpClient(`${apiUrl}/vendor/${resource}?vendorId=${params.filter.vendorId}`, {
-        method: "GET",
-      }).then(({ json }) => ({ data: [{id:1,data:json}] ,total:1 }));
+  getList: (resource: any, params: any) => {
+    if (resource === "statistics") {
+      return httpClient(
+        `${apiUrl}/vendor/${resource}?vendorId=${params.filter.vendorId}`,
+        {
+          method: "GET",
+        }
+      ).then(({ json }) => ({ data: [{ id: 1, data: json }], total: 1 }));
     }
     return baseDataProvider.getList(resource, params);
   },
   approvePackage: async (id: string) => {
     return httpClient(
-      `https://destinationvista-backend.onrender.com/package/approve/${id}`,
+      `https://destinationvista-backend.onrender.com/package/approve/${id}`
     ).then(({ json }) => ({ data: json }));
   },
 };
