@@ -47,18 +47,16 @@ import AdminLayout from "./AdminLayout";
 import { VendorListAdmin } from "./VendorAdmin/VendorList";
 import { PackageAdminList } from "./PackageAdmin/PackageList";
 import DestinationCreate from "./Destination/DestinationCreate";
-import PackageShow from "./PackageAdmin/PackageShow";
 import SupportTicket from "./SupportTicket/SupportTicket";
 import AdminSupport from "./AdminSupport/AdminSupport";
 import UserLoginPage from "./pages/login/UserLoginPage";
-import { ViewDetails } from "./Package/ViewDetails";
 import CreateTicket from "./SupportTicket/CreateTicket";
 import { TicketList } from "./SupportTicket/Ticket";
-import { VendorChat } from "./Vendor/VendorChat";
 import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
 import EmailToUsers from "./EmailtoUser/EmailToUser";
 import authProviderAdmin from "./authProviderAdmin";
+import { PackageShow } from "./Package/PackageShow";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -93,7 +91,7 @@ const VendorRoute: React.FC = () => {
         list={PackageList}
         create={PackageCreate}
         edit={PackageUpdate}
-        show={ShowGuesser}
+        // show={PackageShow}
         // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />

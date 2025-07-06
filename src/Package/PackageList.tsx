@@ -200,8 +200,8 @@ export const PackageList = () => {
                   justifyContent: "space-between",
                 }}
               >
-                <EditButton variant="text" color="primary" />
-                <ShowButton variant="text" />
+                <EditButton label="Edit/Show" variant="text" color="primary" />
+                {/* <ShowButton variant="text" /> */}
               </div>
             )}
           />
