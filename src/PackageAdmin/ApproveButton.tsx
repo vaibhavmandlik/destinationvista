@@ -1,22 +1,21 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Button,
-  useTheme,
+  Button, 
 } from "@mui/material";
 import { useDataProvider, useNotify, useRefresh } from "react-admin";
 import CheckIcon from "@mui/icons-material/Check";
+import { Pending } from "@mui/icons-material";
+import { Cancel } from "@mui/icons-material";
 
 const ApproveButton = ({ record }) => {
   const [open, setOpen] = useState(false);
   const notify = useNotify();
   const refresh = useRefresh();
-  const theme = useTheme();
   const dataProvider = useDataProvider();
   const handleApprove = async () => {
     try {
@@ -39,14 +38,31 @@ const ApproveButton = ({ record }) => {
 
   return (
     <>
-      {/* <IconButton
-        color="primary"
+      <Button
+        color={
+          record?.isApproved == "1"
+            ? "success"
+            : record?.isApproved == null
+            ? "warning"
+            : "error"
+        }
+        startIcon={
+          record?.isApproved == "1" ? (
+            <CheckIcon />
+          ) : record?.isApproved == null ? (
+            <Pending />
+          ) : (
+            <Cancel />
+          )
+        }
         onClick={handleClickOpen}
-        sx={{ backgroundColor: theme.palette.primary.main + "1A" }} // Light background with transparency
       >
-        <CheckIcon />
-      </IconButton> */}
-      <Button startIcon={<CheckIcon/>}>Approve</Button>
+        {record?.isApproved == "1"
+          ? "Approved"
+          : record?.isApproved == null
+          ? "Pending"
+          : "Reject"}
+      </Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Confirm Approval</DialogTitle>
         <DialogContent>
