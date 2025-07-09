@@ -49,8 +49,7 @@ export const PackageAdminList = () => {
             render={(record) => (
               <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
                 <ApproveButton record={record} />
-                <ShowButton variant="text" label="Details" color="info" />
-                <EditButton variant="text" color="primary" />
+                <EditButton label="Edit/Show" variant="text" color="primary" />
                 <DeleteWithConfirmButton variant="bootstrap" color="danger" />
               </div>
             )}

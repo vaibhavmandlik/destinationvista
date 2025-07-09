@@ -159,7 +159,7 @@ export const dataProviders = {
     if (resource === "package") {
       const formData = createPackageFormData(params);
       formData.append("id", params.id);
-      return httpClient(`${apiUrl}/${resource}`, {
+      return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PUT",
         body: formData,
       }).then(({ json }) => ({ data: json }));

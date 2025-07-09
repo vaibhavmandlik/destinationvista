@@ -34,6 +34,7 @@ import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 import RatingStars from "./RatingStarts";
 import { Create } from "react-admin";
+import { SearchInput } from 'react-admin';
 
 // Define an interface for the Package record
 interface PackageRecord {
@@ -49,12 +50,9 @@ interface PackageRecord {
   // Add other fields from your package record as needed
 }
 
-// Define an interface for the Withdrawal Form values
-// interface WithdrawalFormValues {
-//   amount: number;
-//   notes?: string;
-// }
-
+const postFilters = [
+    <SearchInput source="q" alwaysOn />
+];
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
   const dataProvider = useDataProvider();
@@ -75,35 +73,6 @@ export const PackageList = () => {
     setOpen(false);
     setSelectedRecord(null);
   }, []);
-
-  // const handleSubmitWithdrawal = useCallback(
-  //   async (values: WithdrawalFormValues) => {
-  //     if (!selectedRecord || !user?.vendorId) {
-  //       notify("Error: Missing required information for withdrawal.", {
-  //         type: "error",
-  //       });
-  //       return;
-  //     }
-  //     try {
-  //       await dataProvider.create("withdrawalRequest", {
-  //         data: {
-  //           packageId: selectedRecord.id,
-  //           vendorId: user.vendorId,
-  //           amount: values.amount,
-  //           notes: values.notes,
-  //         },
-  //       });
-  //       notify("Withdrawal request submitted", { type: "success" });
-  //       handleClose();
-  //       refresh();
-  //     } catch (error: any) {
-  //       notify(error?.message || "Error submitting withdrawal request", {
-  //         type: "error",
-  //       });
-  //     }
-  //   },
-  //   [dataProvider, notify, refresh, handleClose, selectedRecord, user?.vendorId]
-  // );
 
   const handleSubmitWithdrawal = (data:any)=>{
     console.log(data);
@@ -132,7 +101,7 @@ export const PackageList = () => {
 
   return (
     <>
-      <List filter={{ vendorId: user?.vendorId }}>
+      <List filters={postFilters} filter={{ vendorId: user?.vendorId }}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <TextField source="title" />

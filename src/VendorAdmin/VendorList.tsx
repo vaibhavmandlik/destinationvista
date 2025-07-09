@@ -33,8 +33,11 @@ import {
 } from "react-admin";
 import { Button} from "@mui/material";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import { SearchInput } from 'react-admin';
+const postFilters = [
+    <SearchInput source="q" alwaysOn />
+];
 export const VendorListAdmin = () => {
-  const { data: user } = useGetIdentity();
 
   return (
     <>
@@ -52,7 +55,7 @@ export const VendorListAdmin = () => {
           <Typography color="textPrimary">Agency List</Typography>
         </Breadcrumbs>
       </div>
-      <List title="Agency List">
+      <List filters={postFilters} title="Agency List">
         <Datagrid rowClick={false} bulkActionButtons={false}>
 
           <TextField source="id" />

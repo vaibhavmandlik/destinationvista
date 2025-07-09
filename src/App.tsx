@@ -56,7 +56,6 @@ import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
 import EmailToUsers from "./EmailtoUser/EmailToUser";
 import authProviderAdmin from "./authProviderAdmin";
-import { PackageShow } from "./Package/PackageShow";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -134,7 +133,6 @@ const AdminRoute: React.FC = () => {
         name="package"
         list={PackageAdminList}
         edit={PackageUpdate}
-        show={PackageShow}
         // show={ViewDetails}
       />
       <Resource
