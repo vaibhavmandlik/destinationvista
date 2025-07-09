@@ -45,7 +45,7 @@ export const PackageAdminList = () => {
           />
           <NumberField label="available" source="availableSlots" />
           <FunctionField
-            source=""
+            source="Actions"
             render={(record) => (
               <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
                 <ApproveButton record={record} />
