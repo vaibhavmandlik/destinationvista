@@ -35,15 +35,14 @@ export const PackageAdminList = () => {
           <ImageField source="imagePaths" />
           <TextField source="title" />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
-          <NumberField label={"duration"} source="durationDays" />
-          <TextField source="destination" />
+          <NumberField label={"Duration"} source="durationDays" />
           <ReferenceManyCount
             label="Booking"
             reference="booking"
             target="packageId"
             link
           />
-          <NumberField label="available" source="availableSlots" />
+          <NumberField label="Available" source="availableSlots" />
           <FunctionField
             source="Actions"
             render={(record) => (
