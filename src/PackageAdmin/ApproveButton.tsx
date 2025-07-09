@@ -19,7 +19,11 @@ const ApproveButton = ({ record }) => {
   const dataProvider = useDataProvider();
   const handleApprove = async () => {
     try {
-      await dataProvider.approvePackage(record.id);
+      await dataProvider.update("package", {
+        id: record.id,
+        data: {...record ,isApproved: "1" ,vendorId: record.vendorId},
+        previousData: record,
+      });
       notify("Package approved successfully", { type: "success" });
       refresh();
     } catch (error) {

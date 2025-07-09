@@ -43,6 +43,7 @@ type PackageParams = {
   otherInfo: string;
   start_date: string;
   end_date?: string;
+  isApproved?: string;
 };
 function formatDateToYYYYMMDD(dateString: string) {
   const date = new Date(dateString);
@@ -80,14 +81,15 @@ const createPackageFormData = (
   params.data.inclusion && formData.append("inclusion", params.data.inclusion);
   params.data.exclusion && formData.append("exclusion", params.data.exclusion);
   params.data.otherInfo && formData.append("otherInfo", params.data.otherInfo);
-  debugger;
-  formData.append(
+  params.data.isApproved &&
+    formData.append("isApproved", params.data.isApproved);
+  params.data.start_date && formData.append(
     "startDate",
     params.data.start_date
       ? formatDateToYYYYMMDD(params.data.start_date)
       : formatDateToYYYYMMDD(new Date().toISOString())
   );
-  formData.append(
+  params.data.end_date && formData.append(
     "endDate",
     params.data.end_date
       ? formatDateToYYYYMMDD(params.data.end_date)
