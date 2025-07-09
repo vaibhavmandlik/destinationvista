@@ -56,6 +56,7 @@ import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
 import EmailToUsers from "./EmailtoUser/EmailToUser";
 import authProviderAdmin from "./authProviderAdmin";
+import LoginPageAdmin from "./pages/login/LoginPageAdmin";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -117,7 +118,7 @@ const AdminRoute: React.FC = () => {
       basename="/admin"
       dataProvider={dataProviders}
       authProvider={authProviderAdmin}
-      loginPage={MyLoginPage}
+      loginPage={LoginPageAdmin}
       layout={AdminLayout}
       theme={theme}
     // dashboard={VendorDashboard}

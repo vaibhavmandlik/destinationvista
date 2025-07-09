@@ -6,7 +6,7 @@ import { CustomTextInput } from "../../components/common/CustomInputFields/TextI
 import { Login } from "@mui/icons-material";
 import { Button, Container, Grid, Typography, Box, CardMedia,} from "@mui/material";
 
-const MyLoginPage: React.FC = () => {
+const LoginPageAdmin: React.FC = () => {
   const login = useLogin();
   type Input = {
     email: string;
@@ -37,7 +37,7 @@ const MyLoginPage: React.FC = () => {
       >
         <Container maxWidth="xs">
           <Typography variant="h5" fontWeight="bold">
-            Vendor Sign In
+            Admin Sign In
           </Typography>
           <Typography variant="body2" sx={{ mt: 1 }}>
             Don&apos;t have an account?{" "}
@@ -144,4 +144,4 @@ const MyLoginPage: React.FC = () => {
   );
 };
 
-export default MyLoginPage;
+export default LoginPageAdmin;
