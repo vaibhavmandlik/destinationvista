@@ -1,18 +1,13 @@
 import React, { useState, useCallback } from "react";
 import {
-  BooleanField,
   Datagrid,
   EditButton,
   FunctionField,
   List,
   NumberField,
   ReferenceManyCount,
-  ShowButton,
   TextField,
-  useDataProvider,
   useGetIdentity,
-  useNotify,
-  useRefresh,
   SimpleForm,
   TextInput,
   NumberInput,
@@ -24,11 +19,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   Button,
   IconButton,
   Tooltip,
-  Switch,
 } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CurrencyField from "../components/CustomFields/CurrencyField";
@@ -55,9 +48,6 @@ const postFilters = [
 ];
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
-  const dataProvider = useDataProvider();
-  const notify = useNotify();
-  const refresh = useRefresh();
 
   const [open, setOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<PackageRecord | null>(
@@ -78,26 +68,6 @@ export const PackageList = () => {
     console.log(data);
     return;
   }
-
-  const handleToggleActiveStatus = useCallback(
-    async (record: PackageRecord) => {
-      try {
-        await dataProvider.update("package", {
-          id: record.id,
-          data: { active: !record.active },
-          previousData: record,
-        });
-        notify(
-          `Package ${record.active ? "deactivated" : "activated"} successfully`,
-          { type: "success" }
-        );
-        refresh();
-      } catch (error: any) {
-        notify(error?.message || "Error toggling status", { type: "error" });
-      }
-    },
-    [dataProvider, notify, refresh]
-  );
 
   return (
     <>
@@ -146,27 +116,6 @@ export const PackageList = () => {
               return <span style={{ color: "red" }}>Not Approved</span>;
             }
           }} />
-          {/* <FunctionField
-            label="Active"
-            render={(record: PackageRecord) =>
-              record && (
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <Switch
-                    checked={record.active}
-                    onChange={() => handleToggleActiveStatus(record)}
-                    color="primary"
-                  />
-                  <span>{record.active ? "Active" : "Inactive"}</span>
-                </div>
-              )
-            }
-          /> */}
           <FunctionField
             render={() => (
               <div
