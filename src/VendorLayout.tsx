@@ -18,17 +18,11 @@ import {
   PiUserCircleBold,
   PiUsers,
 } from "react-icons/pi";
-import { Drawer, Paper } from "@mui/material";
 import { SidebarClasses, useLocale, useSidebarState } from "react-admin";
 import "./mylayout.css";
-import { Box } from "@mui/material";
-import SearchBar from "./Search";
 import logo from "./assets/logo.svg";
 import { SwitchVendor } from "./SwitchVendor";
 import useHasVendors from "./hook/useHasvendors";
-import { JSONTree } from "react-json-tree";
-import { Dashboard, Home } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 
 // Custom Sidebar (Optional)
 export const MySidebar = ({ children }) => {
@@ -67,6 +61,7 @@ export const MyMenu = () => {
     useEffect(() => {
     if (isLoading || isUserLoading) return;
     if (data.length >= 1 && user?.isApproved !== "1") {
+      alert("Your account is not approved yet. Please contact support.");
       logout();
     }
   }, [isLoading,isUserLoading]);
