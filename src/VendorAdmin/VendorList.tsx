@@ -152,7 +152,7 @@ export const VendorListAdmin = () => {
           />
 
           <EditButton variant="text" color="primary" />
-          <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+          <DeleteWithConfirmButton />
         </Datagrid>
       </List>
     </>

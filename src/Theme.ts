@@ -52,110 +52,110 @@ const theme = createTheme({
         },
       },
     },
-    MuiButton: {
-      variants: [
-        {
-          props: { variant: "bootstrap", color: "primary" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#007bff",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#0056b3",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "secondary" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#6c757d",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#5a6268",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "success" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#28a745",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#218838",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "danger" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#dc3545",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#c82333",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "warning" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#ffc107",
-            color: "#212529",
-            "&:hover": {
-              backgroundColor: "#e0a800",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "info" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#17a2b8",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#138496",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "light" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#f8f9fa",
-            color: "#212529",
-            "&:hover": {
-              backgroundColor: "#e2e6ea",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "dark" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "#343a40",
-            color: "#fff",
-            "&:hover": {
-              backgroundColor: "#23272b",
-            },
-          },
-        },
-        {
-          props: { variant: "bootstrap", color: "link" },
-          style: {
-            textTransform: "none",
-            backgroundColor: "transparent",
-            color: "#007bff",
-            "&:hover": {
-              backgroundColor: "transparent",
-              textDecoration: "underline",
-            },
-          },
-        },
-      ],
-    },
+    // MuiButton: {
+    //   variants: [
+    //     {
+    //       props: { variant: "bootstrap", color: "primary" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#007bff",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#0056b3",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "secondary" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#6c757d",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#5a6268",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "success" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#28a745",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#218838",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "danger" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#dc3545",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#c82333",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "warning" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#ffc107",
+    //         color: "#212529",
+    //         "&:hover": {
+    //           backgroundColor: "#e0a800",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "info" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#17a2b8",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#138496",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "light" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#f8f9fa",
+    //         color: "#212529",
+    //         "&:hover": {
+    //           backgroundColor: "#e2e6ea",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "dark" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "#343a40",
+    //         color: "#fff",
+    //         "&:hover": {
+    //           backgroundColor: "#23272b",
+    //         },
+    //       },
+    //     },
+    //     {
+    //       props: { variant: "bootstrap", color: "link" },
+    //       style: {
+    //         textTransform: "none",
+    //         backgroundColor: "transparent",
+    //         color: "#007bff",
+    //         "&:hover": {
+    //           backgroundColor: "transparent",
+    //           textDecoration: "underline",
+    //         },
+    //       },
+    //     },
+    //   ],
+    // },
     MuiTableHead: {
       styleOverrides: {
         root: {
@@ -200,8 +200,8 @@ const theme = createTheme({
       styleOverrides: {
         // Stronger specificity for Datagrid header cells
         ".RaDatagrid-headerCell, .RaDatagrid-headerCell.MuiTableCell-head": {
-          backgroundColor: "#007bff !important", // Changed to #007bff
-          color: "#fff !important",
+          // backgroundColor: "#007bff !important", // Changed to #007bff
+          // color: "#fff !important",
           fontWeight: 700,
           fontSize: "1rem",
         },
