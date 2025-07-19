@@ -25,10 +25,9 @@ const authProvider: AuthProvider = {
       }
       const auth = await response.json();
       debugger;
-    //   if (auth?.data?.isApproved !== 1) {
-    //     alert("Your account is not approved yet. Please wait for approval.");
-    //   throw new Error("Your account is not approved yet.");
-    // }
+      if(auth?.data?.userRole!== "1") {
+        throw new Error("Access not allowed. Only vendor can login.");
+      }
       localStorage.setItem("auth", JSON.stringify(auth));
     } catch (error) {
       console.error(error);
