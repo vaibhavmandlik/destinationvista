@@ -138,9 +138,16 @@ export const PackageList = () => {
             link
           />
           <NumberField label="available" source="availableSlots" />
-          <BooleanField source="approved" />
-          <FunctionField
-            label="Status"
+          {/* <BooleanField source="approved" /> */}
+          <FunctionField label="Admin" render={(record) => {
+            if(record.isApproved==="1") {
+              return <span style={{ color: "green" }}>Approved</span>;
+            } else {
+              return <span style={{ color: "red" }}>Not Approved</span>;
+            }
+          }} />
+          {/* <FunctionField
+            label="Active"
             render={(record: PackageRecord) =>
               record && (
                 <div
@@ -159,7 +166,7 @@ export const PackageList = () => {
                 </div>
               )
             }
-          />
+          /> */}
           <FunctionField
             render={() => (
               <div
