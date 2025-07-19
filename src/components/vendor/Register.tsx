@@ -42,7 +42,7 @@ const Register = ({userType='2'}) => {
       "user",
       { data: newData },
       {
-        onSuccess: () => {notify("User Created Successfully", { type: "success" }); redirect("vendor/login"); },
+        onSuccess: () => {notify("User Created Successfully", { type: "success" }); redirect("/vendor/login"); },
         onError: (error:any) => {
           notify(`Failed to create user: reason ${(error?.body?.error)}`, { type: "error" })},
       }
