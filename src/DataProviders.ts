@@ -146,6 +146,13 @@ export const dataProviders = {
         body: formData,
       }).then(({ json }) => ({ data: json }));
     }
+    else if (resource === "vendor/sendMail") {
+      debugger;
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: JSON.stringify(params.data),
+      }).then(({ json }) => ({ data: {id:1,...json}}));
+    }
     // else if (resource === "blog"){
     //  const formData = jsonToFormData(params.data);
     //  debugger;

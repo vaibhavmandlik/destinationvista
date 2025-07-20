@@ -28,7 +28,7 @@ export const PackageAdminList = () => {
       <List filters={<PackageFilter />} filter={{ vendorId: user?.vendorId }}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
-          <ImageField source="imagePaths" />
+          {/* <ImageField source="imagePaths" /> */}
           <TextField source="title" />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
           <NumberField label={"Duration"} source="durationDays" />

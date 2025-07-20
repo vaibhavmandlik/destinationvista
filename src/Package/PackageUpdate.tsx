@@ -70,7 +70,7 @@ export const PackageUpdate = () => {
       }}
     >
       <div className="my-5">
-        <Title title="Edit Package" />
+        <Title title="Package Details" />
         <div className="row">
           <div className="col-md-12 col-lg-3"></div>
           <div className="col-md-12 col-lg-6">

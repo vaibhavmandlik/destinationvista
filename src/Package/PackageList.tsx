@@ -14,6 +14,7 @@ import {
   required,
   Toolbar,
   SaveButton,
+  useDataProvider
 } from "react-admin";
 import {
   Dialog,
@@ -28,6 +29,9 @@ import CurrencyField from "../components/CustomFields/CurrencyField";
 import RatingStars from "./RatingStarts";
 import { Create } from "react-admin";
 import { SearchInput } from 'react-admin';
+import { useNavigate } from "react-router-dom";
+//sent mail icon import 
+import MailIcon from "@mui/icons-material/Mail";
 
 // Define an interface for the Package record
 interface PackageRecord {
@@ -69,6 +73,21 @@ export const PackageList = () => {
     return;
   }
 
+  const dataProvider = useDataProvider();
+
+  const getEmailsOfBookedUsers = async (packageId: string | number) => {
+    // 1. Get bookings for the package
+    const bookingsRes = await dataProvider.getList("booking", {
+      filter: { packageId },
+      pagination: { page: 1, perPage: 1000 },
+      sort: { field: "id", order: "ASC" },
+    });
+
+    const emailList = bookingsRes.data.map((booking: any) => ({id:booking.userId,name:booking.firstName + " " + booking.lastName}));
+
+    return emailList;
+  };
+  const navigate = useNavigate();
   return (
     <>
       <List filters={postFilters} filter={{ vendorId: user?.vendorId }}>
@@ -115,6 +134,32 @@ export const PackageList = () => {
             } else {
               return <span style={{ color: "red" }}>Not Approved</span>;
             }
+          }} />
+          <FunctionField label="Email Users" render={(record) => {
+            return (
+              <div>
+                <IconButton
+                  onClick={async () => {
+                    const emails = await getEmailsOfBookedUsers(record.id);
+                    console.log("Emails of users who booked:", emails);
+                    navigate("/vendor/EmailToUserFromList", { state: { customers: emails } });
+                  }}
+                >
+                  <MailIcon />
+                </IconButton>
+                {/* <Button
+          variant="text"
+          color="primary"
+          onClick={async () => {
+            const emails = await getEmailsOfBookedUsers(record.id);
+            console.log("Emails of users who booked:", emails);
+           navigate("/vendor/EmailToUserFromList", { state: { customers: emails } });
+          }}
+        >
+          
+        </Button> */}
+              </div>
+            );
           }} />
           <FunctionField
             render={() => (

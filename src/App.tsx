@@ -57,6 +57,7 @@ import { listBlog } from "./Blog/listBlog";
 import EmailToUsers from "./EmailtoUser/EmailToUser";
 import authProviderAdmin from "./authProviderAdmin";
 import LoginPageAdmin from "./pages/login/LoginPageAdmin";
+import EmailToUserFromList from "./EmailtoUser/EmailToUserFromList";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -107,6 +108,7 @@ const VendorRoute: React.FC = () => {
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
         <Route path="/email" element={<EmailToUsers />} />
+        <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
       </CustomRoutes>
     </Admin>
   );
@@ -153,6 +155,7 @@ const AdminRoute: React.FC = () => {
       <CustomRoutes>
       <Route path="/support" element={<AdminSupport />} />
         <Route path="/email" element={<EmailToUsers isAdmin={true} />} />
+        <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
       </CustomRoutes>
     </Admin>
   );
