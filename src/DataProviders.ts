@@ -133,7 +133,7 @@ export const dataProviders = {
       const formData = new FormData();
       formData.append("title", params.data.title);
       formData.append("description", params.data.description);
-      formData.append("image", params.data.image.rawFile);
+      formData.append("imagePath", params?.data?.imagePath?.rawFile || "");
       return httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
         body: formData,
