@@ -46,7 +46,7 @@ function CollapsibleMenu({ children, ...props }) {
 
   return (
     <Box>
-      <Button onClick={() => setOpen((prev) => !prev)}>{props.menuName}</Button>
+      <Button startIcon={<FaChartArea size={22} />  } onClick={() => setOpen((prev) => !prev)}>{props.menuName}</Button>
       <Collapse in={open} timeout={400}>
         <Box sx={{ border: "1px solid #ccc", borderRadius: 1, p: 2, mt: 1 }}>
           {children}
