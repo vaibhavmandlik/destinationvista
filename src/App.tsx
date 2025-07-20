@@ -58,6 +58,7 @@ import EmailToUsers from "./EmailtoUser/EmailToUser";
 import authProviderAdmin from "./authProviderAdmin";
 import LoginPageAdmin from "./pages/login/LoginPageAdmin";
 import EmailToUserFromList from "./EmailtoUser/EmailToUserFromList";
+import { UpdateBlog } from "./Blog/UpdateBlog";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -142,6 +143,7 @@ const AdminRoute: React.FC = () => {
       name="blog"
       create={createBlog}
       list={listBlog}
+      edit={UpdateBlog} // Assuming UpdateBlog is defined`
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />

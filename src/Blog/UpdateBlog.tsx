@@ -1,6 +1,4 @@
-import { Card, CardHeader } from "@mui/material";
-
-import { SimpleForm, TextInput, CreateBase, Title, Create } from "react-admin";
+import { SimpleForm, TextInput, Edit } from "react-admin";
 import {
   ClearButtons,
   FormatButtons,
@@ -14,9 +12,9 @@ type PackageParams = {
   title: string;
   body: string;
 };
-export const createBlog = () => {
+export const UpdateBlog = () => {
   return (
-    <Create
+    <Edit
       redirect={"list"}
       transform={(data: PackageParams) => {
         return {
@@ -27,7 +25,7 @@ export const createBlog = () => {
       <h4 style={{ padding: "10px" }}>Blog</h4>
       <p style={{ padding: "10px" }}>
         {" "}
-        Fill in the details below to create a new blog.{" "}
+        Fill in the details below to Edit a new blog.{" "}
       </p>
       <SimpleForm className="w-100">
         <div className="row w-100">
@@ -58,6 +56,6 @@ export const createBlog = () => {
           </div>
         </div>
       </SimpleForm>
-    </Create>
+    </Edit>
   );
 };

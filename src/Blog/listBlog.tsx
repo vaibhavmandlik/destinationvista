@@ -1,5 +1,6 @@
 import {
   Datagrid,
+  EditButton,
   List,
   TextField,
   useGetIdentity,
@@ -15,6 +16,7 @@ export const listBlog = () => {
           <TextField source="id" />
           <TextField source="title" />
            <TextField source="body" />
+           <EditButton label='Edit/View' />
         </Datagrid>
       </List>
     </>
