@@ -59,6 +59,18 @@ import authProviderAdmin from "./authProviderAdmin";
 import LoginPageAdmin from "./pages/login/LoginPageAdmin";
 import EmailToUserFromList from "./EmailtoUser/EmailToUserFromList";
 import { UpdateBlog } from "./Blog/UpdateBlog";
+import TermsAndCondition from "./pages/agreements/TermsAndCondition";
+import PrivateAndPolicy from "./pages/agreements/PrivateAndPolicy";
+import Disclaimer from "./pages/agreements/Disclaimer";
+import Support from "./pages/agreements/Support";
+import PaymentPolicy from "./pages/agreements/PaymentPolicy";
+import NewsLetter from "./pages/agreements/NewsLetter";
+import RefundPolicy from "./pages/agreements/RefundPolicy";
+import VendorPolicy from "./pages/agreements/VendorPolicy";
+import GrievanceAndRedressel from "./pages/agreements/GrievanceAndRedressel";
+import CookiesPolicy from "./pages/agreements/CookiesPolicy";
+import DateRetension from "./pages/agreements/DateRetension";
+import Rights from "./pages/agreements/Rights";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -190,6 +202,18 @@ const App: React.FC = () => {
           <Route path="bookingshistory" element={<BookingsHistory />} />
           <Route path="packagecart" element={<PackageCart />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="terms" element={<TermsAndCondition/>}/>
+          <Route path="privacy" element={<PrivateAndPolicy/>}/>
+          <Route path="disclaimer" element={<Disclaimer/>}/>
+          <Route path="support" element={<Support/>}/>
+          <Route path="paymentpolicy" element={<PaymentPolicy/>}/>
+          <Route path="newsletter" element={<NewsLetter/>}/>
+          <Route path="refundpolicy" element={<RefundPolicy/>}/>
+          <Route path="vendorpolicy" element={<VendorPolicy/>}/>
+          <Route path="grievanceandredressalpolicy" element={<GrievanceAndRedressel/>}/>
+          <Route path="cookiespolicy" element={<CookiesPolicy/>}/>
+          <Route path="dateretension" element={<DateRetension/>}/>
+          <Route path="rights" element={<Rights/>}/>
           <Route
             path="packages"
             element={

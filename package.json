@@ -29,6 +29,7 @@
     "destinationvista": "file:",
     "framer-motion": "^12.9.2",
     "lucide-react": "^0.503.0",
+    "mammoth": "^1.9.1",
     "ra-data-json-server": "^5.4.2",
     "ra-input-rich-text": "^5.5.3",
     "react": "^18.3.1",
