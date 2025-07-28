@@ -71,6 +71,7 @@ import GrievanceAndRedressel from "./pages/agreements/GrievanceAndRedressel";
 import CookiesPolicy from "./pages/agreements/CookiesPolicy";
 import DateRetension from "./pages/agreements/DateRetension";
 import Rights from "./pages/agreements/Rights";
+import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -181,6 +182,7 @@ const OpenRoute: React.FC = () => (
       <Route path="/vendorRegistration" element={<VendorResistration userType="1" />} />
       <Route path="/UserRegistration" element={<VendorResistration  />} />
       <Route path="/login" element={<VendorResistration />} />
+      <Route path="/agencyRegistration" element={<VendorCreateOpen />} />
     </CustomRoutes>
   </Admin>
 );

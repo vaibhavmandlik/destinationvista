@@ -2,6 +2,22 @@ import { type AuthProvider } from "react-admin";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
+/**
+ * Custom error to be thrown when a user logs in but does not have a vendor profile.
+ * This allows the UI to catch this specific error, store the partial authentication
+ * data, and redirect the user to the vendor creation page.
+ */
+export class VendorNotFoundError extends Error {
+  // We use 'any' here for simplicity, but you could define a strict type for your auth data.
+  public readonly authData: any;
+
+  constructor(message: string, authData: any) {
+    super(message);
+    this.name = 'VendorNotFoundError';
+    this.authData = authData;
+  }
+}
+
 const authProvider: AuthProvider = {
   // called when the user attempts to log in
   // { username, password }
@@ -24,9 +40,37 @@ const authProvider: AuthProvider = {
         throw new Error(response.statusText);
       }
       const auth = await response.json();
-      debugger;
+
       if(auth?.data?.userRole!== "1") {
         throw new Error("Access not allowed. Only vendor can login.");
+      }
+
+      // call api to check if the user has a vendor profile
+      const { id: userId, accessToken } = auth.data;
+      if (!userId || !accessToken) {
+        throw new Error("Login failed: Missing user ID or access token.");
+      }
+
+      const vendorCheckHeaders = new Headers();
+      vendorCheckHeaders.append("Authorization", `Bearer ${accessToken}`);
+
+      const vendorRequestOptions: RequestInit = {
+        method: 'GET',
+        headers: vendorCheckHeaders,
+      };
+
+      const vendorResponse = await fetch(`${apiUrl}/vendor?userId=${userId}`, vendorRequestOptions);
+      if (!vendorResponse.ok) {
+        throw new Error(`Failed to check vendor status: ${vendorResponse.statusText}`);
+      }
+      const vendors = await vendorResponse.json();
+      if (vendors.length === 0) {
+        // If no vendor profile exists, throw a custom error containing the auth data.
+        // This can be caught in a custom Login page to handle redirection.
+        throw new VendorNotFoundError(
+          "Vendor profile not found. Please create one.",
+          auth.data
+        );
       }
       localStorage.setItem("auth", JSON.stringify(auth));
     } catch (error) {

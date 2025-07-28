@@ -1,25 +1,39 @@
 import React from "react";
-import { useLogin } from "react-admin";
+import { useLogin, useNotify } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
 import { Login } from "@mui/icons-material";
 import { Button, Container, Grid, Typography, Box, CardMedia,} from "@mui/material";
+import { VendorNotFoundError } from "../../authProvider";
+import { JSONTree } from "react-json-tree";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
+  const notify = useNotify();
   type Input = {
     email: string;
     password: string;
   };
+  const [vendorHas, setVendorHas] = React.useState<boolean>(true);
+  const [authData, setAuthData] = React.useState<any | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Input>();
   const onSubmit: SubmitHandler<Input> = (data) => {
-    debugger;
-    login(data);
+    login(data).catch((error) => {
+       if (error instanceof VendorNotFoundError) {
+        debugger;
+                setAuthData(error.authData);
+                notify('Please complete your vendor profile to continue.', { type: 'info' });
+                setVendorHas(false);
+            } else {
+                // Handle other generic login errors.
+                notify(error.message || 'Login failed', { type: 'warning' });
+            }
+    });
   };
 
   return (
@@ -35,7 +49,7 @@ const MyLoginPage: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Container maxWidth="xs">
+        {vendorHas && <Container maxWidth="xs">
           <Typography variant="h5" fontWeight="bold">
             Vendor Sign In
           </Typography>
@@ -88,7 +102,15 @@ const MyLoginPage: React.FC = () => {
             Sign in
             </Button>
           </form>
-        </Container>
+        </Container>}
+        {!vendorHas && <Container maxWidth="xs">
+          <Typography variant="h5" fontWeight="bold">
+            Complete a Vendor Account
+          </Typography>
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            You need to complete your vendor registration to login.
+            <Link to={`/open/agencyRegistration?accessToken=${authData?.accessToken}&userId=${authData?.id}`}>Start</Link>
+          </Typography></Container>}
       </Grid>
 
       {/* Right Side (Illustration) */}
