@@ -56,29 +56,6 @@ const VendorDashboard = () => {
   if(isLoading) {
     return <div>Loading...</div>;
   }
-
-  if (!VendorList || VendorList.length === 0) {
-    return (
-      <Box sx={{ p: 4 , textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography variant="h5" color="textSecondary">
-          No vendor data available. Please create a vendor first.
-          {/* add button to create  */}
-       
-        </Typography>
-           <Button
-            variant="contained"
-            color="primary"
-            sx={{ mt: 4 ,padding: '10px 20px'}}
-            onClick={() => {
-              // Navigate to vendor creation page
-              window.location.href = '/vendor/vendor/create';
-            }}
-          >
-            Add Your Agency
-          </Button>
-      </Box>
-    );
-  }
   return (
     // <Box sx={{ flexGrow: 1, p: 3 }}>
     //   <Typography variant="h4" gutterBottom>

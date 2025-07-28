@@ -98,7 +98,7 @@ const VendorRoute: React.FC = () => {
       <Resource
         name="vendor"
         list={VendorList}
-        create={VendorCreate}
+        // create={VendorCreate}
         edit={VendorUpdate}
       />
       <Resource

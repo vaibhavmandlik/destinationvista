@@ -26,7 +26,6 @@ import {
 import { SidebarClasses, useLocale, useSidebarState } from "react-admin";
 import "./mylayout.css";
 import logo from "./assets/logo.svg";
-import { SwitchVendor } from "./SwitchVendor";
 import useHasVendors from "./hook/useHasvendors";
 
 import { useState } from "react";
@@ -58,9 +57,8 @@ function CollapsibleMenu({ children, ...props }) {
 
 export const MyMenu = () => {
   const hasVendors = useHasVendors();
-  const { data: user, isLoading: isUserLoading } = useGetIdentity();
-  const logout = useLogout();
-  const { data: VendorList, isLoading } = useGetList("vendor", {
+  const { data: user } = useGetIdentity();
+  const { data: VendorList } = useGetList("vendor", {
     filter: { userId: user?.id },
   });
   const [open] = useSidebarState();
@@ -69,31 +67,12 @@ export const MyMenu = () => {
       value: item.id,
       label: item.agencytitle,
     })) || [];
-  // const approvedVendors = VendorList?.filter(
-  //   (vendor: any) => vendor.isApproved === "1"
-  // );
-  // useEffect(() => {
-  //   if (isLoading) return;
-  //   debugger;
-  //   if (data.length === 1 && approvedVendors?.length == 0) {
-  //     debugger;
-  //     logout();
-  //   }
-  // }, [data,isLoading]);
-  useEffect(() => {
-    if (isLoading || isUserLoading) return;
-    if (data.length >= 1 && user?.isApproved !== "1") {
-      alert("Your account is not approved yet. Please contact support.");
-      logout();
-    }
-  }, [isLoading, isUserLoading]);
+
   return (
     <Menu>
       <br />
       <br />
       <img src={logo} alt="logo" className="logo" />
-      {open && <SwitchVendor />}
-      <hr />
       {hasVendors && data.length > 0 && (
         <>
           <CollapsibleMenu menuName="Dashboard 1">
