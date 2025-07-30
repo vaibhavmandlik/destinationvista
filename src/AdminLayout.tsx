@@ -86,7 +86,7 @@ export const MyMenu = () => {
       }
       <Menu.Item
         sx={{ fontSize: "0.875rem" }}
-        to="/vendor/email"
+        to="/admin/email"
         primaryText="Mailing Services"
         leftIcon={<PiEnvelopeSimpleBold size={22} />}
       />
