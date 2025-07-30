@@ -1,18 +1,87 @@
 import React from "react";
-import { Create, SimpleForm, TextInput, ImageInput, ImageField } from "react-admin";
+import {
+  Create,
+  SimpleForm,
+  TextInput,
+  ImageInput,
+  ImageField,
+  useTranslate, // Import useTranslate for internationalization (optional but good practice)
+} from "react-admin";
+import { Typography, Box } from "@mui/material"; // Import Typography and Box for styling
 
-const CategoryCreate = (props) => (
-  <Create title="Create a Cateogry" {...props}>
-    <h1 style={{ padding:"10px" }}>Create a Cateogry</h1>
-    <p style={{ padding:"10px" }}>Fill in the details below to create a new Cateogry.</p>
-    <SimpleForm>
-      <TextInput source="name" fullWidth />
-      <TextInput source="description" fullWidth label="Description" multiline  rows={6} />
-      <ImageInput source="imagePath" label="Upload Image" accept="image/*">
-        <ImageField source="src" title="title" />
-      </ImageInput>
-    </SimpleForm>
-  </Create>
-);
+const CategoryCreate = (props) => {
+  const translate = useTranslate(); // Initialize the translation hook
+
+  return (
+    <Create
+      // Use the 'title' prop of the Create component for the main page title
+      title={translate("resources.categories.create", { _: "Create New Category" })}
+      {...props}
+      sx={{
+        // Optional: Add some padding around the entire Create page content if desired
+        // '& .RaCreate-main': {
+        //   padding: { xs: 1, sm: 2, md: 3 },
+        // },
+      }}
+    >
+      <SimpleForm
+        sx={{
+          // Styling for the SimpleForm container to make it look like a card
+          padding: { xs: 2, sm: 3, md: 4 }, // Responsive padding inside the form
+          backgroundColor: 'white', // White background for the form area
+          borderRadius: 2, // Slightly rounded corners
+          boxShadow: 1, // Subtle shadow for a card effect
+          mb: 3, // Margin bottom if you plan to add more elements below the form
+          mt: 2, // Margin top to separate from default breadcrumbs/title if any
+          mx: { xs: 1, sm: 'auto' }, // Auto horizontal margin for centering on larger screens
+          maxWidth: { xs: '100%', sm: 600, md: 700 }, // Max width for the form itself
+        }}
+      >
+        {/* Main heading for the form content */}
+        <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 1 }}>
+          {translate("category.form.heading", { _: "Category Details" })}
+        </Typography>
+
+        {/* Description paragraph using Typography */}
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+          {translate("category.form.description", { _: "Fill in the details below to create a new category for your holiday booking website." })}
+        </Typography>
+
+        {/* Category Name Input */}
+        <TextInput
+          source="name"
+          label={translate("resources.categories.fields.name", { _: "Category Name" })}
+          fullWidth
+          required // Indicate that this field is mandatory
+          sx={{ mb: 3 }} // Add margin-bottom for spacing
+        />
+
+        {/* Description Input (multiline) */}
+        <TextInput
+          source="description"
+          label={translate("resources.categories.fields.description", { _: "Description" })}
+          fullWidth
+          multiline
+          rows={4} // Set a reasonable number of rows for multiline input
+          sx={{ mb: 4 }} // Add margin-bottom
+        />
+
+        {/* Image Upload Input */}
+        <ImageInput
+          source="imagePath"
+          label={translate("resources.categories.fields.image", { _: "Category Image" })}
+          accept="image/*" // Restrict to image files
+          helperText={translate("category.form.image_helper_text", { _: "Drag & drop an image or click to browse. Max size 5MB." })}
+          sx={{ mb: 2 }} // Add margin-bottom
+        >
+          {/* ImageField for previewing the selected image */}
+          <ImageField source="src" title="title" />
+        </ImageInput>
+
+        {/* React Admin's SimpleForm automatically adds Save and Cancel buttons here */}
+      </SimpleForm>
+    </Create>
+  );
+};
 
 export default CategoryCreate;
