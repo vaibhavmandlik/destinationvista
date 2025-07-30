@@ -41,7 +41,7 @@ const authProvider: AuthProvider = {
       }
       const auth = await response.json();
 
-      if(auth?.data?.userRole!== "1") {
+      if (auth?.data?.userRole !== "1") {
         throw new Error("Access not allowed. Only vendor can login.");
       }
 
@@ -71,6 +71,17 @@ const authProvider: AuthProvider = {
           "Vendor profile not found. Please create one.",
           auth.data
         );
+      } else {
+        const approvedVendor = vendors.find(
+          (vendor: any) => vendor.isApproved === "1"
+        );
+
+        if (!approvedVendor) {
+          throw new Error("Your vendor account has not been approved yet.");
+        }
+
+        localStorage.setItem("selectedVendor", approvedVendor.id);
+        auth.data.isApproved = approvedVendor.isApproved;
       }
       localStorage.setItem("auth", JSON.stringify(auth));
     } catch (error) {
@@ -97,7 +108,7 @@ const authProvider: AuthProvider = {
     const authCredentials = authData ? JSON.parse(authData) : null;
     if (authCredentials?.data?.userRole !== "1") {
       return Promise.reject("Access not allowed. Only vendor can login.");
-    } 
+    }
     return Promise.resolve();
   },
   // called when the user navigates to a new location, to check for permissions / roles
@@ -109,7 +120,7 @@ const authProvider: AuthProvider = {
     const authCredentials = authData ? JSON.parse(authData) : null;
     const { id, fullName, avatar } = authCredentials?.data;
     const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
-    return { id, fullName, avatar:avatarUrl , vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole, isApproved: authCredentials?.data?.isApproved };
+    return { id, fullName, avatar: avatarUrl, vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole, isApproved: authCredentials?.data?.isApproved };
   },
 };
 

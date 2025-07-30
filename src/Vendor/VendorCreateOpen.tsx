@@ -146,14 +146,15 @@ export const VendorCreateOpen = () => {
       if (!response.ok) {
         // Handle server-side errors
         throw new Error(
-          result.message || `Request failed with status ${response.status}`
+          result.error || `Request failed with status ${response.status}`
         );
       }
 
-      console.log("Form submitted successfully:", result);
+      handleSuccess();
       // Add any success logic here (e.g., show a success message, redirect)
-    } catch (error) {
+    } catch (error:any) {
       console.error("Error submitting form:", error);
+      notify(`Error: ${error.message}`, { type: "error" });
       // Add any error handling logic here (e.g., show an error message)
     }
   };
