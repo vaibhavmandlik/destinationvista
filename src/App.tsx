@@ -73,6 +73,8 @@ import DateRetension from "./pages/agreements/DateRetension";
 import Rights from "./pages/agreements/Rights";
 import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
 import AdminLayout1 from "./AdminLayout1";
+import CategoryCreate from "./Category/CategoryCreate";
+import { CategoryList } from "./Category/CategoryList";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -161,6 +163,7 @@ const AdminRoute: React.FC = () => {
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} />
+      <Resource name="category" list={CategoryList} create={CategoryCreate} />
       <Resource
         name="user"
         list={UserList}

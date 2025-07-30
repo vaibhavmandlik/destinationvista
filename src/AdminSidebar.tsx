@@ -20,6 +20,7 @@ import {
   PiEnvelopeSimpleBold,
   PiMountains,
   PiUserBold,
+  PiCircle,
 } from "react-icons/pi";
 
 const AdminSideBar = (props: any) => {
@@ -86,6 +87,11 @@ const AdminSideBar = (props: any) => {
             to="/admin/support"
             primaryText="Support"
             leftIcon={<PiTicket />}
+          />
+           <Menu.Item
+            to="/admin/category"
+            primaryText="category"
+            leftIcon={<PiCircle />}
           />
         </CollapsibleMenu>
 
