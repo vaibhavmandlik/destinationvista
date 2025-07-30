@@ -72,6 +72,7 @@ import CookiesPolicy from "./pages/agreements/CookiesPolicy";
 import DateRetension from "./pages/agreements/DateRetension";
 import Rights from "./pages/agreements/Rights";
 import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
+import AdminLayout1 from "./AdminLayout1";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -135,7 +136,7 @@ const AdminRoute: React.FC = () => {
       dataProvider={dataProviders}
       authProvider={authProviderAdmin}
       loginPage={LoginPageAdmin}
-      layout={AdminLayout}
+      layout={AdminLayout1}
       theme={theme}
     // dashboard={VendorDashboard}
     >
