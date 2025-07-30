@@ -54,7 +54,7 @@ import CreateTicket from "./SupportTicket/CreateTicket";
 import { TicketList } from "./SupportTicket/Ticket";
 import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
-import EmailToUsers from "./EmailtoUser/EmailToUser";
+import EmailToUsers from "./EmailtoUser/EmailToUserAdmin";
 import authProviderAdmin from "./authProviderAdmin";
 import LoginPageAdmin from "./pages/login/LoginPageAdmin";
 import EmailToUserFromList from "./EmailtoUser/EmailToUserFromList";
@@ -75,6 +75,7 @@ import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
 import AdminLayout1 from "./AdminLayout1";
 import CategoryCreate from "./Category/CategoryCreate";
 import { CategoryList } from "./Category/CategoryList";
+import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -173,7 +174,7 @@ const AdminRoute: React.FC = () => {
       />
       <CustomRoutes>
       <Route path="/support" element={<AdminSupport />} />
-        <Route path="/email" element={<EmailToUsers isAdmin={true} />} />
+        <Route path="/email" element={<EmailToUserAdmin isAdmin={true} />} />
         <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
       </CustomRoutes>
     </Admin>

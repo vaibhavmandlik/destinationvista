@@ -48,7 +48,7 @@ const MySidebar = (props: any) => {
                     <Menu.Item
                         sx={{ fontSize: "0.875rem" }}
                         to="/vendor/"
-                        primaryText="Dashboard"
+                        primaryText="Stastistics"
                         leftIcon={<FaChartArea size={22} />}
                     />
                     <Menu.Item
