@@ -283,7 +283,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     className="fa fa-envelope mr-2"
                     style={{ color: "#28a745" }}
                   ></i>
-                  info@destinationvista.com
+                 contact@destinationvista.in
                 </p>
               </div>
             </div>
