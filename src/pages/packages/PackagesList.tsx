@@ -9,6 +9,8 @@ import Spinner from "../../components/Loader/Spinner";
 import { Button, Drawer, Box, Collapse } from "@mui/material";
 import BookingForm from "./BookingForm"; 
 import { AwardIcon } from "lucide-react";
+import { useSearch } from "./../Searchbar/SearchContext";
+
 const url = `${import.meta.env.VITE_API_URL}`;
 
 // Define the `Package` type for type safety
@@ -64,27 +66,36 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   const [morePackages , setMorePackages] = useState<Package[]>([]);
   const navigate = useNavigate();
 
-  useEffect(()=>{
-    const fetchPackagesData = async ()=>{
-      try {
-        const response = await axios.get(`${url}/package`);
-        setPackagesToShow(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError('Failed to fetch packages . Plaease try again');
-        toast.error(errortext,{
-          position: "top-right",
-          autoClose: 3000,
-          closeOnClick: true,
-          theme: "light",
-          pauseOnHover: true,
-        });
-        setLoading(false);
-      }   
-    };
+const { query } = useSearch();
 
-    fetchPackagesData();
-  },[]);
+useEffect(() => {
+  const fetchPackagesData = async () => {
+    try {
+      // build query string from context
+      const queryString = Object.keys(query)
+        .filter((key) => query[key]) // skip empty values
+        .map((key) => `${key}=${encodeURIComponent(query[key])}`)
+        .join("&");
+
+      const response = await axios.get(`${url}/package${queryString ? `?${queryString}` : ""}`);
+      setPackagesToShow(response.data);
+      setLoading(false);
+    } catch (error) {
+      setError("Failed to fetch packages. Please try again");
+      toast.error(errortext, {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        theme: "light",
+        pauseOnHover: true,
+      });
+      setLoading(false);
+    }
+  };
+
+  fetchPackagesData();
+}, [query]); // 🔑 refetch whenever search query changes
+
 
   // Redirect to the details page
   const onDetailsBookNowClick = (pkg : Package) => {

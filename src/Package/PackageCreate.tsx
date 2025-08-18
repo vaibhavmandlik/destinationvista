@@ -11,7 +11,11 @@ import {
   SimpleFormIterator,
   number,
   DateInput,
-  FormDataConsumer
+  FormDataConsumer,
+  ReferenceInput,
+  SelectArrayInput,
+  SelectInput,
+  ReferenceField
 } from "react-admin";
 import {
   ClearButtons,
@@ -108,12 +112,16 @@ export const PackageCreate = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextInput
-                  fullWidth
+                <ReferenceInput
                   source="destination"
-                  label="Destination"
-                  validate={[required()]}
-                />
+                  reference="destination"
+                >
+                  <SelectInput
+                    fullWidth
+                    optionText="title"
+                    validate={[required()]}
+                  />
+                </ReferenceInput>
               </Grid>
               <Grid item xs={12} sm={4}>
                 <TextInput
@@ -336,53 +344,53 @@ export const PackageCreate = () => {
                   }}
                 />
               </Grid>
-             <FormDataConsumer>
-          {({ formData, ...rest }) => {
-            const todayISO = dayjs().format('YYYY-MM-DD');
-            const minEndISO = formData.start_date
-              ? dayjs(formData.start_date)
-                  .add(DURATION_DAYS, 'day')
-                  .format('YYYY-MM-DD')
-              : todayISO;
+              <FormDataConsumer>
+                {({ formData, ...rest }) => {
+                  const todayISO = dayjs().format('YYYY-MM-DD');
+                  const minEndISO = formData.start_date
+                    ? dayjs(formData.start_date)
+                      .add(DURATION_DAYS, 'day')
+                      .format('YYYY-MM-DD')
+                    : todayISO;
 
-            return (
-              <Grid item xs={12} sm={6}>
-                <DateInput
-                  fullWidth
-                  source="end_date"
-                  label="End Date"
-                  
-                  sx={{
-                    "& .MuiInputBase-root": {
-                      borderRadius: 1, // Common border-radius for MUI inputs
-                      height: "56px", // Default height for MUI TextInputs
-                      padding: "10px 14px", // Default padding for MUI TextInputs
-                      border: "1px solid rgba(0, 0, 0, 0.23)", // Default border color
-                      backgroundColor: "#fff", // Default background color
-                      color: "rgba(0, 0, 0, 0.87)", // Default text color
-                    },
-                    "& .MuiInputLabel-root": {
-                      // Targets the label
-                      // This might be needed if your label alignment is off
-                      color: "rgba(0, 0, 0, 0.6)", // Default label color
-                      fontSize: "1rem", // Default font size for labels
-                    },
-                    // If you want to explicitly match the border style:
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(0, 0, 0, 0.23)", // Default MUI border color
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "rgba(0, 0, 0, 0.87)", // Hover border color
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "primary.main", // Focused border color
-                    },
-                  }}
-                />
-              </Grid>
-            );
-          }}
-        </FormDataConsumer>
+                  return (
+                    <Grid item xs={12} sm={6}>
+                      <DateInput
+                        fullWidth
+                        source="end_date"
+                        label="End Date"
+
+                        sx={{
+                          "& .MuiInputBase-root": {
+                            borderRadius: 1, // Common border-radius for MUI inputs
+                            height: "56px", // Default height for MUI TextInputs
+                            padding: "10px 14px", // Default padding for MUI TextInputs
+                            border: "1px solid rgba(0, 0, 0, 0.23)", // Default border color
+                            backgroundColor: "#fff", // Default background color
+                            color: "rgba(0, 0, 0, 0.87)", // Default text color
+                          },
+                          "& .MuiInputLabel-root": {
+                            // Targets the label
+                            // This might be needed if your label alignment is off
+                            color: "rgba(0, 0, 0, 0.6)", // Default label color
+                            fontSize: "1rem", // Default font size for labels
+                          },
+                          // If you want to explicitly match the border style:
+                          "& .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "rgba(0, 0, 0, 0.23)", // Default MUI border color
+                          },
+                          "&:hover .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "rgba(0, 0, 0, 0.87)", // Hover border color
+                          },
+                          "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            borderColor: "primary.main", // Focused border color
+                          },
+                        }}
+                      />
+                    </Grid>
+                  );
+                }}
+              </FormDataConsumer>
               <Grid item xs={12}>
                 <RichTextInput
                   toolbar={
@@ -399,6 +407,18 @@ export const PackageCreate = () => {
                   helperText="Any other relevant details or terms and conditions"
                 />
               </Grid>
+              <div className="col-md-12">
+                <ReferenceInput
+                  source="category"
+                  reference="category"
+                >
+                  <SelectArrayInput
+                    fullWidth
+                    optionText="name"
+                    validate={[required()]}
+                  />
+                </ReferenceInput>
+              </div>
             </Grid>
           </SimpleForm>
         </Paper>

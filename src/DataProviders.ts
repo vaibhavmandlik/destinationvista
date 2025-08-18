@@ -381,6 +381,7 @@ type PackageParams = {
   start_date: string;
   end_date?: string;
   isApproved?: string;
+  category: [];
 };
 
 function formatDateToYYYYMMDD(dateString: string) {
@@ -419,6 +420,11 @@ const createPackageFormData = (
   params.data.inclusion && formData.append("inclusion", params.data.inclusion);
   params.data.exclusion && formData.append("exclusion", params.data.exclusion);
   params.data.otherInfo && formData.append("otherInfo", params.data.otherInfo);
+  if (params.data.category && Array.isArray(params.data.category)) {
+  params.data.category.forEach((cat: string | number) => {
+    formData.append("categories", String(cat));
+  });
+}
   params.data.isApproved &&
     formData.append("isApproved", params.data.isApproved);
   params.data.start_date &&

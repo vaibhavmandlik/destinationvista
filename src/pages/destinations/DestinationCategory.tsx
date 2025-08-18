@@ -1,4 +1,4 @@
-import React , {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../Searchbar/SearchBar";
 import axios from "axios";
 import { Category } from "@mui/icons-material";
@@ -7,13 +7,13 @@ interface DestinationCategoryProps {
   isShowSearchBar?: boolean;
 }
 
-interface Destibation{
-  img:string,
-  title:string,
-  subtitle:string
+interface Destibation {
+  imagePath: string,
+  name: string,
+  description: string
 }
 
-const destinations:Destibation[][] =[
+const destinations: Destibation[][] = [
   [
     {
       img: "img/destination-1.jpg",
@@ -53,24 +53,29 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
   isShowSearchBar = true,
 }) => {
 
-  const [activeIndex, setActiveIndex] = useState(0); 
-  const [topDestination , setTopDestination] = useState([]);
-  const handlePrev =()=>{
-      setActiveIndex((prev)=>(prev === 0 ? destinations.length - 1 : prev - 1));
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [catergories, setCategories] = useState([]);
+  const [topDestination, setTopDestination] = useState([]);
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? destinations.length - 1 : prev - 1));
   }
 
-  const handleNext = ()=>{
-    setActiveIndex((prev)=>(prev === destinations.length - 1 ? 0 : prev + 1));
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === destinations.length - 1 ? 0 : prev + 1));
   }
 
-  useEffect(()=>{
-    const fetchTopDestination = async()=>{
+  useEffect(() => {
+    const fetchTopDestination = async () => {
       try {
-        const responce = await axios.get(`${apiUrl}/destination/top`);
+        const response = await axios.get(`${apiUrl}/category`);
 
-        if(responce.status === 200)
-        {
-          console.log(responce.data);
+        if (response.status === 200) {
+          const categoryData = response.data.map((c : any) => {
+            return {
+              ...c,
+              imagePath: JSON.parse(c.imagePath)[0], // ✅ overwrite with first image
+            }} );
+          setCategories(categoryData);
         }
 
       } catch (error) {
@@ -79,19 +84,19 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
     }
 
     fetchTopDestination();
-  },[])
+  }, [])
 
-  const handleOnClick = async(categoryTitle:string)=>{
-     try {
-        const response = axios.get(`${apiUrl}/category`)
+  const handleOnClick = async (categoryTitle: string) => {
+    try {
+      const response = axios.get(`${apiUrl}/category/`)
 
-        if((await response).status === 200){
-          console.log((await response).data);
-        }
+      if ((await response).status === 200) {
+        console.log((await response).data);
+      }
 
-     } catch (error) {
-       console.log("error while fetching catergories" , error);
-     }
+    } catch (error) {
+      console.log("error while fetching catergories", error);
+    }
   }
   return (
     <>
@@ -116,63 +121,19 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
               <h1>Explore Packages by Category</h1>
             </div>
             <div className="row">
-              {[
-                {
-                  img: "img/category-1.jpg",
-                  title: "Adventure",
-                  subtitle: "Exciting Experiences Await!",
-                },
-                {
-                  img: "img/category-2.jpg",
-                  title: "Romantic",
-                  subtitle: "Perfect Escapes for Two!",
-                },
-                {
-                  img: "img/category-3.jpg",
-                  title: "Family",
-                  subtitle: "Memorable Moments for All!",
-                },
-                {
-                  img: "img/category-4.jpg",
-                  title: "Beach",
-                  subtitle: "Sun, Sand & Serenity!",
-                },
-                {
-                  img: "img/category-5.jpg",
-                  title: "Cultural",
-                  subtitle: "Dive into Rich Heritage!",
-                },
-                {
-                  img: "img/category-6.jpg",
-                  title: "Adventure Sports",
-                  subtitle: "Thrilling Activities Await!",
-                },
-                {
-                  img: "img/category-7.jpg",
-                  title: "Wellness",
-                  subtitle: "Relax and Rejuvenate!",
-                },
-                {
-                  img: "img/category-8.jpg",
-                  title: "Cruise",
-                  subtitle: "Explore the Seas!",
-                },
-              ].map((category, index) => (
-                <div className="col-lg-3 col-md-6 mb-4" key={index} onClick={()=>handleOnClick(category.title)}>
+              {catergories.map((category, index) => (
+                <div className="col-lg-3 col-md-6 mb-4" key={index} onClick={() => handleOnClick(category.id)}>
                   <div className="category-item position-relative overflow-hidden mb-2">
                     <img
                       className="img-fluid category-image"
-                      src={category.img}
-                      alt={category.title}
+                      src={`${apiUrl}${category.imagePath}`}
+                      alt={category.name}
                     />
-                    <div className="category-overlay text-center text-white d-flex flex-column justify-content-center">
-                      <h5>{category.title}</h5>
-                      <span>{category.subtitle}</span>
-                    </div>
+                     <div className="category-overlay text-center text-white d-flex flex-column justify-content-center">
+                    <h5>{category.name}</h5>
+                    <span>{category.description}</span>
                   </div>
-                  <div className="text-center mt-2">
-                    <h5>{category.title}</h5>
-                    <p>{category.subtitle}</p>
+                  
                   </div>
                 </div>
               ))}
@@ -229,15 +190,15 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
                 ))}
               </div>
               <button className="carousel-control-prev custom-prev" onClick={handlePrev}>
-            <span className="carousel-control-prev-icon d-flex align-items-center justify-content-center p-3">
-              <i className="fas fa-chevron-left fa-2x text-primary"></i>
-            </span>
-          </button>
-          <button className="carousel-control-next custom-next" onClick={handleNext}>
-            <span className="carousel-control-next-icon d-flex align-items-center justify-content-center p-3">
-              <i className="fas fa-chevron-right fa-2x text-primary"></i>
-            </span>
-          </button>
+                <span className="carousel-control-prev-icon d-flex align-items-center justify-content-center p-3">
+                  <i className="fas fa-chevron-left fa-2x text-primary"></i>
+                </span>
+              </button>
+              <button className="carousel-control-next custom-next" onClick={handleNext}>
+                <span className="carousel-control-next-icon d-flex align-items-center justify-content-center p-3">
+                  <i className="fas fa-chevron-right fa-2x text-primary"></i>
+                </span>
+              </button>
             </div>
           </div>
         </div>

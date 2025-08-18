@@ -1,221 +1,183 @@
-import React, { useState } from "react";
-
-type SearchBarProps = {
-  onSearch: (query: SearchQuery) => void;
-};
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "./../Searchbar/SearchContext";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 type SearchQuery = {
   state: string;
   city: string;
-  departDate: string;
+  startDate: string;
   duration: string;
 };
 
-const SearchBar: React.FC<SearchBarProps> = () => {
-  
+const SearchBar: React.FC = () => {
+  const { query, setQuery } = useSearch();
+  const [cities, setCities] = useState<any[]>([]);
+  const [states, setStates] = useState<any[]>([]);
+  const [formData, setFormData] = useState(query);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/common/city`);
+        if (response.status === 200) setCities(response.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    const fetchStates = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/common/state`);
+        if (response.status === 200) setStates(response.data);
+      } catch (error) {
+        console.error("Error fetching states:", error);
+      }
+    };
+
+    fetchCities();
+    fetchStates();
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearch = () => {
+    setQuery(formData);     // store search in context
+    navigate("/packages");  // redirect to packages page
+  };
 
   return (
-    <div className="container-fluid booking mt-5 pb-5">
-      <div className="container pb-5">
-        <div
-          className="shadow-lg rounded d-flex flex-column align-items-center"
-          style={{
-            padding: "20px",
-            background: "rgba(255, 255, 255, 0.9)",
-            maxWidth: "1100px",
-            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
-          }}
-        >
-          <div className="row w-100 align-items-center justify-content-between mb-2">
-            {/* State Input with Default Dropdown + Autocomplete */}
-            <div className="col-md-3 position-relative px-1">
-              <div
-                className="input-group"
-                style={{
-                  border: "1px solid var(--primary)",
-                  borderRadius: "8px",
-                }}
-              >
-                <div
-                  className="input-group-prepend"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.9)",
-                    borderRight: "1px solid var(--primary)",
-                    borderRadius: "8px 0 0 8px",
-                  }}
-                >
-                  <span className="input-group-text border-0">
-                    <i
-                      className="fas fa-map-marker-alt"
-                      style={{ color: "var(--primary)" }}
-                    ></i>
-                  </span>
-                </div>
-                <input
-                  id="state-input"
-                  type="text"
-                  className="form-control p-3"
-                  placeholder="Select State"
-                  style={{
-                    border: "none",
-                    borderRadius: "0 8px 8px 0",
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* City Input with Default Dropdown + Autocomplete */}
-            <div className="col-md-3 position-relative px-1">
-              <div
-                className="input-group"
-                style={{
-                  border: "1px solid var(--primary)",
-                  borderRadius: "8px",
-                }}
-              >
-                <div
-                  className="input-group-prepend"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.9)",
-                    borderRight: "1px solid var(--primary)",
-                    borderRadius: "8px 0 0 8px",
-                  }}
-                >
-                  <span className="input-group-text border-0">
-                    <i
-                      className="fas fa-city"
-                      style={{ color: "var(--primary)" }}
-                    ></i>
-                  </span>
-                </div>
-                <input
-                  id="city-input"
-                  type="text"
-                  className="form-control p-3"
-                  placeholder="Select City"
-                  style={{
-                    border: "none",
-                    borderRadius: "0 8px 8px 0",
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Depart Date with Calendar Icon */}
-            <div className="col-md-3 position-relative px-1">
-              <div
-                className="input-group"
-                style={{
-                  border: "1px solid var(--primary)",
-                  borderRadius: "8px",
-                }}
-              >
-                <div
-                  className="input-group-prepend"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.9)",
-                    borderRight: "1px solid var(--primary)",
-                    borderRadius: "8px 0 0 8px",
-                  }}
-                >
-                  <span className="input-group-text border-0">
-                    <i
-                      className="fas fa-calendar-alt"
-                      style={{ color: "var(--primary)" }}
-                    ></i>
-                  </span>
-                </div>
-                <input
-                  type="text"
-                  className="form-control p-3 datetimepicker-input"
-                  placeholder="Depart Date"
-                  data-target="#date1"
-                  data-toggle="datetimepicker"
-                  style={{
-                    border: "none",
-                    borderRadius: "0 8px 8px 0",
-                    fontSize: "16px",
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Duration Dropdown with Timer Icon */}
-            <div className="col-md-3 position-relative px-1">
-              <div
-                className="input-group"
-                style={{
-                  border: "1px solid var(--primary)",
-                  borderRadius: "8px",
-                }}
-              >
-                <div
-                  className="input-group-prepend"
-                  style={{
-                    background: "rgba(255, 255, 255, 0.9)",
-                    borderRight: "1px solid var(--primary)",
-                    borderRadius: "8px 0 0 8px",
-                  }}
-                >
-                  <span className="input-group-text border-0">
-                    <i
-                      className="fas fa-hourglass-half"
-                      style={{ color: "var(--primary)" }}
-                    ></i>
-                  </span>
-                </div>
-                <select
-                  className="custom-select px-4"
-                  name="duration"
-                  style={{
-                    border: "none",
-                    borderRadius: "0 8px 8px 0",
-                    fontSize: "16px",
-                  }}
-                >
-                  <option selected>Duration</option>
-                  <option value="1">1 to 3 days</option>
-                  <option value="2">4 to 6 days</option>
-                  <option value="3">7 to 9 days</option>
-                  <option value="4">10 to 12 days</option>
-                  <option value="5">13 days or more</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-         
-          
-           
-
-          {/* Submit Button and More Filters Button */}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        handleSearch();
+      }}
+    >
+      <div className="container-fluid booking mt-5 pb-5">
+        <div className="container pb-5">
           <div
-            className="row w-100 align-items-center mt-3 mb-2 justify-content-center"
-            id="button-group"
+            className="shadow-lg rounded d-flex flex-column align-items-center"
+            style={{
+              padding: "20px",
+              background: "rgba(255, 255, 255, 0.9)",
+              maxWidth: "1100px",
+              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+            }}
           >
-            <div className="col-md-4 d-flex justify-content-center align-items-center px-1">
-              <button
-                id="submit-btn"
-                className="btn btn-success mr-2 w-50"
-                style={{
-                  height: "48px",
-                  borderRadius: "8px",
-                  backgroundColor: "var(--primary)",
-                  borderColor: "var(--primary)",
-                  color: "var(--light)",
-                  fontSize: "16px",
-                }}
-              >
-                <i className="fas fa-search mr-2"></i> Search
-              </button>
+            <div className="row w-100 align-items-center justify-content-between mb-2">
+              {/* State Dropdown */}
+              <div className="col-md-3 px-1">
+                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                  <span className="input-group-text border-0">
+                    <i className="fas fa-map-marker-alt" style={{ color: "var(--primary)" }}></i>
+                  </span>
+                  <select
+                    className="form-control"
+                    name="state"
+                    value={formData.state || ""}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select State</option>
+                    {states.map((s) => (
+                      <option key={s.state_id} value={s.state_name}>
+                        {s.state_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* City Dropdown */}
+              <div className="col-md-3 px-1">
+                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                  <span className="input-group-text border-0">
+                    <i className="fas fa-city" style={{ color: "var(--primary)" }}></i>
+                  </span>
+                  <select
+                    className="form-control"
+                    name="city"
+                    value={formData.city || ""}
+                    onChange={handleChange}
+                  >
+                    <option value="">Select City</option>
+                    {cities.map((c) => (
+                      <option key={c.city_id} value={c.city_name}>
+                        {c.city_name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Date Input */}
+              <div className="col-md-3 px-1">
+                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                  <span className="input-group-text border-0">
+                    <i className="fas fa-calendar-alt" style={{ color: "var(--primary)" }}></i>
+                  </span>
+                  <input
+                    type="date"
+                    name="startDate"
+                    value={formData.startDate || ""}
+                    onChange={handleChange}
+                    min={new Date().toISOString().split("T")[0]}
+                    className="form-control"
+                  />
+                </div>
+              </div>
+
+              {/* Duration Dropdown */}
+              <div className="col-md-3 px-1">
+                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                  <span className="input-group-text border-0">
+                    <i className="fas fa-hourglass-half" style={{ color: "var(--primary)" }}></i>
+                  </span>
+                  <select
+                    className="form-control"
+                    name="duration"
+                    value={formData.duration || ""}
+                    onChange={handleChange}
+                  >
+                    <option value="">Duration</option>
+                    {Array.from({ length: 20 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1} Days
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="row w-100 mt-3">
+              <div className="col text-center">
+                <button
+                  type="submit"
+                  className="btn btn-success w-50"
+                  style={{
+                    height: "48px",
+                    borderRadius: "8px",
+                    backgroundColor: "var(--primary)",
+                    borderColor: "var(--primary)",
+                    color: "var(--light)",
+                  }}
+                >
+                  <i className="fas fa-search mr-2"></i> Search
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 

@@ -19,6 +19,7 @@ import {
   ArrayInput,
   SimpleFormIterator,
   number,
+  SelectArrayInput,
 } from "react-admin";
 import {
   ClearButtons,
@@ -83,21 +84,21 @@ export const PackageAdminCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required(),unique({filter:{vendorId: user?.vendorId }})]}
+                      validate={[required(), unique({ filter: { vendorId: user?.vendorId } })]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="price"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="durationDays"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
@@ -116,7 +117,7 @@ export const PackageAdminCreate = () => {
                     <TextInput
                       fullWidth
                       source="availableSlots"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
@@ -215,7 +216,7 @@ export const PackageAdminCreate = () => {
                     />
                   </div>
                   <div className="col-md-12">
-                  <RichTextInput
+                    <RichTextInput
                       toolbar={
                         <RichTextInputToolbar>
                           <FormatButtons size={"small"} />
@@ -244,6 +245,19 @@ export const PackageAdminCreate = () => {
                       validate={[required()]}
                     />
                   </div>
+                  <div className="col-md-12">
+                    <ReferenceInput
+                      source="category"
+                      reference="category"
+                    >
+                      <SelectArrayInput
+                        fullWidth
+                        optionText="name"
+                        validate={[required()]}
+                      />
+                    </ReferenceInput>
+                  </div>
+
                 </div>
               </SimpleForm>
             </Card>

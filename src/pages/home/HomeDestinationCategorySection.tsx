@@ -53,7 +53,7 @@ interface Category {
 
 const categories: Category[] = [
   {
-    title: "Adventure",
+    title: "Adventu",
     description: "Embark on thrilling journeys in nature and beyond.",
     image: "img/category-1.jpg",
     altText: "Adventure",

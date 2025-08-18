@@ -78,6 +78,7 @@ import CategoryCreate from "./Category/CategoryCreate";
 import { CategoryList } from "./Category/CategoryList";
 import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
 import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
+import { SearchProvider } from "./pages/Searchbar/SearchContext";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -199,7 +200,7 @@ const App: React.FC = () => {
   return (
     <Router>
       <LoginProvider>
-
+    <SearchProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="home" element={<Home />} />
@@ -214,6 +215,7 @@ const App: React.FC = () => {
           <Route path="profile" element={<Profile />} />
           <Route path="terms" element={<TermsAndCondition/>}/>
           <Route path="privacy" element={<PrivateAndPolicy/>}/>
+      
           <Route path="disclaimer" element={<Disclaimer/>}/>
           <Route path="support" element={<Support/>}/>
           <Route path="paymentpolicy" element={<PaymentPolicy/>}/>
@@ -247,6 +249,7 @@ const App: React.FC = () => {
         <Route path="admin/*" element={<AdminRoute />} />
         <Route path="open/*" element={<OpenRoute />} />
       </Routes>
+    </SearchProvider>
     </LoginProvider>
     </Router>
   );
