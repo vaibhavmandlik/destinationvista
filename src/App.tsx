@@ -47,6 +47,7 @@ import AdminLayout from "./AdminLayout";
 import { VendorListAdmin } from "./VendorAdmin/VendorList";
 import { PackageAdminList } from "./PackageAdmin/PackageList";
 import DestinationCreate from "./Destination/DestinationCreate";
+import { DestinationUpdate } from "./Destination/DestinationUpdate";
 import SupportTicket from "./SupportTicket/SupportTicket";
 import AdminSupport from "./AdminSupport/AdminSupport";
 import UserLoginPage from "./pages/login/UserLoginPage";
@@ -76,6 +77,7 @@ import AdminLayout1 from "./AdminLayout1";
 import CategoryCreate from "./Category/CategoryCreate";
 import { CategoryList } from "./Category/CategoryList";
 import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
+import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -152,6 +154,7 @@ const AdminRoute: React.FC = () => {
       />
       <Resource
         name="package"
+        create={PackageAdminCreate}
         list={PackageAdminList}
         edit={PackageUpdate}
         // show={ViewDetails}
@@ -163,14 +166,14 @@ const AdminRoute: React.FC = () => {
       edit={UpdateBlog} // Assuming UpdateBlog is defined`
       />
       <Resource name="booking" list={BookingList} />
-      <Resource name="destination" list={DestinationList} create={DestinationCreate} />
+      <Resource name="destination" list={DestinationList} create={DestinationCreate} edit={DestinationUpdate}/>
       <Resource name="category" list={CategoryList} create={CategoryCreate} />
       <Resource
         name="user"
         list={UserList}
         create={UserCreate}
-        show={UserShow}
         edit={UserUpdate}
+        show={UserShow}
       />
       <CustomRoutes>
       <Route path="/support" element={<AdminSupport />} />

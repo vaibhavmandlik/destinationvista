@@ -70,14 +70,15 @@ const DestinationCreate = (props) => {
         <ImageInput
           source="imagePath"
           label={translate("resources.destinations.fields.image", { _: "Destination Image" })}
-          accept="image/*" // Restrict to image files
+          accept={"image/*"} // Restrict to image files
           helperText={translate("destination.form.image_helper_text", { _: "Drag & drop an image or click to browse. Max size 5MB." })}
           sx={{ mb: 2 }} // Add margin-bottom
         >
-          {/* ImageField for previewing the selected image */}
+           {/* ImageField for previewing the selected image */}
           <ImageField source="src" title="title" />
-        </ImageInput>
+        </ImageInput> 
 
+       
         {/* React Admin's SimpleForm automatically adds Save and Cancel buttons here */}
       </SimpleForm>
     </Create>

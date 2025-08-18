@@ -1,4 +1,4 @@
-import { Datagrid, DeleteWithConfirmButton, EditButton, List, TextField, useGetIdentity } from "react-admin";
+import { Datagrid, DeleteWithConfirmButton, EditButton, ImageField, List, TextField, useGetIdentity } from "react-admin";
 
 export const CategoryList = () => {
   const { data: user } = useGetIdentity();
@@ -8,7 +8,7 @@ export const CategoryList = () => {
       <TextField source="id" />
       <TextField source="name" />
       <TextField source="description" />
-      <TextField source="imagePath" />
+      <ImageField source="imagePath" />
       <DeleteWithConfirmButton />
     </Datagrid>
   </List>

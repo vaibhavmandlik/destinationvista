@@ -11,6 +11,7 @@ import {
   SimpleFormIterator,
   number,
   DateInput,
+  FormDataConsumer
 } from "react-admin";
 import {
   ClearButtons,
@@ -21,7 +22,8 @@ import {
   RichTextInputToolbar,
 } from "ra-input-rich-text";
 import { Grid, Box, Typography, Paper } from "@mui/material"; // Import MUI components
-
+import dayjs from "dayjs";
+import { useWatch } from "react-hook-form";
 type ItineraryType = {
   title: string;
   description: string; // Corrected typo from 'discription' to 'description'
@@ -55,6 +57,8 @@ type PackageParams = {
   end_date?: Date;
 };
 
+const DURATION_DAYS = 3; // your duration
+
 export const PackageCreate = () => {
   const { data: user } = useGetIdentity();
   const unique = useUnique();
@@ -67,8 +71,12 @@ export const PackageCreate = () => {
           ...data,
           vendorId: user?.vendorId,
           price: data.price ? parseInt(data.price) : undefined, // Handle undefined or null
-          durationDays: data.durationDays ? parseInt(data.durationDays) : undefined,
-          availableSlots: data.availableSlots ? parseInt(data.availableSlots) : undefined,
+          durationDays: data.durationDays
+            ? parseInt(data.durationDays)
+            : undefined,
+          availableSlots: data.availableSlots
+            ? parseInt(data.availableSlots)
+            : undefined,
         };
       }}
     >
@@ -76,7 +84,10 @@ export const PackageCreate = () => {
         <Typography variant="h5" component="h1" gutterBottom align="center">
           Create New Holiday Package
         </Typography>
-        <Paper elevation={3} sx={{ p: { xs: 2, md: 4 }, mx: { xs: 1, md: 'auto' }, maxWidth: 900 }}>
+        <Paper
+          elevation={3}
+          sx={{ p: { xs: 2, md: 4 }, mx: { xs: 1, md: "auto" }, maxWidth: 900 }}
+        >
           <SimpleForm>
             <Grid container spacing={3}>
               {/* Package Details Section */}
@@ -90,7 +101,10 @@ export const PackageCreate = () => {
                   fullWidth
                   source="title"
                   label="Package Title"
-                  validate={[required(), unique({ filter: { vendorId: user?.vendorId } })]}
+                  validate={[
+                    required(),
+                    unique({ filter: { vendorId: user?.vendorId } }),
+                  ]}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -155,8 +169,8 @@ export const PackageCreate = () => {
                       border: "1px dotted #000",
                       borderRadius: 1,
                       p: 2,
-                      textAlign: 'center',
-                      minHeight: 100
+                      textAlign: "center",
+                      minHeight: 100,
                     },
                   }}
                   accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
@@ -190,12 +204,12 @@ export const PackageCreate = () => {
                     fullWidth
                     sx={{
                       "& .RaSimpleFormIterator-form": {
-                        border: '1px solid #ccc',
+                        border: "1px solid #ccc",
                         borderRadius: 1,
                         p: 2,
                         mb: 2,
-                        backgroundColor: '#f9f9f9'
-                      }
+                        backgroundColor: "#f9f9f9",
+                      },
                     }}
                   >
                     <Box sx={{ mt: 1 }}>
@@ -267,31 +281,15 @@ export const PackageCreate = () => {
               <Grid item xs={12} sm={6}>
                 <TextInput
                   fullWidth
-                  source="vendor_discount"
-                  label="Vendor Discount (%)"
-                  type="number"
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextInput
-                  fullWidth
                   source="pickup_location"
                   label="Pickup Location"
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextInput
-                  fullWidth
-                  source="start_point"
-                  label="Start Point"
-                />
+                <TextInput fullWidth source="start_point" label="Start Point" />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <TextInput
-                  fullWidth
-                  source="end_point"
-                  label="End Point"
-                />
+                <TextInput fullWidth source="end_point" label="End Point" />
               </Grid>
               <Grid item xs={12} sm={12}>
                 <TextInput
@@ -307,67 +305,84 @@ export const PackageCreate = () => {
                   fullWidth
                   source="start_date"
                   label="Start Date"
-                   sx={{
-                    '& .MuiInputBase-root': {
+                  inputProps={{
+                    min: dayjs().format("YYYY-MM-DD"),
+                  }} // disables previous dates
+                  sx={{
+                    "& .MuiInputBase-root": {
                       borderRadius: 1, // Common border-radius for MUI inputs
-                      height: '56px', // Default height for MUI TextInputs
-                      padding: '10px 14px', // Default padding for MUI TextInputs
-                      border: '1px solid rgba(0, 0, 0, 0.23)', // Default border color
-                      backgroundColor: '#fff', // Default background color
-                      color: 'rgba(0, 0, 0, 0.87)', // Default text color
+                      height: "56px", // Default height for MUI TextInputs
+                      padding: "10px 14px", // Default padding for MUI TextInputs
+                      border: "1px solid rgba(0, 0, 0, 0.23)", // Default border color
+                      backgroundColor: "#fff", // Default background color
+                      color: "rgba(0, 0, 0, 0.87)", // Default text color
                     },
-                    '& .MuiInputLabel-root': { // Targets the label
-                        // This might be needed if your label alignment is off
-                        color: 'rgba(0, 0, 0, 0.6)', // Default label color
-                        fontSize: '1rem', // Default font size for labels
-
+                    "& .MuiInputLabel-root": {
+                      // Targets the label
+                      // This might be needed if your label alignment is off
+                      color: "rgba(0, 0, 0, 0.6)", // Default label color
+                      fontSize: "1rem", // Default font size for labels
                     },
                     // If you want to explicitly match the border style:
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.23)', // Default MUI border color
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(0, 0, 0, 0.23)", // Default MUI border color
                     },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.87)', // Hover border color
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(0, 0, 0, 0.87)", // Hover border color
                     },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main', // Focused border color
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "primary.main", // Focused border color
                     },
                   }}
                 />
               </Grid>
+             <FormDataConsumer>
+          {({ formData, ...rest }) => {
+            const todayISO = dayjs().format('YYYY-MM-DD');
+            const minEndISO = formData.start_date
+              ? dayjs(formData.start_date)
+                  .add(DURATION_DAYS, 'day')
+                  .format('YYYY-MM-DD')
+              : todayISO;
+
+            return (
               <Grid item xs={12} sm={6}>
                 <DateInput
                   fullWidth
                   source="end_date"
                   label="End Date"
-                       sx={{
-                    '& .MuiInputBase-root': {
+                  
+                  sx={{
+                    "& .MuiInputBase-root": {
                       borderRadius: 1, // Common border-radius for MUI inputs
-                      height: '56px', // Default height for MUI TextInputs
-                      padding: '10px 14px', // Default padding for MUI TextInputs
-                      border: '1px solid rgba(0, 0, 0, 0.23)', // Default border color
-                      backgroundColor: '#fff', // Default background color
-                      color: 'rgba(0, 0, 0, 0.87)', // Default text color
+                      height: "56px", // Default height for MUI TextInputs
+                      padding: "10px 14px", // Default padding for MUI TextInputs
+                      border: "1px solid rgba(0, 0, 0, 0.23)", // Default border color
+                      backgroundColor: "#fff", // Default background color
+                      color: "rgba(0, 0, 0, 0.87)", // Default text color
                     },
-                    '& .MuiInputLabel-root': { // Targets the label
-                        // This might be needed if your label alignment is off
-                        color: 'rgba(0, 0, 0, 0.6)', // Default label color
-                        fontSize: '1rem', // Default font size for labels
-
+                    "& .MuiInputLabel-root": {
+                      // Targets the label
+                      // This might be needed if your label alignment is off
+                      color: "rgba(0, 0, 0, 0.6)", // Default label color
+                      fontSize: "1rem", // Default font size for labels
                     },
                     // If you want to explicitly match the border style:
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.23)', // Default MUI border color
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(0, 0, 0, 0.23)", // Default MUI border color
                     },
-                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'rgba(0, 0, 0, 0.87)', // Hover border color
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "rgba(0, 0, 0, 0.87)", // Hover border color
                     },
-                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'primary.main', // Focused border color
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "primary.main", // Focused border color
                     },
                   }}
                 />
               </Grid>
+            );
+          }}
+        </FormDataConsumer>
               <Grid item xs={12}>
                 <RichTextInput
                   toolbar={
@@ -391,3 +406,5 @@ export const PackageCreate = () => {
     </CreateBase>
   );
 };
+
+

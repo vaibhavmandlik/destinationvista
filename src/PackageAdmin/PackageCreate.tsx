@@ -52,7 +52,7 @@ type PackageParams = {
   exclusion: string;
   otherInfo: string;
 };
-export const PackageCreate = () => {
+export const PackageAdminCreate = () => {
   const { data: user } = useGetIdentity();
 
   const unique = useUnique();
@@ -62,7 +62,7 @@ export const PackageCreate = () => {
       transform={(data: PackageParams) => {
         return {
           ...data,
-          vendorId: user?.vendorId,
+          vendorId: user?.id,
           price: parseInt(data.price),
           durationDays: parseInt(data.durationDays),
           availableSlots: parseInt(data.availableSlots),
@@ -118,6 +118,18 @@ export const PackageCreate = () => {
                       source="availableSlots"
                       validate={[required(),number()]}
                     />
+                  </div>
+                  <div className="col-md-6">
+                    <ReferenceInput
+                      source="vendor"
+                      reference="vendor"
+                    >
+                      <SelectInput
+                        fullWidth
+                        optionText="agencytitle"
+                        validate={[required()]}
+                      />
+                    </ReferenceInput>
                   </div>
                   <div className="col-md-12">
                     <RichTextInput

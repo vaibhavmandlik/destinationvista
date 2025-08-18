@@ -1,6 +1,8 @@
-import React , {useState} from "react";
+import React , {useEffect, useState} from "react";
 import SearchBar from "../Searchbar/SearchBar";
-
+import axios from "axios";
+import { Category } from "@mui/icons-material";
+const apiUrl = import.meta.env.VITE_API_URL;
 interface DestinationCategoryProps {
   isShowSearchBar?: boolean;
 }
@@ -52,12 +54,44 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
 }) => {
 
   const [activeIndex, setActiveIndex] = useState(0); 
+  const [topDestination , setTopDestination] = useState([]);
   const handlePrev =()=>{
       setActiveIndex((prev)=>(prev === 0 ? destinations.length - 1 : prev - 1));
   }
 
   const handleNext = ()=>{
     setActiveIndex((prev)=>(prev === destinations.length - 1 ? 0 : prev + 1));
+  }
+
+  useEffect(()=>{
+    const fetchTopDestination = async()=>{
+      try {
+        const responce = await axios.get(`${apiUrl}/destination/top`);
+
+        if(responce.status === 200)
+        {
+          console.log(responce.data);
+        }
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    fetchTopDestination();
+  },[])
+
+  const handleOnClick = async(categoryTitle:string)=>{
+     try {
+        const response = axios.get(`${apiUrl}/category`)
+
+        if((await response).status === 200){
+          console.log((await response).data);
+        }
+
+     } catch (error) {
+       console.log("error while fetching catergories" , error);
+     }
   }
   return (
     <>
@@ -124,7 +158,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
                   subtitle: "Explore the Seas!",
                 },
               ].map((category, index) => (
-                <div className="col-lg-3 col-md-6 mb-4" key={index}>
+                <div className="col-lg-3 col-md-6 mb-4" key={index} onClick={()=>handleOnClick(category.title)}>
                   <div className="category-item position-relative overflow-hidden mb-2">
                     <img
                       className="img-fluid category-image"

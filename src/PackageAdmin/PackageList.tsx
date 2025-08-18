@@ -13,6 +13,7 @@ import {
   useGetIdentity,
   useNotify,
   useRefresh,
+  ReferenceField,
 } from "react-admin";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 import ApproveButton from "./ApproveButton";
@@ -45,6 +46,14 @@ export const PackageAdminList = () => {
             link
           />
           <NumberField label="Available" source="availableSlots" />
+          <ReferenceField
+            label="Vendor"
+            source="vendorId"
+            reference="vendor"
+            link={false}
+          >
+            <TextField source="agencytitle" />
+          </ReferenceField>
           <FunctionField
             label="Approval Status"
             render={(record: any) => {
@@ -64,7 +73,7 @@ export const PackageAdminList = () => {
               };
 
               const handleStatusChange = async (
-                status: "approved" | "rejected"
+                status: "approved" | "rejected",
               ) => {
                 const confirmMessage = `Are you sure you want to mark this as ${status}?`;
                 if (!window.confirm(confirmMessage)) return;
@@ -119,9 +128,9 @@ export const PackageAdminList = () => {
                     endIcon={<ArrowDropDownCircleOutlined />}
                     sx={{
                       color,
-                      borderColor: color,
-                      textTransform: "capitalize",
-                      fontWeight: "bold",
+                      "borderColor": color,
+                      "textTransform": "capitalize",
+                      "fontWeight": "bold",
                       "&:hover": {
                         backgroundColor: `${color}20`, // light background on hover
                         borderColor: color,

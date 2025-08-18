@@ -13,9 +13,9 @@ export const listBlog = () => {
     <>
       <List filter={{ vendorId: user?.vendorId }}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
-          <TextField source="id" />
+          <TextField source="id"/>
           <TextField source="title" />
-           <TextField source="body" />
+           {/* <TextField source="body" /> */}
            <EditButton label='Edit/View' />
         </Datagrid>
       </List>

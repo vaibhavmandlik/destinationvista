@@ -9,7 +9,7 @@ import {
 } from "react-admin";
 import { Typography, Box } from "@mui/material"; // Import Typography and Box for styling
 
-const CategoryCreate = (props) => {
+const CategoryCreate = (props : any) => {
   const translate = useTranslate(); // Initialize the translation hook
 
   return (

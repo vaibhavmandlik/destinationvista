@@ -148,11 +148,6 @@ const DynamicHeader: React.FC = () => {
                             </Link>
                           </li>
                           <li className="py-1 rounded list-unstyled dropdown-menu-tab">
-                            <Link to="/packagecart" style={{ width: "150px" }}>
-                              My Cart
-                            </Link>
-                          </li>
-                          <li className="py-1 rounded list-unstyled dropdown-menu-tab">
                             <Link
                               to="/home"
                               style={{ width: "150px" }}

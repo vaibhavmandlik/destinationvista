@@ -94,6 +94,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
     );
 
     if (response1.status === 200) {
+      debugger;
       const bookingId = response1.data.id;
 
       // Create order for Razorpay
@@ -115,7 +116,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
           amount: amount.toString(),
           currency,
           order_id: order_id,
-          name: "Your Company Name",
+          name: "Destination vista",
           description: "Package Booking Payment",
           handler: async function (response: any) {
             try {
@@ -137,6 +138,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
               if (verifyRes.data.success) {
                 toast.success("Payment successful and verified!");
                 onClose(); 
+                navigate("/home");
               } else {
                 toast.error("Payment verification failed.");
               }
@@ -157,6 +159,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
 
         const razor = new window.Razorpay(options);
         razor.open();
+
       }
     }
   } catch (error) {

@@ -23,7 +23,7 @@ import {
 } from "ra-input-rich-text";
 
 // Custom Toolbar for Save and Clear buttons
-const CustomToolbar = (props) => {
+const CustomToolbar = (props : any) => {
   const translate = useTranslate(); // Use translate for button labels
   return (
     <Toolbar
@@ -84,7 +84,7 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({ isAdmin = false }) 
   });
 
   // Prepare choices for SelectArrayInput once data is loaded
-  const customerChoices = customers?.map((customer) => ({
+  const customerChoices = !isAdmin ? [{id:22,name:"contact@destinationvista.in"}] : customers?.map((customer) => ({
     id: customer.id,
     name: `${customer.firstName} ${customer.lastName}`,
   })) || [];

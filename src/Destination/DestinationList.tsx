@@ -1,4 +1,4 @@
-import { Datagrid, DeleteWithConfirmButton, EditButton, List, TextField, useGetIdentity } from "react-admin";
+import { Datagrid, DeleteWithConfirmButton, EditButton, ImageField, List, TextField, useGetIdentity } from "react-admin";
 
 export const DestinationList = () => {
   const { data: user } = useGetIdentity();
@@ -8,9 +8,9 @@ export const DestinationList = () => {
       <TextField source="id" />
       <TextField source="title" />
       <TextField source="description" />
-      <TextField source="imagePath" />
-      {/* <EditButton variant="bootstrap" color="primary" />
-      <DeleteWithConfirmButton variant="bootstrap" color="danger" /> */}
+      <ImageField source="imagePath" />
+      <EditButton variant="bootstrap" color="primary" />
+      <DeleteWithConfirmButton variant="bootstrap" color="danger" />
     </Datagrid>
   </List>
 )};
