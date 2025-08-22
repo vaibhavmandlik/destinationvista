@@ -82,6 +82,7 @@ import { SearchProvider } from "./pages/Searchbar/SearchContext";
 import OfferCreate from "./Offer/OfferCreate";
 import { OfferList } from "./Offer/OfferList";
 import OfferUpdate from "./Offer/OfferUpdate";
+import BlogDetail from "./pages/blogs/BlogDetail";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -210,6 +211,7 @@ const App: React.FC = () => {
           <Route path="home" element={<Home />} />
           <Route path="destinations" element={<Destination />} />
           <Route path="blogs" element={<Blogs />} />
+          <Route path="blog/:id" element={<BlogDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="about" element={<AboutUs />} />
           <Route path="registration" element={<Registration />} />

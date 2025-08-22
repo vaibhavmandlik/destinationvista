@@ -70,12 +70,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
         const response = await axios.get(`${apiUrl}/category`);
 
         if (response.status === 200) {
-          const categoryData = response.data.map((c : any) => {
-            return {
-              ...c,
-              imagePath: JSON.parse(c.imagePath)[0], // ✅ overwrite with first image
-            }} );
-          setCategories(categoryData);
+          setCategories(response.data);
         }
 
       } catch (error) {

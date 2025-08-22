@@ -23,10 +23,10 @@ const Footer: React.FC = () => {
           <h5 className="text-white text-uppercase mb-3">Our Services</h5>
           <ul className="list-unstyled">
             <li><a className="text-white-50" href="/about"><i className="fa fa-angle-right mr-2"></i>About Us</a></li>
-            <li><a className="text-white-50" href="/destination"><i className="fa fa-angle-right mr-2"></i>Destinations</a></li>
-            <li><a className="text-white-50" href="/package"><i className="fa fa-angle-right mr-2"></i>Packages</a></li>
+            <li><a className="text-white-50" href="/destinations"><i className="fa fa-angle-right mr-2"></i>Destinations</a></li>
+            <li><a className="text-white-50" href="/packages"><i className="fa fa-angle-right mr-2"></i>Packages</a></li>
             <li><a className="text-white-50" href="/service"><i className="fa fa-angle-right mr-2"></i>Services</a></li>
-            <li><a className="text-white-50" href="/blog"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
+            <li><a className="text-white-50" href="/home"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
           </ul>
         </div>
 
