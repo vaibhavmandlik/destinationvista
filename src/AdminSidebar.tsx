@@ -69,6 +69,11 @@ const AdminSideBar = (props: any) => {
             primaryText="Destination"
             leftIcon={<PiMountains />}
           />
+          <Menu.Item
+            to="/admin/offer"
+            primaryText="Offers"
+            leftIcon={<PiMountains />}
+          />
         </CollapsibleMenu>
 
         {/* Dashboard 2 with a new icon */}

@@ -79,6 +79,9 @@ import { CategoryList } from "./Category/CategoryList";
 import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
 import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
 import { SearchProvider } from "./pages/Searchbar/SearchContext";
+import OfferCreate from "./Offer/OfferCreate";
+import { OfferList } from "./Offer/OfferList";
+import OfferUpdate from "./Offer/OfferUpdate";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -169,6 +172,7 @@ const AdminRoute: React.FC = () => {
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} create={DestinationCreate} edit={DestinationUpdate}/>
       <Resource name="category" list={CategoryList} create={CategoryCreate} />
+      <Resource name="offer" list={OfferList} create={OfferCreate} edit={OfferUpdate} />
       <Resource
         name="user"
         list={UserList}
