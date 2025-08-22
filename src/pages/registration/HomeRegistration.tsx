@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Offer {
   id: number;
@@ -14,6 +15,8 @@ const HomeRegistration: React.FC = () => {
   const [offer, setOffer] = useState<Offer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchActiveOffer = async () => {
@@ -34,6 +37,11 @@ const HomeRegistration: React.FC = () => {
 
     fetchActiveOffer();
   }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/registration");
+  };
 
   return (
     <div
@@ -84,6 +92,7 @@ const HomeRegistration: React.FC = () => {
               <button
                 className="btn btn-success btn-block py-3 border border-white rounded"
                 type="submit"
+                onClick={handleSubmit}
               >
                 Sign Up Now
               </button>
