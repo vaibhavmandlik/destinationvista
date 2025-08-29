@@ -19,7 +19,12 @@ import { PackageList } from "./Package/PackageList";
 import { PackageUpdate } from "./Package/PackageUpdate";
 import VendorLayout from "./VendorLayout";
 import theme from "./Theme";
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Outlet,
+} from "react-router-dom";
 import { LoginProvider } from "./LoginContext";
 import Footer from "./components/footer/Footer";
 import DynamicHeader from "./components/header/DynamicHeader";
@@ -83,6 +88,7 @@ import OfferCreate from "./Offer/OfferCreate";
 import { OfferList } from "./Offer/OfferList";
 import OfferUpdate from "./Offer/OfferUpdate";
 import BlogDetail from "./pages/blogs/BlogDetail";
+import Faq from "./pages/faq/Faq";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -105,7 +111,6 @@ const VendorRoute: React.FC = () => {
       theme={theme}
       dashboard={VendorDashboard}
     >
-
       <Resource
         name="vendor"
         list={VendorList}
@@ -129,7 +134,7 @@ const VendorRoute: React.FC = () => {
         show={UserShow}
         edit={UserUpdate}
       />
-      <Resource name="ticket" list={TicketList} create={CreateTicket}/>
+      <Resource name="ticket" list={TicketList} create={CreateTicket} />
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
         <Route path="/email" element={<EmailToUsers />} />
@@ -148,9 +153,8 @@ const AdminRoute: React.FC = () => {
       loginPage={LoginPageAdmin}
       layout={AdminLayout1}
       theme={theme}
-    // dashboard={VendorDashboard}
+      // dashboard={VendorDashboard}
     >
-
       <Resource
         name="vendor"
         list={VendorListAdmin}
@@ -165,15 +169,25 @@ const AdminRoute: React.FC = () => {
         // show={ViewDetails}
       />
       <Resource
-      name="blog"
-      create={createBlog}
-      list={listBlog}
-      edit={UpdateBlog} // Assuming UpdateBlog is defined`
+        name="blog"
+        create={createBlog}
+        list={listBlog}
+        edit={UpdateBlog} // Assuming UpdateBlog is defined`
       />
       <Resource name="booking" list={BookingList} />
-      <Resource name="destination" list={DestinationList} create={DestinationCreate} edit={DestinationUpdate}/>
+      <Resource
+        name="destination"
+        list={DestinationList}
+        create={DestinationCreate}
+        edit={DestinationUpdate}
+      />
       <Resource name="category" list={CategoryList} create={CategoryCreate} />
-      <Resource name="offer" list={OfferList} create={OfferCreate} edit={OfferUpdate} />
+      <Resource
+        name="offer"
+        list={OfferList}
+        create={OfferCreate}
+        edit={OfferUpdate}
+      />
       <Resource
         name="user"
         list={UserList}
@@ -182,7 +196,7 @@ const AdminRoute: React.FC = () => {
         show={UserShow}
       />
       <CustomRoutes>
-      <Route path="/support" element={<AdminSupport />} />
+        <Route path="/support" element={<AdminSupport />} />
         <Route path="/email" element={<EmailToUserAdmin isAdmin={true} />} />
         <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
       </CustomRoutes>
@@ -193,8 +207,11 @@ const AdminRoute: React.FC = () => {
 const OpenRoute: React.FC = () => (
   <Admin basename="/open" dataProvider={dataProvider}>
     <CustomRoutes noLayout>
-      <Route path="/vendorRegistration" element={<VendorResistration userType="1" />} />
-      <Route path="/UserRegistration" element={<VendorResistration  />} />
+      <Route
+        path="/vendorRegistration"
+        element={<VendorResistration userType="1" />}
+      />
+      <Route path="/UserRegistration" element={<VendorResistration />} />
       <Route path="/login" element={<VendorResistration />} />
       <Route path="/agencyRegistration" element={<VendorCreateOpen />} />
     </CustomRoutes>
@@ -205,71 +222,76 @@ const App: React.FC = () => {
   return (
     <Router>
       <LoginProvider>
-    <SearchProvider>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route path="home" element={<Home />} />
-          <Route path="destinations" element={<Destination />} />
-          <Route path="blogs" element={<Blogs />} />
-          <Route path="blog/:id" element={<BlogDetail />} />
-          <Route path="contact" element={<Contact />} />
-          <Route path="about" element={<AboutUs />} />
-          <Route path="registration" element={<Registration />} />
-          <Route path="loginpage" element={<UserLoginPage/>} />
-          <Route path="bookingshistory" element={<BookingsHistory />} />
-          <Route path="packagecart" element={<PackageCart />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="terms" element={<TermsAndCondition/>}/>
-          <Route path="privacy" element={<PrivateAndPolicy/>}/>
-      
-          <Route path="disclaimer" element={<Disclaimer/>}/>
-          <Route path="support" element={<Support/>}/>
-          <Route path="paymentpolicy" element={<PaymentPolicy/>}/>
-          <Route path="newsletter" element={<NewsLetter/>}/>
-          <Route path="refundpolicy" element={<RefundPolicy/>}/>
-          <Route path="vendorpolicy" element={<VendorPolicy/>}/>
-          <Route path="grievanceandredressalpolicy" element={<GrievanceAndRedressel/>}/>
-          <Route path="cookiespolicy" element={<CookiesPolicy/>}/>
-          <Route path="dateretension" element={<DateRetension/>}/>
-          <Route path="rights" element={<Rights/>}/>
-          <Route
-            path="packages"
-            element={
-              <PackagesList
-              heading={""}
-              subheading={""}
-              packages={[]}
-              onDetailsBookNowClick={function (): void {
-                throw new Error("Function not implemented.");
-              }}
-              onExploreMoreClick={function (): void {
-                throw new Error("Function not implemented.");
-              }}
+        <SearchProvider>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route path="home" element={<Home />} />
+              <Route path="destinations" element={<Destination />} />
+              <Route path="blogs" element={<Blogs />} />
+              <Route path="blog/:id" element={<BlogDetail />} />
+              <Route path="contact" element={<Contact />} />
+              <Route path="about" element={<AboutUs />} />
+              <Route path="registration" element={<Registration />} />
+              <Route path="loginpage" element={<UserLoginPage />} />
+              <Route path="bookingshistory" element={<BookingsHistory />} />
+              <Route path="packagecart" element={<PackageCart />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="FAQ" element={<Faq />} />
+              <Route path="terms" element={<TermsAndCondition />} />
+              <Route path="privacy" element={<PrivateAndPolicy />} />
+
+              <Route path="disclaimer" element={<Disclaimer />} />
+              <Route path="support" element={<Support />} />
+              <Route path="paymentpolicy" element={<PaymentPolicy />} />
+              <Route path="newsletter" element={<NewsLetter />} />
+              <Route path="refundpolicy" element={<RefundPolicy />} />
+              <Route path="vendorpolicy" element={<VendorPolicy />} />
+              <Route
+                path="grievanceandredressalpolicy"
+                element={<GrievanceAndRedressel />}
               />
-            }
-            />
-          <Route path="packages/:id" element={<PackageDetailsWrapper />} />
-          <Route index element={<Home />} />
-        </Route>
-        <Route path="Vendor/*" element={<VendorRoute />} />
-        <Route path="admin/*" element={<AdminRoute />} />
-        <Route path="open/*" element={<OpenRoute />} />
-      </Routes>
-    </SearchProvider>
-    </LoginProvider>
+              <Route path="cookiespolicy" element={<CookiesPolicy />} />
+              <Route path="dateretension" element={<DateRetension />} />
+              <Route path="rights" element={<Rights />} />
+              <Route
+                path="packages"
+                element={
+                  <PackagesList
+                    heading={""}
+                    subheading={""}
+                    packages={[]}
+                    onDetailsBookNowClick={function (): void {
+                      throw new Error("Function not implemented.");
+                    }}
+                    onExploreMoreClick={function (): void {
+                      throw new Error("Function not implemented.");
+                    }}
+                  />
+                }
+              />
+              <Route path="packages/:id" element={<PackageDetailsWrapper />} />
+              <Route index element={<Home />} />
+            </Route>
+            <Route path="Vendor/*" element={<VendorRoute />} />
+            <Route path="admin/*" element={<AdminRoute />} />
+            <Route path="open/*" element={<OpenRoute />} />
+          </Routes>
+        </SearchProvider>
+      </LoginProvider>
     </Router>
   );
-}
+};
 
 const Layout: React.FC = () => {
   return (
     <>
       <DynamicHeader />
-      <main><Outlet /></main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </>
   );
 };
-
 
 export default App;

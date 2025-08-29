@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
             <li><a className="text-white-50" href="/destinations"><i className="fa fa-angle-right mr-2"></i>Destinations</a></li>
             <li><a className="text-white-50" href="/packages"><i className="fa fa-angle-right mr-2"></i>Packages</a></li>
             <li><a className="text-white-50" href="/service"><i className="fa fa-angle-right mr-2"></i>Services</a></li>
-            <li><a className="text-white-50" href="/home"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
+            <li><a className="text-white-50" href="/blogs"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
           </ul>
         </div>
 
