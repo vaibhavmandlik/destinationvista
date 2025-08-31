@@ -92,36 +92,73 @@ const authProvider: AuthProvider = {
   // called when the user clicks on the logout button
   logout: () => {
     localStorage.removeItem("auth");
+    localStorage.removeItem("selectedVendor"); // ✅ clear vendor selection too
+
+    // ✅ Force redirect to vendor login page
+    window.location.href = "/vendor/login";
     return Promise.resolve();
   },
+
   // called when the API returns an error
   checkError: ({ status }) => {
     if (status === 401 || status === 403) {
       localStorage.removeItem("auth");
+      localStorage.removeItem("selectedVendor");
+
+      // ✅ Redirect to vendor login if unauthorized
+      window.location.href = "/vendor/login";
+
       return Promise.reject();
     }
     return Promise.resolve();
   },
+
   // called when the user navigates to a new location, to check for authentication
   checkAuth: () => {
     const authData = localStorage.getItem("auth");
     const authCredentials = authData ? JSON.parse(authData) : null;
+
+    // 🚨 Not logged in
+    if (!authCredentials) {
+      window.location.href = "/vendor/login";
+      return Promise.reject();
+    }
+
+    // 🚨 Logged in but not a vendor
     if (authCredentials?.data?.userRole !== "1") {
+      localStorage.removeItem("auth");
+      localStorage.removeItem("selectedVendor");
+      window.location.href = "/vendor/login";
       return Promise.reject("Access not allowed. Only vendor can login.");
     }
+
     return Promise.resolve();
   },
+
   // called when the user navigates to a new location, to check for permissions / roles
   getPermissions: () => {
     return Promise.resolve();
   },
   async getIdentity() {
     const authData = localStorage.getItem("auth");
-    const authCredentials = authData ? JSON.parse(authData) : null;
-    const { id, fullName, avatar } = authCredentials?.data;
-    const avatarUrl = !avatar ? `https://i.pravatar.cc/150` : "";
-    return { id, fullName, avatar: avatarUrl, vendorId: localStorage.getItem("selectedVendor"), userRole: authCredentials?.data?.userRole, isApproved: authCredentials?.data?.isApproved };
+    if (!authData) {
+      // Not logged in, return a safe default
+      return Promise.reject("No identity");
+    }
+
+    const authCredentials = JSON.parse(authData);
+    const { id, fullName, avatar } = authCredentials?.data || {};
+
+    return {
+      id: id || null,
+      fullName: fullName || "Unknown User",
+      avatar: avatar || "https://i.pravatar.cc/150",
+      vendorId: localStorage.getItem("selectedVendor"),
+      userRole: authCredentials?.data?.userRole,
+      isApproved: authCredentials?.data?.isApproved,
+    };
   },
+
 };
 
 export default authProvider;

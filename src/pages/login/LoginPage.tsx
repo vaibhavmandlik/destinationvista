@@ -4,35 +4,47 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
 import { Login } from "@mui/icons-material";
-import { Button, Container, Grid, Typography, Box, CardMedia,} from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  Typography,
+  Box,
+  CardMedia,
+  FormHelperText,
+} from "@mui/material";
 import { VendorNotFoundError } from "../../authProvider";
-import { JSONTree } from "react-json-tree";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
   const notify = useNotify();
+
   type Input = {
     email: string;
     password: string;
   };
+
   const [vendorHas, setVendorHas] = React.useState<boolean>(true);
   const [authData, setAuthData] = React.useState<any | null>(null);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Input>();
+
   const onSubmit: SubmitHandler<Input> = (data) => {
     login(data).catch((error) => {
-       if (error instanceof VendorNotFoundError) {
-        debugger;
-                setAuthData(error.authData);
-                notify('Please complete your vendor profile to continue.', { type: 'info' });
-                setVendorHas(false);
-            } else {
-                // Handle other generic login errors.
-                notify(error.message || 'Login failed', { type: 'warning' });
-            }
+      if (error instanceof VendorNotFoundError) {
+        setAuthData(error.authData);
+        notify("Please complete your vendor profile to continue.", {
+          type: "info",
+        });
+        setVendorHas(false);
+      } else {
+        // Handle other generic login errors.
+        notify(error.message || "Login failed", { type: "warning" });
+      }
     });
   };
 
@@ -49,68 +61,87 @@ const MyLoginPage: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        {vendorHas && <Container maxWidth="xs">
-          <Typography variant="h5" fontWeight="bold">
-            Vendor Sign In
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Don&apos;t have an account?{" "}
-            <Link to="/open/vendorRegistration">Sign up</Link>
-          </Typography>
+        {vendorHas && (
+          <Container maxWidth="xs">
+            <Typography variant="h5" fontWeight="bold">
+              Vendor Sign In
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Don&apos;t have an account?{" "}
+              <Link to="/open/vendorRegistration">Sign up</Link>
+            </Typography>
 
-          {/* Form Start */}
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Email Field */}
-            <CustomTextInput
-              label="Email address"
-              placeholder="Enter your email"
-              type="email"
-              id="email"
-              errors={errors.email && errors.email.message}
-              register={register("email", { required: "Email is required" })}
-            />
+            {/* Form Start */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Email Field */}
+              <CustomTextInput
+                label="Email address"
+                placeholder="Enter your email"
+                type="email"
+                id="email"
+                errors={errors.email && errors.email.message}
+                register={register("email", {
+                  required: "Email is required",
+                })}
+              />
+              {/* Instruction / Helper */}
+              <FormHelperText sx={{ mb: 2 }}>
+                Use the same email you registered with.
+              </FormHelperText>
 
-            {/* Password Field */}
-            <CustomTextInput
-              label="Password"
-              placeholder="Enter your password"
-              type="password"
-              id="password"
-              errors={errors.password && errors.password.message}
-              register={register("password", {
-                required: "Password is required",
-              })}
-            />
+              {/* Password Field */}
+              <CustomTextInput
+                label="Password"
+                placeholder="Enter your password"
+                type="password"
+                id="password"
+                errors={errors.password && errors.password.message}
+                register={register("password", {
+                  required: "Password is required",
+                })}
+              />
+              {/* Instruction / Helper */}
+              <FormHelperText sx={{ mb: 2 }}>
+                Password must be at least 8 characters long.
+              </FormHelperText>
 
-            {/* Forgot Password */}
-            <Box sx={{ textAlign: "right", mt: 1 }}>
-              <Link to="#">Forgot password?</Link>
-            </Box>
+              {/* Forgot Password */}
+              <Box sx={{ textAlign: "right", mt: 1 }}>
+                <Link to="#">Forgot password?</Link>
+              </Box>
 
-            {/* Sign In Button */}
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                mt: 2,
-                backgroundColor: "#635DFF",
-                color: "#fff",
-                width: "100%",
-              }}
-              startIcon={<Login />}
-            >
-            Sign in
-            </Button>
-          </form>
-        </Container>}
-        {!vendorHas && <Container maxWidth="xs">
-          <Typography variant="h5" fontWeight="bold">
-            Complete a Vendor Account
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            You need to complete your vendor registration to login.
-            <Link to={`/open/agencyRegistration?accessToken=${authData?.accessToken}&userId=${authData?.id}`}>Start</Link>
-          </Typography></Container>}
+              {/* Sign In Button */}
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  backgroundColor: "#635DFF",
+                  color: "#fff",
+                  width: "100%",
+                }}
+                startIcon={<Login />}
+              >
+                Sign in
+              </Button>
+            </form>
+          </Container>
+        )}
+        {!vendorHas && (
+          <Container maxWidth="xs">
+            <Typography variant="h5" fontWeight="bold">
+              Complete a Vendor Account
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              You need to complete your vendor registration to login.{" "}
+              <Link
+                to={`/open/agencyRegistration?accessToken=${authData?.accessToken}&userId=${authData?.id}`}
+              >
+                Start
+              </Link>
+            </Typography>
+          </Container>
+        )}
       </Grid>
 
       {/* Right Side (Illustration) */}
@@ -130,7 +161,7 @@ const MyLoginPage: React.FC = () => {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-           <span style={{ color: "#43B581" }}>Destination Vista</span>
+            <span style={{ color: "#43B581" }}>Destination Vista</span>
           </Typography>
           <Typography variant="body1" sx={{ mt: 1 }}>
             A Travel Friendly Website.
@@ -138,28 +169,27 @@ const MyLoginPage: React.FC = () => {
 
           {/* Image Only */}
           <Box
-  sx={{
-    mt: 3,
-    backgroundColor: "white", // White background
-    borderRadius: 3, // Rounded corners (3 = 16px in Material UI)
-    padding: 2, // Space around the image
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: 3, // Adds a subtle shadow
-    maxWidth: 350, // Optional: Limits width
-    mx: "auto", // Centers the box horizontally
-  }}
->
-  <CardMedia
-    component="img"
-    height="300"
-    image="/public/img/login.jpg"
-    alt="Destination Vista"
-    sx={{ borderRadius: 2 }} // Slight rounding for the image itself
-  />
-</Box>
-
+            sx={{
+              mt: 3,
+              backgroundColor: "white",
+              borderRadius: 3,
+              padding: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: 3,
+              maxWidth: 350,
+              mx: "auto",
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="300"
+              image="/img/login.jpg" // ✅ fixed path (don't include /public in src)
+              alt="Destination Vista"
+              sx={{ borderRadius: 2 }}
+            />
+          </Box>
         </Box>
       </Grid>
     </Grid>

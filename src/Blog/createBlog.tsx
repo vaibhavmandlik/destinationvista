@@ -1,6 +1,3 @@
-import { Card, CardHeader } from "@mui/material";
-
-import { SimpleForm, TextInput, CreateBase, Title, Create } from "react-admin";
 import {
   ClearButtons,
   FormatButtons,
@@ -9,6 +6,7 @@ import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
+import { Create, SimpleForm, TextInput } from "react-admin";
 
 type PackageParams = {
   title: string;

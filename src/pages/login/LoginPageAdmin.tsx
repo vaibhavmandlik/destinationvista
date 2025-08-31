@@ -1,25 +1,38 @@
 import React from "react";
-import { useLogin } from "react-admin";
+import { useLogin, useNotify } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
 import { Login } from "@mui/icons-material";
-import { Button, Container, Grid, Typography, Box, CardMedia,} from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  Typography,
+  Box,
+  CardMedia,
+  FormHelperText,
+} from "@mui/material";
 
 const LoginPageAdmin: React.FC = () => {
   const login = useLogin();
+  const notify = useNotify();
+
   type Input = {
     email: string;
     password: string;
   };
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Input>();
+
   const onSubmit: SubmitHandler<Input> = (data) => {
-    debugger;
-    login(data);
+    login(data).catch((error) => {
+      notify(error.message || "Login failed", { type: "warning" });
+    });
   };
 
   return (
@@ -39,10 +52,6 @@ const LoginPageAdmin: React.FC = () => {
           <Typography variant="h5" fontWeight="bold">
             Admin Sign In
           </Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Don&apos;t have an account?{" "}
-            <Link to="/open/vendorRegistration">Sign up</Link>
-          </Typography>
 
           {/* Form Start */}
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -55,6 +64,9 @@ const LoginPageAdmin: React.FC = () => {
               errors={errors.email && errors.email.message}
               register={register("email", { required: "Email is required" })}
             />
+            <FormHelperText sx={{ mb: 2 }}>
+              Use the admin email provided by system administrator.
+            </FormHelperText>
 
             {/* Password Field */}
             <CustomTextInput
@@ -67,6 +79,9 @@ const LoginPageAdmin: React.FC = () => {
                 required: "Password is required",
               })}
             />
+            <FormHelperText sx={{ mb: 2 }}>
+              Password must be at least 8 characters long.
+            </FormHelperText>
 
             {/* Forgot Password */}
             <Box sx={{ textAlign: "right", mt: 1 }}>
@@ -85,7 +100,7 @@ const LoginPageAdmin: React.FC = () => {
               }}
               startIcon={<Login />}
             >
-            Sign in
+              Sign in
             </Button>
           </form>
         </Container>
@@ -108,36 +123,35 @@ const LoginPageAdmin: React.FC = () => {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-           <span style={{ color: "#43B581" }}>Destination Vista</span>
+            <span style={{ color: "#43B581" }}>Destination Vista</span>
           </Typography>
           <Typography variant="body1" sx={{ mt: 1 }}>
-            A Travel Friendly Website.
+            Manage destinations, vendors, and bookings.
           </Typography>
 
-          {/* Image Only */}
+          {/* Image */}
           <Box
-  sx={{
-    mt: 3,
-    backgroundColor: "white", // White background
-    borderRadius: 3, // Rounded corners (3 = 16px in Material UI)
-    padding: 2, // Space around the image
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: 3, // Adds a subtle shadow
-    maxWidth: 350, // Optional: Limits width
-    mx: "auto", // Centers the box horizontally
-  }}
->
-  <CardMedia
-    component="img"
-    height="300"
-    image="/public/img/login.jpg"
-    alt="Destination Vista"
-    sx={{ borderRadius: 2 }} // Slight rounding for the image itself
-  />
-</Box>
-
+            sx={{
+              mt: 3,
+              backgroundColor: "white",
+              borderRadius: 3,
+              padding: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: 3,
+              maxWidth: 350,
+              mx: "auto",
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="300"
+              image="/img/login.jpg" // ✅ fixed path
+              alt="Destination Vista"
+              sx={{ borderRadius: 2 }}
+            />
+          </Box>
         </Box>
       </Grid>
     </Grid>
