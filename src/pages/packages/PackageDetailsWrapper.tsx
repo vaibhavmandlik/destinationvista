@@ -7,12 +7,15 @@ import Spinner from "../../components/Loader/Spinner";
 
 const url = `${import.meta.env.VITE_API_URL}/package`;
 
+type DestinationDetails = {
+  city_name: string;
+};
 // Define your package data
 type PackageDetails = {
   id: number;
   title: string;
   description: string;
-  price: string;
+  price: number;
   durationDays: number;
   destination:string,
   availableSlots: number;
@@ -24,13 +27,14 @@ type PackageDetails = {
   inclusion:string;
   exclusion:string;
   otherInfo:string;
+  destinationDetails:DestinationDetails | null;
 };
 
 const mapApiDataToPacksgeDetails = (data: any): PackageDetails => ({
   id: data.id,
   title: data.title,
   description: data.description,
-  price: data.price,
+  price: Number(data.price),
   durationDays: data.durationDays,
   destination:data.destination,
   availableSlots: data.availableSlots,
@@ -42,6 +46,7 @@ const mapApiDataToPacksgeDetails = (data: any): PackageDetails => ({
   inclusion:data.inclusion,
   exclusion:data.exclusion,
   otherInfo:data.otherInfo,
+  destinationDetails:data.destinationDetails || null,
 });
 
 const PackageDetailsWrapper: React.FC = () => {
@@ -62,7 +67,11 @@ const PackageDetailsWrapper: React.FC = () => {
 
       try {
         const response = await axios.get(`${url}/${id}`);
-        setPackageDetails(mapApiDataToPacksgeDetails(response.data));
+       const modifiedData = {
+        ...response.data,
+        price: (Math.floor(Number(response.data.price)+ Number(response.data.price) * 0.10)), // keep it as string
+      };
+        setPackageDetails(mapApiDataToPacksgeDetails(modifiedData));
       } catch (error) {
         setError("Failed to fetch package details");
         toast.error("Failed to fetch package details", {

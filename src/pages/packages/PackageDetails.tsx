@@ -25,6 +25,7 @@ type PackageDetailsProps = {
   inclusion: string;
   exclusion: string;
   otherInfo: string;
+  destinationDetails:{};
 };
 
 const PackageDetails: React.FC<PackageDetailsProps> = ({
@@ -40,6 +41,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
   itinerary,
   inclusion,
   exclusion,
+  destinationDetails,
 }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState<{
@@ -239,7 +241,9 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                 </Box>
 
                 {/* Book Now Button */}
-                <Button
+                {availableSlots > 0 ? (
+
+                  <Button
                   variant="contained"
                   color="success"
                   onClick={handleOpenBookingForm}
@@ -248,9 +252,12 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                     px: 5,
                     py: 2,
                   }}
-                >
+                  >
                   Book Now
                 </Button>
+                ) : (<p className="text-primary p-3 fs-5">
+                  No Seats available. 
+                </p>)}
               </div>
             </div>
 
@@ -262,7 +269,7 @@ const PackageDetails: React.FC<PackageDetailsProps> = ({
                 </h4>
                 <ul className="list-unstyled">
                   <li>
-                    <strong>Location:</strong> {destination}
+                    <strong>Location:</strong> {destinationDetails.city_name}
                   </li>
                   <li>
                     <strong>Duration:</strong> {durationDays} Days

@@ -73,9 +73,10 @@ useEffect(() => {
     try {
       // build query string from context
       const queryString = Object.keys(query)
-        .filter((key) => query[key]) // skip empty values
-        .map((key) => `${key}=${encodeURIComponent(query[key])}`)
-        .join("&");
+      .filter((key) => query[key]) // skip empty values
+      .map((key) => `${key}=${encodeURIComponent(query[key])}`)
+      .join("&");
+      
 
       const response = await axios.get(`${url}/package${queryString ? `?${queryString}` : ""}`);
       setPackagesToShow(response.data);
@@ -286,88 +287,7 @@ useEffect(() => {
                         />
                       )}
                     </Box>
-                  </Drawer>
-
-      {/* Destination Section */}
-      <div className="container-fluid py-5">
-        <div className="container pt-5 pb-3">
-          <div className="text-center mb-3 pb-3">
-            <h6
-              className="text-primary text-uppercase"
-              style={{ letterSpacing: "5px" }}
-            >
-              Destination
-            </h6>
-            <h1>Explore Top Destinations</h1>
-          </div>
-          <div
-            id="destinationCarousel"
-            className="carousel slide"
-            data-ride="carousel"
-          >
-            <div className="carousel-inner">
-              {[1, 2].map((_slide, idx) => (
-                <div
-                  className={`carousel-item ${idx === 0 ? "active" : ""}`}
-                  key={idx}
-                >
-                  <div className="row">
-                    {[
-                      {
-                        img: `img/destination-${3 * idx + 1}.jpg`,
-                        title: "Rajasthan",
-                        subtitle: "Where History Meet Grandure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 2}.jpg`,
-                        title: "Goa",
-                        subtitle: "Your Escape To Paradise!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 3}.jpg`,
-                        title: "Himachal",
-                        subtitle: "Where The Hills Come Alive With Adventure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 1}.jpg`,
-                        title: "Rajasthan",
-                        subtitle: "Where History Meet Grandure!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 2}.jpg`,
-                        title: "Goa",
-                        subtitle: "Your Escape To Paradise!",
-                      },
-                      {
-                        img: `img/destination-${3 * idx + 3}.jpg`,
-                        title: "Himachal",
-                        subtitle: "Where The Hills Come Alive With Adventure!",
-                      },
-                    ].map((destination, index) => (
-                      <div className="col-lg-4 col-md-6 mb-4" key={index}>
-                        <div className="destination-item position-relative overflow-hidden mb-2">
-                          <img
-                            className="img-fluid"
-                            src={destination.img}
-                            alt={destination.title}
-                          />
-                          <a
-                            className="destination-overlay text-white text-decoration-none"
-                            href=""
-                          >
-                            <h5 className="text-white">{destination.title}</h5>
-                            <span>{destination.subtitle}</span>
-                          </a>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+                  </Drawer>      
     </>
   );
 };

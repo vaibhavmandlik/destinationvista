@@ -84,6 +84,7 @@ import { CategoryList } from "./Category/CategoryList";
 import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
 import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
 import { SearchProvider } from "./pages/Searchbar/SearchContext";
+import DestinationDetails from "./pages/destinations/DestinationDetails";
 import OfferCreate from "./Offer/OfferCreate";
 import { OfferList } from "./Offer/OfferList";
 import OfferUpdate from "./Offer/OfferUpdate";
@@ -227,6 +228,7 @@ const App: React.FC = () => {
             <Route path="/" element={<Layout />}>
               <Route path="home" element={<Home />} />
               <Route path="destinations" element={<Destination />} />
+              <Route path="destinations/:id" element={<DestinationDetails/>}/>
               <Route path="blogs" element={<Blogs />} />
               <Route path="blog/:id" element={<BlogDetail />} />
               <Route path="contact" element={<Contact />} />

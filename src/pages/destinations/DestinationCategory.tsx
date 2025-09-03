@@ -1,48 +1,59 @@
 import React, { useEffect, useState } from "react";
 import SearchBar from "../Searchbar/SearchBar";
 import axios from "axios";
-import { Category } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../Searchbar/SearchContext";
+
 const apiUrl = import.meta.env.VITE_API_URL;
+
 interface DestinationCategoryProps {
   isShowSearchBar?: boolean;
 }
 
-interface Destibation {
-  imagePath: string;
+interface Destination {
+  imagePath: string,
+  id: number,
+  title: string,
+  description: string,
+  bookingCount: number,
+  city_id: number,
+}
+
+interface Category {
+  id: number;
   name: string;
   description: string;
+  imagePath: string;
 }
 
 const DestinationCategory: React.FC<DestinationCategoryProps> = ({
   isShowSearchBar = true,
 }) => {
+  const { setQuery } = useSearch();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [catergories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [topDestination, setTopDestination] = useState([]);
+  const navigate = useNavigate();
+
   const handlePrev = () => {
-    setActiveIndex((prev) =>
-      prev === 0 ? topDestination.length - 1 : prev - 1
-    );
-  };
+    setActiveIndex((prev) => (prev === 0 ? topDestination.length - 1 : prev - 1));
+  }
 
   const handleNext = () => {
-    setActiveIndex((prev) =>
-      prev === topDestination.length - 1 ? 0 : prev + 1
-    );
-  };
+    setActiveIndex((prev) => (prev === topDestination.length - 1 ? 0 : prev + 1));
+  }
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(`${apiUrl}/category`);
-
         if (response.status === 200) {
           setCategories(response.data);
         }
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching categories:", error);
       }
-    };
+    }
 
     const fetchTopDestinations = async () => {
       try {
@@ -58,19 +69,21 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
 
     fetchCategories();
     fetchTopDestinations();
-  }, []);
 
-  const handleOnClick = async (categoryTitle: string) => {
-    try {
-      const response = axios.get(`${apiUrl}/category/`);
+  }, [])
 
-      if ((await response).status === 200) {
-        console.log((await response).data);
-      }
-    } catch (error) {
-      console.log("error while fetching catergories", error);
-    }
+  const chunkArray = (arr: Destination[], size: number) => {
+    return arr.reduce<Destination[][]>((acc, _, i) => {
+      if (i % size === 0) acc.push(arr.slice(i, i + size));
+      return acc;
+    }, []);
   };
+
+  const handleOnClick = (categoryId: number) => {
+    setQuery({ category: categoryId });
+    navigate("/packages");
+  };
+
   return (
     <>
       {isShowSearchBar && (
@@ -80,6 +93,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
           }}
         />
       )}
+
       <div>
         {/* Categories Section */}
         <div className="container-fluid py-5">
@@ -94,12 +108,8 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
               <h1>Explore Packages by Category</h1>
             </div>
             <div className="row">
-              {catergories.map((category, index) => (
-                <div
-                  className="col-lg-3 col-md-6 mb-4"
-                  key={index}
-                  onClick={() => handleOnClick(category.id)}
-                >
+              {categories.map((category, index) => (
+                <div className="col-lg-3 col-md-6 mb-4" key={index} onClick={() => handleOnClick(category.id)}>
                   <div className="category-item position-relative overflow-hidden mb-2">
                     <img
                       className="img-fluid category-image"
@@ -118,7 +128,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
         </div>
 
         {/* Destination Section */}
-        <div className="container-fluid py-5">
+       <div className="container-fluid py-5">
           <div className="container pt-5 pb-3">
             <div className="text-center mb-3 pb-3">
               <h6
@@ -139,14 +149,14 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
                         className="img-fluid"
                         src={
                           destination.imagePath
-                            ? `${apiUrl}${destination.imagePath}`
+                            ?`${apiUrl}${destination.imagePath}`
                             : "/img/default-destination.jpg" // fallback image
                         }
                         alt={destination.title}
                       />
                       <a
                         className="destination-overlay text-white text-decoration-none"
-                        href={`/packages/${destination.id}`}
+                        href={`/destinations/${destination.id}`}
                       >
                         <h5 className="text-white">{destination.title}</h5>
                         <span>{destination.description}</span>
