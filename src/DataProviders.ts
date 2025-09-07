@@ -181,6 +181,12 @@ export const dataProviders = {
         method: "POST",
         body: JSON.stringify(params.data),
       }).then(({ json }) => ({ data: { id: 1, ...json } }));
+    } else if (resource === "blog") {
+      const formData = createPackageFormData(params);
+      return httpClient(`${apiUrl}/${resource}`, {
+        method: "POST",
+        body: formData,
+      }).then(({ json }) => ({ data: json }));
     }
     return baseDataProvider.create(resource, params);
   },

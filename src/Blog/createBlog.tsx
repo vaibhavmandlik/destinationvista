@@ -6,7 +6,7 @@ import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
-import { Create, SimpleForm, TextInput } from "react-admin";
+import { Create, ImageField, ImageInput, SimpleForm, TextInput } from "react-admin";
 
 type PackageParams = {
   title: string;
@@ -31,6 +31,21 @@ export const createBlog = () => {
         <div className="row w-100">
           <div className="col-md-12">
             <TextInput fullWidth source="title" />
+          </div>
+
+          <div className="col-md-12">
+            <ImageInput
+              sx={{
+                "& .RaFileInput-dropZone": {
+                  border: "1px dotted #000",
+                },
+              }}
+              accept={{ "image/*": [".png", ".jpg"] }}
+              source="images"
+              label="Blog Image"
+            >
+              <ImageField source="src" title="title" />
+            </ImageInput>
           </div>
 
           <div className="col-md-12">
