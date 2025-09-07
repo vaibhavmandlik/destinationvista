@@ -112,6 +112,12 @@ const AdminSideBar = (props: any) => {
         primaryText="Mailing Services"
         leftIcon={<PiEnvelopeSimpleBold size={22} />}
       />
+       <Menu.Item
+        sx={{ fontSize: "0.875rem" }}
+        to="/admin/vendor"
+        primaryText="Vendors"
+        leftIcon={<PiEnvelopeSimpleBold size={22} />}
+      />
         </CollapsibleMenu>
       </Menu>
     </Sidebar>

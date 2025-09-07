@@ -18,13 +18,17 @@ import {
   Toolbar,
   useCreate,
   useNotify,
-  Link
-
+  TopToolbar,
+  CreateButton,
+  ExportButton,
+  useListController
 } from "react-admin";
+
+import { Link } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmailIcon from "@mui/icons-material/Email";
-import DownloadIcon from '@mui/icons-material/Download';
+import DownloadIcon from "@mui/icons-material/Download";
 
 import {
   Dialog,
@@ -36,9 +40,27 @@ import {
   Box,
   Divider,
   CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import { RichTextInput, RichTextInputToolbar, FormatButtons, ListButtons, LinkButtons, ClearButtons } from "ra-input-rich-text";
 
+import {
+  RichTextInput,
+  RichTextInputToolbar,
+  FormatButtons,
+  ListButtons,
+  LinkButtons,
+  ClearButtons,
+} from "ra-input-rich-text";
+
+import axios from "axios";
+
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// Role mapping
 const RoleField = ({ source }: { source: string }) => {
   const record = useRecordContext();
   if (!record) return null;
@@ -49,10 +71,10 @@ const RoleField = ({ source }: { source: string }) => {
     2: "Customer",
   };
 
-  const roleLabel = roleMap[record[source]] ?? "Unknown";
-  return <span>{roleLabel}</span>;
+  return <span>{roleMap[record[source]] ?? "Unknown"}</span>;
 };
 
+// Custom toolbar for forms
 const CustomToolbar = (props) => (
   <Toolbar {...props}>
     <Button
@@ -75,84 +97,112 @@ const CustomToolbar = (props) => (
   </Toolbar>
 );
 
-const Transaction: Record<number, string> = {
-  0: "PENDING",
-  1: "SUCCESS",
-  2: "FAILED"
-}
-
-const Status: Record<number, string> = {
-  0: "Inactive",
-  1: "Active",
-
-}
-
+// Booking details button
 const BookingDetailsButton = ({ onOpen }: { onOpen: (user: any) => void }) => {
   const record = useRecordContext();
   if (!record) return null;
 
   return (
-    <Button
-      variant="outlined"
-      size="small"
-      onClick={() => onOpen(record)}
-    >
+    <Button variant="outlined" size="small" onClick={() => onOpen(record)}>
       Details
     </Button>
   );
 };
 
-
+// Ping Users Top Toolbar
+const UserListActions = ({ allUsers, handleOpenPingDialog }) => {
+  return (
+    <TopToolbar>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOpenPingDialog(allUsers)}
+        sx={{ ml: 2 }}
+      >
+        Ping Users
+      </Button>
+      <CreateButton />
+      <ExportButton />
+    </TopToolbar>
+  );
+};
 
 export const UserList = () => {
-
   const notify = useNotify();
   const [create] = useCreate();
   const dataProvider = useDataProvider();
+
+  const { data: allUsers } = useListController({ resource: "user" }); // Fetch all users
+
   const [open, setOpen] = useState(false);
   const [openMail, setOpenMail] = useState(false);
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [transactionsDetails, setTransactionsDetails] = useState(false);
+  const [selectedBooking, setSelectedBooking] = useState<any>({});
+  const [pingDialogOpen, setPingDialogOpen] = useState(false);
+  const [userStatusList, setUserStatusList] = useState<any[]>([]);
+  const [selectedForEmail, setSelectedForEmail] = useState<any[]>([]);
 
+  // Download warning dialog
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [selectedBookingId, setSelectedBookingId] = useState<number | null>(null);
 
-  const handleOpenMail = () => {
-    setOpen(false);
-    setOpenMail(true);
-
-
-  }
-
-  const handleCloseEmail = () => {
-    setOpenMail(false);
-    setOpen(true);
-  }
-
-  const handleSubmit = (values: any) => {
-    console.log("Form Values:", values);
-    // You can handle file upload and form submission here
-    create(
-      "vendor/sendMail",
-      {
-        data: {
-          customer: [selectedUser?.id],
-          subject: values.subject,
-          body: values.body,
-        },
-      },
-      {
-        onSuccess: () => {
-          notify("Email sent successfully!", { type: "success" });
-          handleCloseEmail();
-        },
-        onError: (error) => {
-          notify(`Error sending email`, { type: "warning" });
-        },
-      }
-    );
-    // notify("Email sent!", { type: "success" });
+  // Handle Ping Users Dialog
+  const handleOpenPingDialog = (users: any[]) => {
+    setUserStatusList(users);
+    setPingDialogOpen(true);
   };
 
+  const handleSort = (type: "asc" | "desc") => {
+    const sorted = [...userStatusList].sort((a, b) =>
+      type === "asc" ? a.enabled - b.enabled : b.enabled - a.enabled
+    );
+    setUserStatusList(sorted);
+  };
+
+  // Invoice download
+  const handleDownloadClick = (bookingId: number) => {
+    setSelectedBookingId(bookingId);
+    setConfirmDialogOpen(true);
+  };
+
+  const handleConfirmDownload = () => {
+    if (selectedBookingId) handleInvoice(selectedBookingId);
+    setConfirmDialogOpen(false);
+  };
+
+  const handleInvoice = async (bookingId: number) => {
+    try {
+      const authString = localStorage.getItem("auth");
+      const auth = authString ? JSON.parse(authString) : null;
+      if (!auth?.data?.accessToken) return alert("No access token found");
+
+      const response = await axios.get(`${apiUrl}/booking/invoice/${bookingId}`, {
+        headers: { Authorization: `Bearer ${auth.data.accessToken}` },
+        responseType: "blob",
+      });
+
+      if (response.status === 200) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `invoice-${bookingId}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        alert("Invoice downloaded successfully");
+      } else {
+        alert("Error generating invoice");
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to download invoice");
+    }
+  };
+
+  // User Bookings
   const handleOpen = async (user: any) => {
     setSelectedUser(user);
     setOpen(true);
@@ -165,10 +215,6 @@ export const UserList = () => {
         sort: { field: "id", order: "DESC" },
         filter: { userId: user.id },
       });
-
-
-
-
       setBookings(result.data);
     } catch (error) {
       console.error("Error fetching bookings:", error);
@@ -184,29 +230,70 @@ export const UserList = () => {
     setBookings([]);
   };
 
+  const handleOpenMail = (type:string) => {
+    if(type === "single"){
+      setSelectedForEmail([selectedUser?.id]);
+    }
+    else{
+      const selected = userStatusList.filter(user => user.enabled).map(user => user.id);
+      setSelectedForEmail(selected);
+    }
+    setOpen(false);
+    setOpenMail(true);
+  };
+
+  const handleCloseEmail = () => {
+    setOpenMail(false);
+    
+  };
+
+  const handleSubmit = (values: any) => {
+    create(
+      "user/sendMail",
+      { data: { customer: selectedForEmail , subject: values.subject, body: values.body } },
+      {
+        onSuccess: () => { notify("Email sent successfully!", { type: "success" }); handleCloseEmail(); },
+        onError: () => { notify("Error sending email", { type: "warning" }); }
+      }
+    );
+  };
 
   return (
     <>
-      <br />
-      <List>
-        <Datagrid rowClick={false} bulkActionButtons={false} >
-          <TextField source="id" label={'ID'} />
-          <ImageField source="profileImagePath" label={"Pic"} />
-          <RoleField source="category" label={'Role'} />
-          <ReferenceField source="id" reference="user" label={"First Name"}>
+    <List
+        actions={<UserListActions allUsers={allUsers || []} handleOpenPingDialog={handleOpenPingDialog} />}
+      >
+        <Datagrid rowClick={false} bulkActionButtons={false}>
+          <TextField source="id" label="ID" />
+          <ImageField source="profileImagePath" label="Pic" />
+          <RoleField source="category" label="Role" />
+          <ReferenceField source="id" reference="user" label="First Name">
             <TextField source="firstName" />
           </ReferenceField>
-          <TextField source="lastName" label={"Last Name"} />
-          <EmailField source="email" label={"Email"} />
-          <FunctionField label={"Details"}
-            render={() => <BookingDetailsButton onOpen={handleOpen} />} />
-          <TextField source="referCode" label={"Referal Code"} />
-          <TextField source="enabled" label={"Status"} />
-          <EditButton variant="text" color="primary" label={false} icon={<EditIcon />} />
-          <DeleteWithConfirmButton variant="bootstrap" color="danger" label={false} icon={<DeleteIcon />} />
+          <TextField source="lastName" label="Last Name" />
+          <EmailField source="email" label="Email" />
+          <FunctionField
+            label="Details"
+            render={() => <BookingDetailsButton onOpen={handleOpen} />}
+          />
+          <TextField source="referCode" label="Referral Code" />
+          <TextField source="enabled" label="Status" />
+          <EditButton
+            variant="text"
+            color="primary"
+            label={false}
+            icon={<EditIcon />}
+          />
+          <DeleteWithConfirmButton
+            variant="text"
+            color="error"
+            label={false}
+            icon={<DeleteIcon />}
+          />
         </Datagrid>
       </List>
 
+      {/* User Details Dialog */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogTitle>User Details</DialogTitle>
         <DialogContent dividers>
@@ -251,7 +338,7 @@ export const UserList = () => {
                         <Typography variant="h6" fontWeight="bold">
                           {selectedUser.firstName} {selectedUser.lastName}
                         </Typography>
-                        <Button variant="contained" color="primary" size="small" startIcon={<EmailIcon />} onClick={handleOpenMail}>
+                        <Button variant="contained" color="primary" size="small" startIcon={<EmailIcon />} onClick={()=>handleOpenMail("single")}>
                           Email
                         </Button>
                       </Box>
@@ -287,31 +374,20 @@ export const UserList = () => {
               {bookings.length ? (
                 <Box display="flex" flexDirection="column" gap={2}>
                   {bookings.map((booking, index) => (
-                    <Box
-                      key={index}
-                      p={2}
-                      borderRadius={2}
-                      boxShadow={1}
-                      bgcolor="background.paper"
-                    >
-                       <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                      <Typography variant="subtitle1" fontWeight="bold">
-                        Package:{" "}
-                        {booking?.package?.id ? (
-                          <Link to={`/admin/package/${booking?.package?.id}`}>
-                            {booking.package.title}
-                          </Link>
-                        ) : (
-                          booking.package.title
-                        )}
-                      </Typography>
-                      <Button variant="contained" color="primary" size="small" startIcon={<DownloadIcon />}>
-                        Download Invoice
-                      </Button>
+                    <Box key={index} p={2} borderRadius={2} boxShadow={1} bgcolor="background.paper" onClick={() => {
+                      setSelectedBooking(booking);
+                      setTransactionsDetails(true);
+                    }}>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                        <Typography variant="subtitle1" fontWeight="bold">
+                          Package: {booking?.package?.id ? <Link to={`/admin/package/${booking?.package?.id}`}>{booking.package.title}</Link> : booking.package.title}
+                        </Typography>
+                        <Button variant="contained" color="primary" size="small" startIcon={<DownloadIcon />} onClick={() => handleDownloadClick(booking.id)}>
+                          Download Invoice
+                        </Button>
                       </Box>
                       <Typography variant="body2">Booking Date: {booking.bookingDate}</Typography>
                       <Typography variant="body2">Price: {booking.totalPrice}</Typography>
-                      <Typography variant="body2">Status: {Transaction[booking.transactions[0]?.status]}</Typography>
                     </Box>
                   ))}
                 </Box>
@@ -328,25 +404,66 @@ export const UserList = () => {
         </DialogActions>
       </Dialog>
 
+      <Dialog open={transactionsDetails} onClose={() => setTransactionsDetails(false)} fullWidth maxWidth="md">
+        <DialogTitle>Transactions Details</DialogTitle>
+        <DialogContent>
+          {selectedBooking?.transactions?.length ? (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Payment Method</TableCell>
+                  <TableCell>Total Amount</TableCell>
+                  <TableCell>Payment Date</TableCell>
+                  <TableCell>Razorpay Order ID</TableCell>
+                  <TableCell>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {selectedBooking.transactions.map((txn: any, index: number) => (
+                  <TableRow key={index}>
+                    <TableCell>{txn.paymentMethod === "0" ? "Razorpay" : "Other"}</TableCell>
+                    <TableCell>{txn.totalAmount}</TableCell>
+                    <TableCell>{new Date(txn.paymentDate).toLocaleString()}</TableCell>
+                    <TableCell>{txn.razorpayOrderId}</TableCell>
+                    <TableCell>{txn.status === "1" ? "SUCCESS" : "FAILED"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography>No transactions found.</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTransactionsDetails(false)} variant="contained" color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
 
+
+      {/* Warning Dialog for Download */}
+      <Dialog open={confirmDialogOpen} onClose={() => setConfirmDialogOpen(false)}>
+        <DialogTitle>⚠️ Warning</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to download this invoice?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmDialogOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDownload} color="warning" variant="contained">
+            Yes, Download
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Mail Dialog */}
       <Dialog open={openMail} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Mail To {selectedUser?.firstName}</DialogTitle>
         <DialogContent>
-          <Box
-            sx={{
-              borderRadius: 2,
-              margin: 4,
-              boxShadow: 1,
-              background: "#fff",
-            }}
-          >
-            <SimpleForm
-              onSubmit={handleSubmit}
-              toolbar={<CustomToolbar />}
-              defaultValues={{
-                body: "<p>Write your message here...</p><br/><br/><br/>",
-              }}
-            >
+          <Box sx={{ borderRadius: 2, margin: 4, boxShadow: 1, background: "#fff" }}>
+            <SimpleForm onSubmit={handleSubmit} toolbar={<CustomToolbar />} defaultValues={{ body: "<p>Write your message here...</p><br/><br/><br/>" }}>
               <Typography variant="h6" sx={{ padding: 2, borderRadius: 2 }}>
                 Email to Users
               </Typography>
@@ -356,16 +473,9 @@ export const UserList = () => {
                 </div>
                 <div className="col-md-12 col-lg-12">
                   <RichTextInput
-                    toolbar={
-                      <RichTextInputToolbar>
-                        <FormatButtons size={"small"} />
-                        <ListButtons size={"small"} />
-                        <LinkButtons size={"small"} />
-                        <ClearButtons size={"small"} />
-                      </RichTextInputToolbar>
-                    }
+                    toolbar={<RichTextInputToolbar><FormatButtons size="small" /><ListButtons size="small" /><LinkButtons size="small" /><ClearButtons size="small" /></RichTextInputToolbar>}
                     fullWidth
-                    source={"body"}
+                    source="body"
                     validate={[required()]}
                   />
                 </div>
@@ -380,15 +490,34 @@ export const UserList = () => {
         </DialogActions>
       </Dialog>
 
+      {/* user ping dialog box */}
+           <Dialog open={pingDialogOpen} onClose={() => setPingDialogOpen(false)} fullWidth maxWidth="sm">
+        <DialogTitle>Ping Users</DialogTitle>
+        <DialogContent>
+          <Box display="flex" justifyContent="space-between" mb={2}>
+            <Button onClick={() => handleSort("asc")}>Sort Active First</Button>
+            <Button onClick={() => handleSort("desc")}>Sort Inactive First</Button>
+          </Box>
+          {userStatusList.map(user => (
+            <Box key={user.id} display="flex" justifyContent="space-between" alignItems="center" mb={1} p={1} border={1} borderRadius={1}>
+              <Typography>{user.firstName} {user.lastName} ({user.email})</Typography>
+            </Box>
+          ))}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPingDialogOpen(false)}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={()=>handleOpenMail("many")}>
+            Send Email
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 };
 
-function create(arg0: string, arg1: { data: { customer: any; subject: any; body: any; }; }, arg2: { onSuccess: () => void; onError: (error: any) => void; }) {
-  throw new Error("Function not implemented.");
-}
 
-function notify(arg0: string, arg1: { type: string; }) {
+function useListContext(): { data: any; } {
   throw new Error("Function not implemented.");
 }
 
