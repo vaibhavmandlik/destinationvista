@@ -254,7 +254,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
               <label>Total Price</label>
               <input
                 type="text"
-                value={Number(pkg.price) * numPassengers}
+                value={(Math.floor(Number(pkg.price)+ Number(pkg.price) * 0.10)) * numPassengers}
                 readOnly
                 className="form-control font-weight-bold"
               />

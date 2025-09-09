@@ -1,7 +1,10 @@
 import * as React from "react";
-import { SimpleForm, TextInput, required, email, Edit, FileInput, FileField } from "react-admin";
+import { SimpleForm, TextInput, required, email, Edit, FileInput, FileField, Button, SaveButton, Toolbar } from "react-admin";
+
+
 
 export const VendorUpdate = () => (
+  <>
   <Edit>
    <SimpleForm>
              <TextInput source="agencyTitle" label="Agency Name" validate={[required()]} fullWidth />
@@ -30,4 +33,5 @@ export const VendorUpdate = () => (
              <TextInput source="office.postalCode" label="Postal Code" validate={[required()]} fullWidth />
            </SimpleForm>
   </Edit>
+  </>
 );

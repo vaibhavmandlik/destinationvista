@@ -14,7 +14,11 @@ import {
   required,
   Toolbar,
   SaveButton,
-  useDataProvider
+  useDataProvider,
+  CreateButton,
+  ExportButton,
+  TopToolbar,
+  useListContext
 } from "react-admin";
 import {
   Dialog,
@@ -23,6 +27,10 @@ import {
   Button,
   IconButton,
   Tooltip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CurrencyField from "../components/CustomFields/CurrencyField";
@@ -48,8 +56,52 @@ interface PackageRecord {
 }
 
 const postFilters = [
-    <SearchInput source="q" alwaysOn />
+  <SearchInput source="q" alwaysOn />
 ];
+const CustomListActions = () => {
+
+  const { filterValues, setFilters } = useListContext(); // 👈 from RA
+  const [value, setValue] = React.useState(filterValues.status || "All");
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const selected = event.target.value as string;
+    setValue(selected);
+
+    // Apply filter dynamically
+    if (selected === "All") {
+      setFilters({ ...filterValues, status: undefined }, null);
+    } else {
+      setFilters({ ...filterValues, status: selected }, null);
+    }
+  };
+
+  return (
+    <TopToolbar>
+      {/* Default RA buttons */}
+
+      {/* Your dropdown */}
+      <FormControl size="small"
+        sx={{ minWidth: 180 }}
+        variant="outlined">
+        <InputLabel id="dropdown-label">Apply filter</InputLabel>
+        <Select
+          labelId="dropdown-label"
+          value={value}
+          onChange={handleChange}   // ✅ directly pass the function
+          label="Apply filter"      // 👈 important so MUI shows value with label
+        >
+          <MenuItem value="All">All</MenuItem>
+          <MenuItem value="Active">Active</MenuItem>
+          <MenuItem value="Ongoing">Ongoing</MenuItem>
+          <MenuItem value="Expired">Expired</MenuItem>
+        </Select>
+      </FormControl>
+      <CreateButton />
+      <ExportButton />
+    </TopToolbar>
+  );
+};
+
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
 
@@ -68,7 +120,7 @@ export const PackageList = () => {
     setSelectedRecord(null);
   }, []);
 
-  const handleSubmitWithdrawal = (data:any)=>{
+  const handleSubmitWithdrawal = (data: any) => {
     console.log(data);
     return;
   }
@@ -83,14 +135,14 @@ export const PackageList = () => {
       sort: { field: "id", order: "ASC" },
     });
 
-    const emailList = bookingsRes.data.map((booking: any) => ({id:booking.userId,name:booking.firstName + " " + booking.lastName}));
+    const emailList = bookingsRes.data.map((booking: any) => ({ id: booking.userId, name: booking.firstName + " " + booking.lastName }));
 
     return emailList;
   };
   const navigate = useNavigate();
   return (
     <>
-      <List filters={postFilters} filter={{ vendorId: user?.vendorId }}>
+      <List filters={postFilters} filter={{ vendorId: user?.vendorId }} actions={<CustomListActions />}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <TextField source="title" />
@@ -129,7 +181,7 @@ export const PackageList = () => {
           <NumberField label="available" source="availableSlots" />
           {/* <BooleanField source="approved" /> */}
           <FunctionField label="Admin" render={(record) => {
-            if(record.isApproved==="1") {
+            if (record.isApproved === "1") {
               return <span style={{ color: "green" }}>Approved</span>;
             } else {
               return <span style={{ color: "red" }}>Not Approved</span>;

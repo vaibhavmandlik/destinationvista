@@ -229,7 +229,7 @@ useEffect(() => {
                 </Box>
               <p className="mt-2">
                 <strong>
-                 Price:{pkg.price}
+                 Price:{Math.floor(Number(pkg.price)+ Number(pkg.price) * 0.10)}
                 </strong>
               </p>
               <div>

@@ -90,6 +90,7 @@ import { OfferList } from "./Offer/OfferList";
 import OfferUpdate from "./Offer/OfferUpdate";
 import BlogDetail from "./pages/blogs/BlogDetail";
 import Faq from "./pages/faq/Faq";
+import ForgotPassword from "./pages/login/ForgotPassword";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -277,6 +278,7 @@ const App: React.FC = () => {
             <Route path="Vendor/*" element={<VendorRoute />} />
             <Route path="admin/*" element={<AdminRoute />} />
             <Route path="open/*" element={<OpenRoute />} />
+            <Route path="vendor/forgotpass" element={<ForgotPassword />} />
           </Routes>
         </SearchProvider>
       </LoginProvider>

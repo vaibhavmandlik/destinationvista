@@ -1,7 +1,7 @@
 import React from "react";
 import { useLogin, useNotify } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
 import { Login } from "@mui/icons-material";
 import {
@@ -14,11 +14,12 @@ import {
   FormHelperText,
 } from "@mui/material";
 import { VendorNotFoundError } from "../../authProvider";
+import { getValue } from "@mui/system";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
   const notify = useNotify();
-
+  const navigate = useNavigate();
   type Input = {
     email: string;
     password: string;
@@ -30,6 +31,7 @@ const MyLoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<Input>();
 
@@ -47,6 +49,23 @@ const MyLoginPage: React.FC = () => {
       }
     });
   };
+
+  const handleForgotPassword = () => {
+    const email = getValues('email');
+    if (!email) {
+      notify("Please enter your email before resetting password.", {
+        type: "warning",
+      });
+      return;
+    }
+    try {
+      debugger;
+      navigate("/vendor/forgotpass" , {state: { email }});
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   return (
     <Grid container sx={{ height: "100vh" }}>
@@ -105,10 +124,7 @@ const MyLoginPage: React.FC = () => {
                 Password must be at least 8 characters long.
               </FormHelperText>
 
-              {/* Forgot Password */}
-              <Box sx={{ textAlign: "right", mt: 1 }}>
-                <Link to="#">Forgot password?</Link>
-              </Box>
+
 
               {/* Sign In Button */}
               <Button
@@ -124,6 +140,12 @@ const MyLoginPage: React.FC = () => {
               >
                 Sign in
               </Button>
+
+              {/* Forgot Password */}
+              <Box sx={{ textAlign: "right", mt: 1 }}>
+                <Button color="primary" onClick={handleForgotPassword}>Forgot Password !</Button>
+              </Box>
+
             </form>
           </Container>
         )}
