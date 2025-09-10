@@ -1,81 +1,101 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+interface Offer {
+  id: number;
+  title: string;
+  discountPercent: number;
+  for: string;
+  description: string;
+}
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 const HomeRegistration: React.FC = () => {
+  const [offer, setOffer] = useState<Offer | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchActiveOffer = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/offer?isActive=1`);
+        if (!response.ok) throw new Error("Failed to fetch offer.");
+        const data = await response.json();
+        setOffer(data[0] ?? null);
+      } catch (err: any) {
+        console.error("Fetch error:", err);
+        setError(
+          "Oops! We couldn't load the latest offer. Please try again later."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveOffer();
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/registration");
+  };
+
   return (
-    <div className="container-fluid bg-registration py-5" style={{ margin: '90px 0' }}>
+    <div
+      className="container-fluid bg-registration py-5"
+      style={{ margin: "90px 0" }}
+    >
       <div className="container py-5">
         <div className="row align-items-center">
           {/* Offer Section */}
-          <div className="col-lg-7 mb-5 mb-lg-0">
-            <div className="mb-4">
-              <h6 className="text-primary text-uppercase" style={{ letterSpacing: '5px' }}>Mega Offer</h6>
-              <h1 className="text-white">
-                <span className="text-primary">30% OFF</span> For Honeymoon
-              </h1>
-            </div>
-            <p className="text-white">
-              Discover romance and adventure with our exclusive honeymoon offer! Enjoy 30% off on select packages, 
-              and make your special moments unforgettable with luxurious stays, scenic destinations, and curated experiences just for you.
-            </p>
-            <ul className="list-inline text-white m-0">
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Indulge in romantic getaways at unbeatable prices.
-              </li>
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Personalized itineraries to suit your perfect honeymoon.
-              </li>
-              <li className="py-2">
-                <i className="fa fa-check text-primary mr-3"></i>
-                Affordable Luxury, from tropical beaches to cozy mountain retreats.
-              </li>
-            </ul>
+          <div className="col-lg-7 col-md-12 mb-5 mb-lg-0 text-center text-lg-left">
+            {loading ? (
+              <div className="text-white">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="alert alert-danger">{error}</div>
+            ) : offer ? (
+              <>
+                <div className="mb-4">
+                  <h6
+                    className="text-primary text-uppercase"
+                    style={{ letterSpacing: "5px" }}
+                  >
+                    {offer.title}
+                  </h6>
+                  <h1 className="text-white text-capitalize">
+                    <span className="text-primary">
+                      {offer.discountPercent}% OFF
+                    </span>{" "}
+                    {offer.for}
+                  </h1>
+                </div>
+                <p className="text-white">{offer.description}</p>
+              </>
+            ) : (
+              <div className="text-white">
+                🎉 Stay tuned! A new offer will be available soon.
+              </div>
+            )}
           </div>
 
           {/* Registration Form */}
           <div className="col-lg-5">
-            <div className="card border-0">
-              <div className="card-header bg-primary text-center p-4">
-                <h1 className="text-white m-0">Sign Up Now</h1>
-              </div>
-              <div className="card-body rounded-bottom bg-white p-5">
-                <form>
-                  {/* Name Input */}
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      className="form-control p-4"
-                      placeholder="Your name"
-                      required
-                    />
-                  </div>
-                  {/* Email Input */}
-                  <div className="form-group">
-                    <input
-                      type="email"
-                      className="form-control p-4"
-                      placeholder="Your email"
-                      required
-                    />
-                  </div>
-                  {/* Destination Dropdown */}
-                  <div className="form-group">
-                    <select className="custom-select px-4" style={{ height: '47px' }} required>
-                      <option value="" selected disabled>Select a destination</option>
-                      <option value="1">Maharashtra</option>
-                      <option value="2">Goa</option>
-                      <option value="3">Rajasthan</option>
-                    </select>
-                  </div>
-                  {/* Submit Button */}
-                  <div>
-                    <button className="btn btn-primary btn-block py-3" type="submit">
-                      Sign Up Now
-                    </button>
-                  </div>
-                </form>
-              </div>
+            {/* Submit Button */}
+            <div>
+              <button
+                className="btn btn-success btn-block py-3 border border-white rounded"
+                type="submit"
+                onClick={handleSubmit}
+              >
+                Sign Up Now
+              </button>
             </div>
           </div>
         </div>

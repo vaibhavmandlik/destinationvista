@@ -19,6 +19,7 @@ import {
   ArrayInput,
   SimpleFormIterator,
   number,
+  SelectArrayInput,
 } from "react-admin";
 import {
   ClearButtons,
@@ -52,7 +53,7 @@ type PackageParams = {
   exclusion: string;
   otherInfo: string;
 };
-export const PackageCreate = () => {
+export const PackageAdminCreate = () => {
   const { data: user } = useGetIdentity();
 
   const unique = useUnique();
@@ -62,7 +63,7 @@ export const PackageCreate = () => {
       transform={(data: PackageParams) => {
         return {
           ...data,
-          vendorId: user?.vendorId,
+          vendorId: user?.id,
           price: parseInt(data.price),
           durationDays: parseInt(data.durationDays),
           availableSlots: parseInt(data.availableSlots),
@@ -83,21 +84,21 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="title"
-                      validate={[required(),unique({filter:{vendorId: user?.vendorId }})]}
+                      validate={[required(), unique({ filter: { vendorId: user?.vendorId } })]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="price"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
                     <TextInput
                       fullWidth
                       source="durationDays"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
                   </div>
                   <div className="col-md-6">
@@ -116,8 +117,20 @@ export const PackageCreate = () => {
                     <TextInput
                       fullWidth
                       source="availableSlots"
-                      validate={[required(),number()]}
+                      validate={[required(), number()]}
                     />
+                  </div>
+                  <div className="col-md-6">
+                    <ReferenceInput
+                      source="vendor"
+                      reference="vendor"
+                    >
+                      <SelectInput
+                        fullWidth
+                        optionText="agencytitle"
+                        validate={[required()]}
+                      />
+                    </ReferenceInput>
                   </div>
                   <div className="col-md-12">
                     <RichTextInput
@@ -203,7 +216,7 @@ export const PackageCreate = () => {
                     />
                   </div>
                   <div className="col-md-12">
-                  <RichTextInput
+                    <RichTextInput
                       toolbar={
                         <RichTextInputToolbar>
                           <FormatButtons size={"small"} />
@@ -232,6 +245,19 @@ export const PackageCreate = () => {
                       validate={[required()]}
                     />
                   </div>
+                  <div className="col-md-12">
+                    <ReferenceInput
+                      source="category"
+                      reference="category"
+                    >
+                      <SelectArrayInput
+                        fullWidth
+                        optionText="name"
+                        validate={[required()]}
+                      />
+                    </ReferenceInput>
+                  </div>
+
                 </div>
               </SimpleForm>
             </Card>

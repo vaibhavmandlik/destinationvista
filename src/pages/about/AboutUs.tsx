@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import PageHeader from "../pageheader/pageHeader";
 
 const AboutUs: React.FC = () => {
+  const [showMore, setShowMore] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <>
       {/* <!-- Header Start --> */}
@@ -61,10 +65,33 @@ const AboutUs: React.FC = () => {
                     />
                   </div>
                 </div>
+                {/* Show More Content */}
+                {showMore && (
+                  <div className="mt-3">
+                    <p>
+                      Founded with a vision to make travel hassle-free, we have
+                      partnered with trusted vendors and hospitality providers
+                      across India and abroad. Our services extend beyond just
+                      booking trips – we offer **travel guidance, 24/7 customer
+                      support, and personalized packages**.
+                    </p>
+                    <p>
+                      Whether you're planning a **family vacation, a solo
+                      adventure, or a corporate retreat**, Destination Vista is
+                      here to ensure a seamless and memorable experience.
+                    </p>
+
+                    <button className="btn btn-success mt-3" onClick={() => navigate('/contact')}>Contact Us</button>
+                  </div>
+                )}
+
                 {/* Know More Button */}
-                <a href="contact.html" className="btn btn-primary mt-1">
-                  Know More
-                </a>
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={() => setShowMore(!showMore)}
+                >
+                  {showMore ? "Show Less" : "Know More"}
+                </button>
               </div>
             </div>
           </div>

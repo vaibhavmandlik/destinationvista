@@ -1,64 +1,89 @@
-import React , {useState} from "react";
+import React, { useEffect, useState } from "react";
 import SearchBar from "../Searchbar/SearchBar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSearch } from "../Searchbar/SearchContext";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface DestinationCategoryProps {
   isShowSearchBar?: boolean;
 }
 
-interface Destibation{
-  img:string,
-  title:string,
-  subtitle:string
+interface Destination {
+  imagePath: string,
+  id: number,
+  title: string,
+  description: string,
+  bookingCount: number,
+  city_id: number,
 }
 
-const destinations:Destibation[][] =[
-  [
-    {
-      img: "img/destination-1.jpg",
-      title: "Rajasthan",
-      subtitle: "Where History Meets Grandeur!",
-    },
-    {
-      img: "img/destination-2.jpg",
-      title: "Goa",
-      subtitle: "Your Escape to Paradise!",
-    },
-    {
-      img: "img/destination-3.jpg",
-      title: "Himachal",
-      subtitle: "Where The Hills Come Alive With Adventure!",
-    },
-  ],
-  [
-    {
-      img: "img/destination-4.jpg",
-      title: "Kerala",
-      subtitle: "Backwaters, Bliss, and Breathtaking Beauty!",
-    },
-    {
-      img: "img/destination-5.jpg",
-      title: "Uttarakhand",
-      subtitle: "Find Your Spiritual Calling in the Land of Gods!",
-    },
-    {
-      img: "img/destination-6.jpg",
-      title: "Maharashtra",
-      subtitle: "From Caves to Coasts, Maharashtra Has It All!",
-    },
-  ]
-]
+interface Category {
+  id: number;
+  name: string;
+  description: string;
+  imagePath: string;
+}
+
 const DestinationCategory: React.FC<DestinationCategoryProps> = ({
   isShowSearchBar = true,
 }) => {
+  const { setQuery } = useSearch();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [topDestination, setTopDestination] = useState([]);
+  const navigate = useNavigate();
 
-  const [activeIndex, setActiveIndex] = useState(0); 
-  const handlePrev =()=>{
-      setActiveIndex((prev)=>(prev === 0 ? destinations.length - 1 : prev - 1));
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? topDestination.length - 1 : prev - 1));
   }
 
-  const handleNext = ()=>{
-    setActiveIndex((prev)=>(prev === destinations.length - 1 ? 0 : prev + 1));
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev === topDestination.length - 1 ? 0 : prev + 1));
   }
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/category`);
+        if (response.status === 200) {
+          setCategories(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    }
+
+    const fetchTopDestinations = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/destination/top`);
+
+        if (response.status === 200) {
+          setTopDestination(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCategories();
+    fetchTopDestinations();
+
+  }, [])
+
+  const chunkArray = (arr: Destination[], size: number) => {
+    return arr.reduce<Destination[][]>((acc, _, i) => {
+      if (i % size === 0) acc.push(arr.slice(i, i + size));
+      return acc;
+    }, []);
+  };
+
+  const handleOnClick = (categoryId: number) => {
+    setQuery({ category: categoryId });
+    navigate("/packages");
+  };
+
   return (
     <>
       {isShowSearchBar && (
@@ -68,6 +93,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
           }}
         />
       )}
+
       <div>
         {/* Categories Section */}
         <div className="container-fluid py-5">
@@ -82,63 +108,18 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
               <h1>Explore Packages by Category</h1>
             </div>
             <div className="row">
-              {[
-                {
-                  img: "img/category-1.jpg",
-                  title: "Adventure",
-                  subtitle: "Exciting Experiences Await!",
-                },
-                {
-                  img: "img/category-2.jpg",
-                  title: "Romantic",
-                  subtitle: "Perfect Escapes for Two!",
-                },
-                {
-                  img: "img/category-3.jpg",
-                  title: "Family",
-                  subtitle: "Memorable Moments for All!",
-                },
-                {
-                  img: "img/category-4.jpg",
-                  title: "Beach",
-                  subtitle: "Sun, Sand & Serenity!",
-                },
-                {
-                  img: "img/category-5.jpg",
-                  title: "Cultural",
-                  subtitle: "Dive into Rich Heritage!",
-                },
-                {
-                  img: "img/category-6.jpg",
-                  title: "Adventure Sports",
-                  subtitle: "Thrilling Activities Await!",
-                },
-                {
-                  img: "img/category-7.jpg",
-                  title: "Wellness",
-                  subtitle: "Relax and Rejuvenate!",
-                },
-                {
-                  img: "img/category-8.jpg",
-                  title: "Cruise",
-                  subtitle: "Explore the Seas!",
-                },
-              ].map((category, index) => (
-                <div className="col-lg-3 col-md-6 mb-4" key={index}>
+              {categories.map((category, index) => (
+                <div className="col-lg-3 col-md-6 mb-4" key={index} onClick={() => handleOnClick(category.id)}>
                   <div className="category-item position-relative overflow-hidden mb-2">
                     <img
                       className="img-fluid category-image"
-                      src={category.img}
-                      alt={category.title}
+                      src={`${apiUrl}${category.imagePath}`}
+                      alt={category.name}
                     />
                     <div className="category-overlay text-center text-white d-flex flex-column justify-content-center">
-                      <h5>{category.title}</h5>
-                      <span>{category.subtitle}</span>
+                      <h5>{category.name}</h5>
+                      <span>{category.description}</span>
                     </div>
-                  </div>
-                  <div className="text-center mt-2">
-                    <h5>{category.title}</h5>
-                    <p>{category.subtitle}</p>
                   </div>
                 </div>
               ))}
@@ -147,7 +128,7 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
         </div>
 
         {/* Destination Section */}
-        <div className="container-fluid py-5">
+       <div className="container-fluid py-5">
           <div className="container pt-5 pb-3">
             <div className="text-center mb-3 pb-3">
               <h6
@@ -158,52 +139,38 @@ const DestinationCategory: React.FC<DestinationCategoryProps> = ({
               </h6>
               <h1>Explore Top Destinations</h1>
             </div>
-            <div
-              id="destinationCarousel"
-              className="carousel slide"
-              data-ride="carousel"
-            >
-              <div className="carousel-inner">
-                {destinations.map((slide, idx) => (
-                  <div
-                    className={`carousel-item ${idx === activeIndex ? "active" : ""}`}
-                    key={idx}
-                  >
-                    <div className="row">
-                      {slide.map((destination, index) => (
-                        <div className="col-lg-4 col-md-6 mb-4" key={index}>
-                          <div className="destination-item position-relative overflow-hidden mb-2">
-                            <img
-                              className="img-fluid"
-                              src={destination.img}
-                              alt={destination.title}
-                            />
-                            <a
-                              className="destination-overlay text-white text-decoration-none"
-                              href="/packages"
-                            >
-                              <h5 className="text-white">
-                                {destination.title}
-                              </h5>
-                              <span>{destination.subtitle}</span>
-                            </a>
-                          </div>
-                        </div>
-                      ))}
+
+            <div className="row">
+              {topDestination.length > 0 ? (
+                topDestination.map((destination: any, index: number) => (
+                  <div className="col-lg-4 col-md-6 mb-4" key={index}>
+                    <div className="destination-item position-relative overflow-hidden mb-2">
+                      <img
+                        className="img-fluid"
+                        src={
+                          destination.imagePath
+                            ?`${apiUrl}${destination.imagePath}`
+                            : "/img/default-destination.jpg" // fallback image
+                        }
+                        alt={destination.title}
+                      />
+                      <a
+                        className="destination-overlay text-white text-decoration-none"
+                        href={`/destinations/${destination.id}`}
+                      >
+                        <h5 className="text-white">{destination.title}</h5>
+                        <span>{destination.description}</span>
+                        <br />
+                        <small>Bookings: {destination.bookingCount}</small>
+                      </a>
                     </div>
                   </div>
-                ))}
-              </div>
-              <button className="carousel-control-prev custom-prev" onClick={handlePrev}>
-            <span className="carousel-control-prev-icon d-flex align-items-center justify-content-center p-3">
-              <i className="fas fa-chevron-left fa-2x text-primary"></i>
-            </span>
-          </button>
-          <button className="carousel-control-next custom-next" onClick={handleNext}>
-            <span className="carousel-control-next-icon d-flex align-items-center justify-content-center p-3">
-              <i className="fas fa-chevron-right fa-2x text-primary"></i>
-            </span>
-          </button>
+                ))
+              ) : (
+                <p className="text-center w-100">
+                  No top destinations available
+                </p>
+              )}
             </div>
           </div>
         </div>

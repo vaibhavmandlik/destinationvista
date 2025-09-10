@@ -1,76 +1,116 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-// Define the interface for blog posts
 interface BlogPost {
-  imgSrc: string;
-  alt: string;
-  category: string;
+  id: number;
   title: string;
-  description: string;
+  body: string;
   link: string;
 }
 
-// Example blog posts data
-const blogPosts: BlogPost[] = [
+const apiUrl = import.meta.env.VITE_API_URL;
+
+const staticBlogData = [
   {
     imgSrc: "img/blog-1.jpg",
-    alt: "Blog 1",
     category: "Travel Tips",
-    title: "10 Essential Tips for First-Time Travelers",
-    description: "Explore our top ten tips to ensure your first trip is both enjoyable and stress-free.",
-    link: "/blog/first-time-travelers",
   },
   {
     imgSrc: "img/blog-2.jpg",
-    alt: "Blog 2",
     category: "Destinations",
-    title: "Top 5 Destinations for a Weekend Getaway",
-    description: "Discover five beautiful locations perfect for a short escape from the everyday hustle.",
-    link: "/blog/weekend-getaway",
   },
   {
     imgSrc: "img/blog-3.jpg",
-    alt: "Blog 3",
     category: "Travel Advice",
-    title: "Traveling on a Budget: How to Save on Your Next Trip",
-    description: "Discover budget-friendly travel tips, including smart booking strategies for savings on your next trip.",
-    link: "/blog/travel-on-a-budget",
   },
 ];
 
 const HomeBlogSection: React.FC = () => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch(`${apiUrl}/blog`);
+        if (!response.ok) {
+          throw new Error(`Error fetching blogs: ${response.statusText}`);
+        }
+        const data = await response.json();
+        setPosts(data);
+      } catch (err: any) {
+        console.error("Fetch error:", err);
+        setError("Failed to load blog posts. Please try again later.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
   return (
     <div className="container-fluid py-5">
       <div className="container pt-5 pb-3">
         <div className="text-center mb-3 pb-3">
-          <h6 className="text-primary text-uppercase" style={{ letterSpacing: "5px" }}>
+          <h6
+            className="text-primary text-uppercase"
+            style={{ letterSpacing: "5px" }}
+          >
             Our Blog
           </h6>
           <h1>Latest From Our Blog</h1>
         </div>
-        <div className="row pb-3">
-          {blogPosts.map((post, index) => (
-            <div className="col-lg-4 col-md-6 mb-4 pb-2" key={index}>
-              <div className="blog-item">
-                <div className="position-relative">
-                  <img className="img-fluid w-100" src={post.imgSrc} alt={post.alt} />
-                </div>
-                <div className="bg-white p-4">
-                  <div className="d-flex mb-2">
-                    <span className="text-primary px-2">|</span>
-                    <a className="text-primary text-uppercase text-decoration-none" href="#">
-                      {post.category}
-                    </a>
+
+        {isLoading ? (
+          <div className="text-center">Loading blog posts...</div>
+        ) : error ? (
+          <div className="alert alert-danger text-center">{error}</div>
+        ) : (
+          <div className="row pb-3">
+            {posts.map((post, index) => {
+              const staticData = staticBlogData[index] || staticBlogData[0];
+              return (
+                <div
+                  className="col-lg-4 col-md-6 mb-4 pb-2"
+                  key={post.id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/blog/${post.id}`)} // 👈 Navigate on click
+                >
+                  <div className="blog-item">
+                    <div className="position-relative">
+                      <img
+                        className="img-fluid w-100"
+                        src={staticData.imgSrc}
+                        alt={`Blog ${index + 1}`}
+                      />
+                    </div>
+                    <div className="bg-white p-4">
+                      <div className="d-flex mb-2">
+                        <span className="text-primary px-2">|</span>
+                        <p className="text-primary text-uppercase m-0">
+                          {staticData.category}
+                        </p>
+                      </div>
+                      <h5 className="m-0 text-decoration-none">{post.title}</h5>
+                      <p
+                        className="m-0 text-truncate"
+                        style={{
+                          maxWidth: "15rem",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                        }}
+                        dangerouslySetInnerHTML={{ __html: post.body }}
+                      ></p>
+                    </div>
                   </div>
-                  <a className="h5 m-0 text-decoration-none" href={post.link}>
-                    {post.title}
-                  </a>
-                  <p className="m-0">{post.description}</p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

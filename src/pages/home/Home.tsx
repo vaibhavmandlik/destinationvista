@@ -1,7 +1,4 @@
 import React from "react";
-import Carousel from "../carousel/Carousel";
-
-import Footer from "../../components/footer/Footer";
 import PackagesList from "../packages/PackagesList";
 import DestinationCategory from "../destinations/DestinationCategory";
 import BackToTop from "../backtotop/BackToTop";
@@ -10,10 +7,6 @@ import HomeBlogSection from "../blogs/HomeBlogSection";
 import CarouselComponent from "../carousel/Carousel";
 
 const Home: React.FC = () => {
-  const images = [
-    { src: "/img/carousel-1.jpg", alt: "Image 1" },
-    { src: "/img/carousel-2.jpg", alt: "Image 2" },
-  ];
   return (
     <>
       {/* <DynamicHeader /> */}
@@ -35,7 +28,6 @@ const Home: React.FC = () => {
       <HomeRegistration />
       <HomeBlogSection />
       <BackToTop />
-      <Footer />
     </>
   );
 };

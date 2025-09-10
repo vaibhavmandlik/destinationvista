@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 interface Destination {
   imgSrc: string;
   title: string;
@@ -52,7 +53,7 @@ interface Category {
 
 const categories: Category[] = [
   {
-    title: "Adventure",
+    title: "Adventu",
     description: "Embark on thrilling journeys in nature and beyond.",
     image: "img/category-1.jpg",
     altText: "Adventure",
@@ -123,6 +124,16 @@ const HomeDestinationCarousel: React.FC = () => {
     );
   };
 
+  const handleOnClick =  async(catergoryTitle : string)=>{
+    try {
+    const response = await axios.get(`${apiUrl}/packages?category=${catergoryTitle}`);
+    console.log(response.data);
+    // navigate("/packages", { state: { data: response.data } }); // if you're using React Router
+  } catch (error) {
+    console.error("Failed to fetch category packages", error);
+  }
+  }
+
   return (
     <>
       <div className="container-fluid py-5">
@@ -140,8 +151,8 @@ const HomeDestinationCarousel: React.FC = () => {
           {/* Category Grid */}
           <div className="row">
             {categories.map((category, index) => (
-              <div className="col-lg-3 col-md-6 mb-4" key={index}>
-                <div className="category-item position-relative overflow-hidden mb-2">
+              <button className="col-lg-3 col-md-6 mb-4" key={index} onClick={() => handleOnClick(category.title)}>
+                <div className="category-item position-relative overflow-hidden mb-2" >
                   <img
                     className="img-fluid category-image"
                     src={category.image}
@@ -156,7 +167,7 @@ const HomeDestinationCarousel: React.FC = () => {
                   <h5>{category.title}</h5>
                   <p>{category.description}</p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>

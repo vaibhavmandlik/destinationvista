@@ -11,6 +11,7 @@ import {
 import Sidebar from "./Sidebar";
 import { FaBookMedical } from "react-icons/fa";
 import {
+  PiEnvelopeSimpleBold,
   PiMountains,
   PiPackageBold,
   PiSuitcaseBold,
@@ -41,7 +42,6 @@ export const MySidebar = ({ children }) => {
   );
 };
 export const MyMenu = () => {
-
   return (
     <Menu>
       <br />
@@ -54,7 +54,7 @@ export const MyMenu = () => {
         primaryText="Agency"
         leftIcon={<PiSuitcaseBold />}
       />
-      {(
+      {
         <>
           <Menu.Item
             to="/admin/package"
@@ -71,10 +71,25 @@ export const MyMenu = () => {
             primaryText="Destination"
             leftIcon={<PiMountains />}
           />
-          <Menu.Item to="/admin/user" primaryText="Users" leftIcon={<PiUserBold />} />
+          <Menu.Item leftIcon={<FaBookMedical />} to="/admin/blog" primaryText="Blog" />
+          <Menu.Item
+            to="/admin/user"
+            primaryText="Users"
+            leftIcon={<PiUserBold />}
+          />
+          <Menu.Item
+            to="/admin/support"
+            primaryText="Support"
+            leftIcon={<PiTicket />}
+          />
         </>
-      )}
-
+      }
+      <Menu.Item
+        sx={{ fontSize: "0.875rem" }}
+        to="/admin/email"
+        primaryText="Mailing Services"
+        leftIcon={<PiEnvelopeSimpleBold size={22} />}
+      />
       {/* <Menu.Item to="/comments" primaryText="Comments" leftIcon={<ChatBubbleIcon />}/>
       <Menu.Item to="/users" primaryText="Users" leftIcon={<PeopleIcon />}/>
       <Menu.Item to="/custom-route" primaryText="Miscellaneous" leftIcon={<LabelIcon />}/> */}

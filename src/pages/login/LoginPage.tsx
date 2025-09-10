@@ -1,54 +1,71 @@
-import React, { useState } from "react";
-import { useLogin } from "react-admin";
+import React from "react";
+import { useLogin, useNotify } from "react-admin";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CustomTextInput } from "../../components/common/CustomInputFields/TextInput";
 import { Login } from "@mui/icons-material";
-import { Button, Container, Grid, Typography, Box, Card, CardContent, CardMedia,} from "@mui/material";
+import {
+  Button,
+  Container,
+  Grid,
+  Typography,
+  Box,
+  CardMedia,
+  FormHelperText,
+} from "@mui/material";
+import { VendorNotFoundError } from "../../authProvider";
+import { getValue } from "@mui/system";
 
 const MyLoginPage: React.FC = () => {
   const login = useLogin();
-
-  // const handleSubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  //   // try {
-  //   //   const response = await fetch('http://localhost:3000/api/login', {
-  //   //     method: 'POST',
-  //   //     headers: {
-  //   //       'Content-Type': 'application/json',
-  //   //     },
-  //   //     body: JSON.stringify({ email, password }),
-  //   //   });
-
-  //   //   if (response.ok) {
-  //   //     const data = await response.json();
-  //   //     localStorage.setItem('token', data.token);
-  //   //     alert('Login successful!');
-  //   //     window.location.href = '/';
-  //   //   } else {
-  //   //     const errorData = await response.json();
-  //   //     alert(`Login failed: ${errorData.message}`);
-  //   //   }
-  //   // } catch (error) {
-  //   //   alert('An error occurred. Please try again later.');
-  //   //   console.error('Error:', error);
-  //   // }
-  // };
+  const notify = useNotify();
+  const navigate = useNavigate();
   type Input = {
     email: string;
     password: string;
   };
+
+  const [vendorHas, setVendorHas] = React.useState<boolean>(true);
+  const [authData, setAuthData] = React.useState<any | null>(null);
+
   const {
     register,
-    watch,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<Input>();
+
   const onSubmit: SubmitHandler<Input> = (data) => {
-    debugger;
-    login(data);
+    login(data).catch((error) => {
+      if (error instanceof VendorNotFoundError) {
+        setAuthData(error.authData);
+        notify("Please complete your vendor profile to continue.", {
+          type: "info",
+        });
+        setVendorHas(false);
+      } else {
+        // Handle other generic login errors.
+        notify(error.message || "Login failed", { type: "warning" });
+      }
+    });
   };
+
+  const handleForgotPassword = () => {
+    const email = getValues('email');
+    if (!email) {
+      notify("Please enter your email before resetting password.", {
+        type: "warning",
+      });
+      return;
+    }
+    try {
+      debugger;
+      navigate("/vendor/forgotpass" , {state: { email }});
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   return (
     <Grid container sx={{ height: "100vh" }}>
@@ -63,60 +80,90 @@ const MyLoginPage: React.FC = () => {
           justifyContent: "center",
         }}
       >
-        <Container maxWidth="xs">
-          <Typography variant="h5" fontWeight="bold">
-            Sign in
-          </Typography>
-          <Typography variant="body2" sx={{ mt: 1 }}>
-            Don&apos;t have an account?{" "}
-            <Link to="/open/vendorRegistration">Sign up</Link>
-          </Typography>
+        {vendorHas && (
+          <Container maxWidth="xs">
+            <Typography variant="h5" fontWeight="bold">
+              Vendor Sign In
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Don&apos;t have an account?{" "}
+              <Link to="/open/vendorRegistration">Sign up</Link>
+            </Typography>
 
-          {/* Form Start */}
-          <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Email Field */}
-            <CustomTextInput
-              label="Email address"
-              placeholder="Enter your email"
-              type="email"
-              id="email"
-              errors={errors.email && errors.email.message}
-              register={register("email", { required: "Email is required" })}
-            />
+            {/* Form Start */}
+            <form onSubmit={handleSubmit(onSubmit)}>
+              {/* Email Field */}
+              <CustomTextInput
+                label="Email address"
+                placeholder="Enter your email"
+                type="email"
+                id="email"
+                errors={errors.email && errors.email.message}
+                register={register("email", {
+                  required: "Email is required",
+                })}
+              />
+              {/* Instruction / Helper */}
+              <FormHelperText sx={{ mb: 2 }}>
+                Use the same email you registered with.
+              </FormHelperText>
 
-            {/* Password Field */}
-            <CustomTextInput
-              label="Password"
-              placeholder="Enter your password"
-              type="password"
-              id="password"
-              errors={errors.password && errors.password.message}
-              register={register("password", {
-                required: "Password is required",
-              })}
-            />
+              {/* Password Field */}
+              <CustomTextInput
+                label="Password"
+                placeholder="Enter your password"
+                type="password"
+                id="password"
+                errors={errors.password && errors.password.message}
+                register={register("password", {
+                  required: "Password is required",
+                })}
+              />
+              {/* Instruction / Helper */}
+              <FormHelperText sx={{ mb: 2 }}>
+                Password must be at least 8 characters long.
+              </FormHelperText>
 
-            {/* Forgot Password */}
-            <Box sx={{ textAlign: "right", mt: 1 }}>
-              <Link to="#">Forgot password?</Link>
-            </Box>
 
-            {/* Sign In Button */}
-            <Button
-              type="submit"
-              variant="contained"
-              sx={{
-                mt: 2,
-                backgroundColor: "#635DFF",
-                color: "#fff",
-                width: "100%",
-              }}
-              startIcon={<Login />}
-            >
-              Sign in
-            </Button>
-          </form>
-        </Container>
+
+              {/* Sign In Button */}
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  mt: 2,
+                  backgroundColor: "#635DFF",
+                  color: "#fff",
+                  width: "100%",
+                }}
+                startIcon={<Login />}
+              >
+                Sign in
+              </Button>
+
+              {/* Forgot Password */}
+              <Box sx={{ textAlign: "right", mt: 1 }}>
+                <Button color="primary" onClick={handleForgotPassword}>Forgot Password !</Button>
+              </Box>
+
+            </form>
+          </Container>
+        )}
+        {!vendorHas && (
+          <Container maxWidth="xs">
+            <Typography variant="h5" fontWeight="bold">
+              Complete a Vendor Account
+            </Typography>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              You need to complete your vendor registration to login.{" "}
+              <Link
+                to={`/open/agencyRegistration?accessToken=${authData?.accessToken}&userId=${authData?.id}`}
+              >
+                Start
+              </Link>
+            </Typography>
+          </Container>
+        )}
       </Grid>
 
       {/* Right Side (Illustration) */}
@@ -136,7 +183,7 @@ const MyLoginPage: React.FC = () => {
       >
         <Box>
           <Typography variant="h4" fontWeight="bold">
-           <span style={{ color: "#43B581" }}>Destination Vista</span>
+            <span style={{ color: "#43B581" }}>Destination Vista</span>
           </Typography>
           <Typography variant="body1" sx={{ mt: 1 }}>
             A Travel Friendly Website.
@@ -144,28 +191,27 @@ const MyLoginPage: React.FC = () => {
 
           {/* Image Only */}
           <Box
-  sx={{
-    mt: 3,
-    backgroundColor: "white", // White background
-    borderRadius: 3, // Rounded corners (3 = 16px in Material UI)
-    padding: 2, // Space around the image
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    boxShadow: 3, // Adds a subtle shadow
-    maxWidth: 350, // Optional: Limits width
-    mx: "auto", // Centers the box horizontally
-  }}
->
-  <CardMedia
-    component="img"
-    height="300"
-    image="/public/img/login.jpg"
-    alt="Destination Vista"
-    sx={{ borderRadius: 2 }} // Slight rounding for the image itself
-  />
-</Box>
-
+            sx={{
+              mt: 3,
+              backgroundColor: "white",
+              borderRadius: 3,
+              padding: 2,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: 3,
+              maxWidth: 350,
+              mx: "auto",
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="300"
+              image="/img/login.jpg" // ✅ fixed path (don't include /public in src)
+              alt="Destination Vista"
+              sx={{ borderRadius: 2 }}
+            />
+          </Box>
         </Box>
       </Grid>
     </Grid>

@@ -1,333 +1,190 @@
-import React, { useRef, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CustomTextInput } from "../common/CustomInputFields/TextInput";
-import { useCreate, useNotify } from "react-admin";
-import Button from "@mui/material/Button";
-import CheckIcon from "@mui/icons-material/Check";
-import { Cancel, Check } from "@mui/icons-material";
-export type FormInputVendorType = {
-  firstName: string;
-  lastName: string;
-  dateOfBirth: string;
-  primaryContactNumber: string;
-  email: string;
-  password: string;
-  cpassword: string;
-  category: string;
-  addressLine1: string;
-  addressLine2: string;
-  landmark: string;
-  city: string;
-  state: string;
-  pincode: string;
-  secondaryContactNumber: string;
-};
+import { Box, Button, Grid, Typography } from "@mui/material";
+import mascotImage from "../../assets/auth-register-multi-steps-illustration.png";
+import {
+  Link,
+  PasswordInput,
+  required,
+  TextInput,
+  regex,
+  useCreate,
+  useNotify,
+  useRedirect,
+  SimpleForm,
+  email,
+  CreateBase,
+} from "react-admin";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+
 const Register = () => {
+  const [create] = useCreate();
   const notify = useNotify();
-  const {
-    register,
-    watch,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormInputVendorType>();
-  const onSubmit: SubmitHandler<FormInputVendorType> = (data) => {
-    console.log(data);
-    const newData = {
-      ...data,
-      category: "2",
-    };
-    create(
-      "user",
-      { data: newData },
-      {
-        onSuccess: () => notify("User Created Successfully", { type: "success" }),
-        onError: (error:any) => {
-          notify(`Failed to create user: reason ${(error?.body?.error)}`, { type: "error" })},
-      }
-    );
+  const redirect = useRedirect();
+
+  const onSubmit = (data: any) => {
+    const { confirmPassword, ...userData } = data;
+    debugger;
+    create("user", { data: { ...userData, category: 2 } }, {
+      onSuccess: () => {
+        notify("User Created Successfully", { type: "success" });
+        redirect("/vendor/login"); 
+      },
+      onError: (error: any) => { notify(`Failed to create user: reason ${error?.body?.error}`, { type: "error" }) },
+    });
   };
-  const validateAge = (value: string) => {
-    const today = new Date();
-    const birthDate = new Date(value);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDifference = today.getMonth() - birthDate.getMonth();
-    if (
-      monthDifference < 0 ||
-      (monthDifference === 0 && today.getDate() < birthDate.getDate())
-    ) {
-      age--;
+
+  const validatePassword = [
+    required(),
+    regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/,
+      'Password must be 8+ chars with uppercase, lowercase, number, and special character.'
+    ),
+  ];
+
+  const validateConfirmPassword = (value: any, allValues: any) => {
+    if (value !== allValues.password) {
+      return 'The passwords do not match';
     }
-    return age >= 18 || "You must be at least 18 years old";
+    return undefined;
   };
-  const password = useRef({});
-  password.current = watch("password", "");
-  const [create, result] = useCreate();
+
   return (
-    <div className="overflow-hidden">
-      <div style={{ padding: "0px !important" }}>
-        <div
-          style={{ height: "100vh" }}
-          className="d-flex justify-content-center align-items-center"
+    <>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
+        <Box
+          sx={{
+            width: { md: "20%" },
+            display: { xs: "none", md: "flex" },
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: '#F7F7F9',
+            p: 2,
+          }}
         >
-          <div
-            className="row bg-white shadow rounded overflow-hidden"
-            style={{ maxWidth: "900px" }}
-          >
-            <div className="col-md-12 p-4">
-              <div className="text-center mb-4">
-                <h2 className="text-primary">Destination Vista</h2>
-                <p className="m-4 text-muted">Create Account</p>
-                <hr />
-              </div>
+          <Box
+            component="img"
+            src={mascotImage}
+            alt="Mascot"
+            sx={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
+        </Box>
 
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="row ">
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="firstName"
-                      label="First Name"
-                      register={register("firstName", { required: "required" })}
-                      errors={errors.firstName && errors.firstName.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="lastName"
-                      label="Last Name"
-                      register={register("lastName", { required: "required" })}
-                      errors={errors.lastName && errors.lastName.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="addressLine1"
-                      label="address Line 1"
-                      register={register("addressLine1", {
-                        required: "required",
-                      })}
-                      errors={
-                        errors?.addressLine1 && errors?.addressLine1.message
-                      }
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="addressLine2"
-                      label="address Line 2"
-                      register={register("addressLine2", {
-                        required: "required",
-                      })}
-                      errors={
-                        errors?.addressLine2 && errors?.addressLine2.message
-                      }
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="landmark"
-                      label="landmark"
-                      register={register("landmark", {
-                        required: "required",
-                      })}
-                      errors={errors?.landmark && errors?.landmark.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="city"
-                      label="city"
-                      register={register("city", {
-                        required: "required",
-                      })}
-                      errors={errors?.city && errors?.city.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      id="state"
-                      label="state"
-                      register={register("state", {
-                        required: "required",
-                      })}
-                      errors={errors?.state && errors?.state.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="number"
-                      id="pincode"
-                      label="pincode"
-                      register={register("pincode", {
-                        required: "required",
-                        minLength: {
-                          value: 6,
-                          message: "pincode must be at least 6 characters long",
-                        },
-                      })}
-                      errors={errors?.pincode && errors?.pincode.message}
-                    />
-                  </div>
-
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="date"
-                      id="dateOfBirth"
-                      label="date Of Birth"
-                      register={register("dateOfBirth", {
-                        required: "required",
-                        validate: validateAge,
-                      })}
-                      errors={errors.dateOfBirth && errors.dateOfBirth.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="number"
-                      id="primaryContactNumber"
-                      label="Mobile Number"
-                      register={register("primaryContactNumber", {
-                        required: "required",
-                        minLength: {
-                          value: 10,
-                          message:
-                            "Mobile number must be at least 10 digit long",
-                        },
-                      })}
-                      errors={
-                        errors.primaryContactNumber &&
-                        errors.primaryContactNumber.message
-                      }
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="number"
-                      id="secondaryContactNumber"
-                      label="Mobile Number 2"
-                      register={register("secondaryContactNumber", {
-                        required: "required",
-                        minLength: {
-                          value: 10,
-                          message:
-                            "Mobile number must be at least 10 digit long",
-                        },
-                      })}
-                      errors={
-                        errors.secondaryContactNumber &&
-                        errors.secondaryContactNumber.message
-                      }
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="email"
-                      id="email"
-                      label="Email"
-                      register={register("email", {
-                        required: "required",
-                        pattern: {
-                          value:
-                            /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                          message: "Invalid email address",
-                        },
-                      })}
-                      errors={errors.email && errors.email.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="password"
-                      id="password"
-                      label="Password"
-                      register={register("password", {
-                        required: "required",
-                        minLength: {
-                          value: 8,
-                          message:
-                            "Password must be at least 8 characters long",
-                        },
-                        pattern: {
-                          value:
-                            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                          message:
-                            "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
-                        },
-                      })}
-                      errors={errors.password && errors.password.message}
-                    />
-                  </div>
-                  <div className="col-md-6 mb-3">
-                    <CustomTextInput
-                      type="password"
-                      id="cpassword"
-                      label="Confirm Password"
-                      register={register("cpassword", {
-                        required: "required",
-                        validate: (value) =>
-                          value === password.current ||
-                          "The passwords do not match",
-                      })}
-                      errors={errors.cpassword && errors.cpassword.message}
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-3 col-sm-12"></div>
-                  <div className="col-md-3 col-sm-12">
-                    {" "}
-                    <Button
-                      type="submit"
-                      disabled={result.isLoading}
-                      variant="contained"
-                      sx={{ width: "100%" }}
-                      startIcon={<Check />}
-                    >
-                      Signup
-                    </Button>
-                  </div>
-                  <div className="col-md-3 col-sm-12">
-                    <Button
-                      type="reset"
-                      color="warning"
-                      disabled={result.isLoading}
-                      variant="contained"
-                      sx={{ width: "100%" }}
-                      startIcon={<Cancel />}
-                    >
-                      reset
-                    </Button>
-                  </div>
-                  <div className="col-md-3 col-sm-12"></div>
-                </div>
-
-                {/* <button
-                  
-                  type="submit"
-                  className="btn btn-primary w-100"
-                >
-                  Sign up
-                </button> */}
-              </form>
-              <p className="text-center mt-3 text-muted">
+        {/* Right 80% screen on desktop, 100% on mobile */}
+        <Box
+          sx={{
+            width: { xs: "100%", md: "80%" },
+            p: 3,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            bgcolor: '#FFFFFF',
+          }}
+        >
+          <Box sx={{ p: 4, maxWidth: '600px', width: '100%' }}>
+            <Box>
+              <CreateBase resource="user">
+                  <SimpleForm
+                    onSubmit={onSubmit}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <PersonAddIcon sx={{ mr: 1 }} />
+                      <Typography variant="h5">Vendor Register</Typography>
+                    </Box>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={6}>
+                        <TextInput validate={required()} source="firstName" label="First Name" fullWidth />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextInput validate={required()} source="lastName" label="Last Name" fullWidth />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextInput validate={[required(), email()]} source="email" label="Email" fullWidth />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextInput validate={required()} source="addressLine1" label="Address Line 1" fullWidth />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextInput validate={required()} source="addressLine2" label="Address Line 2" fullWidth />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextInput source="landmark" validate={required()} label="Landmark" fullWidth />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextInput validate={required()} source="city" label="City" fullWidth />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextInput validate={required()} source="state" label="State" fullWidth />
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <TextInput
+                          validate={[required(), regex(/^\d{6}$/, 'Must be a 6 digit number')]}
+                          source="pincode"
+                          label="Pincode"
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextInput
+                          source="dateOfBirth"
+                          label="Date of Birth"
+                          type="date"
+                          fullWidth
+                          validate={required()}
+                          InputLabelProps={{ shrink: true }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <TextInput
+                          validate={[required(), regex(/^\d{10}$/, 'Must be a 10 digit number')]}
+                          source="primaryContactNumber"
+                          label="Mobile Number 1"
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextInput
+                          source="secondaryContactNumber"
+                          label="Mobile Number 2"
+                          
+                          validate={[required(),regex(/^\d{10}$/, 'Must be a 10 digit number')]}
+                          fullWidth />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <PasswordInput
+                          source="password"
+                          label="Password"
+                          fullWidth
+                          validate={validatePassword}
+                          helperText="Password must be 8+ chars with uppercase, lowercase, number, and special character."
+                        />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <PasswordInput
+                          source="confirmPassword"
+                          label="Confirm Password"
+                          fullWidth
+                          validate={[required(), validateConfirmPassword]}
+                        />
+                      </Grid>
+                    </Grid>
+                  </SimpleForm>
+                  </CreateBase>
+                </Box>
+            <Box sx={{ mt: 2, textAlign: "center" }}>
+              <Typography variant="body2" component="span">
                 Do you have an account?{" "}
-                <a href="/vendor/login" className="text-primary">
-                  Login
-                </a>
-              </p>
-            </div>
-            {/* 
-            <div className="col-md-6 mb-3 d-none d-md-flex align-items-center justify-content-center bg-light">
-              <img
-                src="/register.png"
-                alt="Register Illustration"
-                className="img-fluid rounded"
-              />
-            </div> */}
-          </div>
-        </div>
-      </div>
-    </div>
+              </Typography>
+              <Button component={Link} to="/vendor/login" variant="text">
+                Login
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-admin';
 
 
 const Footer: React.FC = () => {
@@ -22,10 +23,10 @@ const Footer: React.FC = () => {
           <h5 className="text-white text-uppercase mb-3">Our Services</h5>
           <ul className="list-unstyled">
             <li><a className="text-white-50" href="/about"><i className="fa fa-angle-right mr-2"></i>About Us</a></li>
-            <li><a className="text-white-50" href="/destination"><i className="fa fa-angle-right mr-2"></i>Destinations</a></li>
-            <li><a className="text-white-50" href="/package"><i className="fa fa-angle-right mr-2"></i>Packages</a></li>
+            <li><a className="text-white-50" href="/destinations"><i className="fa fa-angle-right mr-2"></i>Destinations</a></li>
+            <li><a className="text-white-50" href="/packages"><i className="fa fa-angle-right mr-2"></i>Packages</a></li>
             <li><a className="text-white-50" href="/service"><i className="fa fa-angle-right mr-2"></i>Services</a></li>
-            <li><a className="text-white-50" href="/blog"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
+            <li><a className="text-white-50" href="/blogs"><i className="fa fa-angle-right mr-2"></i>Blogs</a></li>
           </ul>
         </div>
 
@@ -58,11 +59,25 @@ const Footer: React.FC = () => {
         {/* Legal Information */}
         <div className="col-lg-3 col-md-6 mb-4">
           <h5 className="text-white text-uppercase mb-3">Legal</h5>
-          <ul className="list-unstyled">
-            <li><a className="text-white-50" href="/terms"><i className="fa fa-angle-right mr-2"></i>Terms & Conditions</a></li>
-            <li><a className="text-white-50" href="/privacy"><i className="fa fa-angle-right mr-2"></i>Privacy Policy</a></li>
-            <li><a className="text-white-50" href="/disclaimer"><i className="fa fa-angle-right mr-2"></i>Disclaimer</a></li>
+          <div className='d-flex justify-conten-between'>
+          <ul className="list-unstyled me-3">
+            <li><Link className="text-white-50" to="/terms"><i className="fa fa-angle-right mr-2"></i>Terms & Conditions</Link></li>
+            <li><Link className="text-white-50" to="/privacy"><i className="fa fa-angle-right mr-2"></i>Privacy Policy</Link></li>
+            <li><Link className="text-white-50" to="/disclaimer"><i className="fa fa-angle-right mr-2"></i>Disclaimer</Link></li>
+            <li><Link className="text-white-50" to="/support"><i className="fa fa-angle-right mr-2"></i>Support</Link></li>
+            <li><Link className="text-white-50" to="/newsletter"><i className="fa fa-angle-right mr-2"></i>Newsletter</Link></li>
+            <li><Link className="text-white-50" to="/dateretension"><i className="fa fa-angle-right mr-2"></i>Data Retension</Link></li>
           </ul>
+
+          <ul className='list-unstyled'>
+            <li><Link className="text-white-50" to="/paymentpolicy"><i className="fa fa-angle-right mr-2"></i>Payment Policy</Link></li>
+            <li><Link className="text-white-50" to="/refundpolicy"><i className="fa fa-angle-right mr-2"></i>Refund Policy</Link></li>
+            <li><Link className="text-white-50" to="/vendorpolicy"><i className="fa fa-angle-right mr-2"></i>Vendor Policy</Link></li>
+            <li><Link className="text-white-50" to="/cookiespolicy"><i className="fa fa-angle-right mr-2"></i>Cookies Policy</Link></li>
+            <li><Link className="text-white-50" to="/rights"><i className="fa fa-angle-right mr-2"></i>Third Party Rights</Link></li>
+            <li><Link className="text-white-50" to="/grievanceandredressalpolicy"><i className="fa fa-angle-right mr-2"></i>Grievance & Redressal Policy</Link></li>
+          </ul>
+          </div>
         </div>
 
         {/* Newsletter Signup */}

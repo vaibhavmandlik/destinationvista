@@ -1,18 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
+import axios from "axios";
 
-
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface DestinationProps {
   isShowHeader?: boolean;
 }
 
 const Destination: React.FC<DestinationProps> = ({ isShowHeader = true }) => {
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [topDestinations, setTopDestinations] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/destination`);
+        if (response.status === 200) {
+          setDestinations(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching destinations:", error);
+      }
+    };
+
+    const fetchTopDestinations = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/destination/top`);
+        if (response.status === 200) {
+          setTopDestinations(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching top destinations:", error);
+      }
+    };
+
+    fetchDestinations();
+    fetchTopDestinations();
+  }, []);
+
   return (
     <>
-      {/* <!-- Header Start --> */}
-
+      {/* Header */}
       {isShowHeader && (
         <PageHeader
           title="Destination"
@@ -25,7 +55,8 @@ const Destination: React.FC<DestinationProps> = ({ isShowHeader = true }) => {
           throw new Error("Function not implemented.");
         }}
       />
-      {/* Destination Start */}
+
+      {/* Top Destinations Section */}
       <div className="container-fluid py-5">
         <div className="container pt-5 pb-3">
           <div className="text-center mb-3 pb-3">
@@ -38,55 +69,77 @@ const Destination: React.FC<DestinationProps> = ({ isShowHeader = true }) => {
             <h1>Explore Top Destinations</h1>
           </div>
           <div className="row">
-            {[
-              {
-                img: "img/destination-1.jpg",
-                title: "Kerala",
-                subtitle: "God's Own Country",
-              },
-              {
-                img: "img/destination-2.jpg",
-                title: "Udaipur",
-                subtitle: "City of Lakes",
-              },
-              {
-                img: "img/destination-3.jpg",
-                title: "Agra",
-                subtitle: "Home of the Taj Mahal",
-              },
-              {
-                img: "img/destination-4.jpg",
-                title: "Goa",
-                subtitle: "Beaches and Parties",
-              },
-              {
-                img: "img/destination-5.jpg",
-                title: "Jaipur",
-                subtitle: "The Pink City",
-              },
-              {
-                img: "img/destination-6.jpg",
-                title: "Mysore",
-                subtitle: "City of Palaces",
-              },
-            ].map((destination, index) => (
-              <div className="col-lg-4 col-md-6 mb-4" key={index}>
-                <div className="destination-item position-relative overflow-hidden mb-2">
-                  <img
-                    className="img-fluid"
-                    src={destination.img}
-                    alt={destination.title}
-                  />
-                  <a
-                    className="destination-overlay text-white text-decoration-none"
-                    href=""
-                  >
-                    <h5 className="text-white">{destination.title}</h5>
-                    <span>{destination.subtitle}</span>
-                  </a>
+            {topDestinations.length > 0 ? (
+              topDestinations.map((destination, index) => (
+                <div className="col-lg-4 col-md-6 mb-4" key={index}>
+                  <div className="destination-item position-relative overflow-hidden mb-2">
+                    <img
+                      className="img-fluid"
+                      src={
+                        destination.imagePath
+                          ? `${apiUrl}${destination.imagePath}`
+                          : "/img/default-destination.jpg"
+                      }
+                      alt={destination.title}
+                    />
+                    <a
+                      className="destination-overlay text-white text-decoration-none"
+                      href={`/packages/${destination.id}`}
+                    >
+                      <h5 className="text-white">{destination.title}</h5>
+                      <span>{destination.description}</span>
+                      <br />
+                      <small>Bookings: {destination.bookingCount}</small>
+                    </a>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-center w-100">No top destinations available</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* All Destinations Section */}
+      <div className="container-fluid py-5">
+        <div className="container pt-5 pb-3">
+          <div className="text-center mb-3 pb-3">
+            <h6
+              className="text-primary text-uppercase"
+              style={{ letterSpacing: "5px" }}
+            >
+              Destinations
+            </h6>
+            <h1>Explore All Destinations</h1>
+          </div>
+          <div className="row">
+            {destinations.length > 0 ? (
+              destinations.map((destination, index) => (
+                <div className="col-lg-4 col-md-6 mb-4" key={index}>
+                  <div className="destination-item position-relative overflow-hidden mb-2">
+                    <img
+                      className="img-fluid"
+                      src={
+                        destination.imagePath
+                          ? `${apiUrl}${destination.imagePath}`
+                          : "/img/default-destination.jpg"
+                      }
+                      alt={destination.title}
+                    />
+                    <a
+                      className="destination-overlay text-white text-decoration-none"
+                      href={`/packages/${destination.id}`}
+                    >
+                      <h5 className="text-white">{destination.title}</h5>
+                      <span>{destination.description}</span>
+                    </a>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-center w-100">No destinations available</p>
+            )}
           </div>
         </div>
       </div>
@@ -97,7 +150,6 @@ const Destination: React.FC<DestinationProps> = ({ isShowHeader = true }) => {
           <h2 className="text-center mb-5 text-primary">Travel Tips</h2>
           <div className="row">
             {[
-              
               {
                 icon: "fa-calendar-alt",
                 text: "Best time to visit popular destinations is during the shoulder seasons for fewer crowds.",

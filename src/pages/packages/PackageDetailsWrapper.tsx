@@ -1,104 +1,98 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Navigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import PackageDetails from "./PackageDetails";
+import axios from "axios";
+import Spinner from "../../components/Loader/Spinner";
 
+const url = `${import.meta.env.VITE_API_URL}/package`;
+
+type DestinationDetails = {
+  city_name: string;
+};
 // Define your package data
-const allPackages = [
-  {
-    id: 1,
-    title: "Delhi City Tour",
-    description: "Explore the vibrant city of Delhi.",
-    price: "₹4,500",
-    image: "/img/delhi.jpg",
-    seatsAvailable: 20,
-    highlights: ["India Gate", "Qutub Minar", "Red Fort"],
-    itinerary: ["Arrival in Delhi", "City tour", "Departure"],
-    included: ["Transport", "Guided tours"],
-    excluded: ["Lunch", "Personal expenses"],
-    location: "Delhi",
-    duration: "2 days",
-    bestTimeToVisit: "October to March",
-    bookingLink: "/book/1",
-  },
-  {
-    id: 2,
-    title: "Mumbai City Tour",
-    description:
-      "Explore the vibrant city of Mumbai, known for its bustling streets, historic sites, and the iconic Gateway of India. Dive into the city's unique culture, enjoy delicious street food, and experience the energy of India’s financial capital.",
-    price: "₹3,500 Per Person",
-    image: "/img/mumbai-tour.jpg",
-    seatsAvailable: 13,
-    highlights: [
-      " Visit the historic Gateway of India",
-      "  Explore Marine Drive and Juhu Beach",
-      "  Walk through the vibrant Crawford Market",
-      "  Experience Bollywood magic at Film City",
-      "  Delicious local street food tasting",
-    ],
-    itinerary: [
-      " Arrival in Mumbai, visit Gateway of India, Colaba Causeway, and Marine Drive.",
+type PackageDetails = {
+  id: number;
+  title: string;
+  description: string;
+  price: number;
+  durationDays: number;
+  destination:string,
+  availableSlots: number;
+  imagePaths: [];
+  approvedBy: null;
+  approved: boolean;
+  quickItinerary:string;
+  itinerary:[];
+  inclusion:string;
+  exclusion:string;
+  otherInfo:string;
+  destinationDetails:DestinationDetails | null;
+};
 
-      " Tour of Film City, Crawford Market, and a visit to Juhu Beach.",
-
-      "Explore Elephanta Caves, shopping at Bandra, and depart from Mumbai.",
-    ],
-    included: [
-      " Hotel accommodation (3-star) for 2 nights",
-      " Breakfast and dinner included",
-      " All transfers and sightseeing in an air-conditioned vehicle",
-      " Local guide and entrance fees",
-    ],
-    excluded: [" Any tips and gratuities", "Lunches and personal expenses"],
-    location: "Mumbai",
-    duration: "3 days 2 nights ",
-    bestTimeToVisit: "November to February",
-    bookingLink: "/book/2",
-  },
-  {
-    id: 3,
-    title: "Lonavala  Tour",
-    description:
-      "Escape to the beautiful hill station of Lonavala and enjoy breathtaking views, serene nature, and peaceful moments. Perfect for a weekend escape from the city hustle.",
-    price: "₹5,000 Per Person",
-    image: "/img/lonavla.jpg",
-    seatsAvailable: 23,
-    highlights: [
-      "Explore the scenic Bhushi Dam",
-      "  Visit Tiger Point and Rajmachi Point",
-      "  Enjoy Lonavala's famous chikki",
-    ],
-    itinerary: [
-      " Arrive in Lonavala, visit Bhushi Dam and Lonavala Lake.",
-
-      " Sightseeing at Tiger Point, Rajmachi Point, and depart.",
-    ],
-    included: [
-      " 1-night stay at a 3-star hotel",
-      " Breakfast and dinner included",
-      " All transfers and sightseeing in an air-conditioned vehicle",
-      " Local guide and entrance fees",
-    ],
-    excluded: [" Any tips and gratuities", "Lunches and personal expenses"],
-    location: "Lonavala",
-    duration: "1 day 1 nights ",
-    bestTimeToVisit: "November to February",
-    bookingLink: "/book/3",
-  },
-  // Add other packages here...
-];
+const mapApiDataToPacksgeDetails = (data: any): PackageDetails => ({
+  id: data.id,
+  title: data.title,
+  description: data.description,
+  price: Number(data.price),
+  durationDays: data.durationDays,
+  destination:data.destination,
+  availableSlots: data.availableSlots,
+  imagePaths: data.imagePaths,
+  approvedBy: data.approvedBy,
+  approved: data.approved,
+  quickItinerary: data.quickItinerary,
+  itinerary:data.itinerary,
+  inclusion:data.inclusion,
+  exclusion:data.exclusion,
+  otherInfo:data.otherInfo,
+  destinationDetails:data.destinationDetails || null,
+});
 
 const PackageDetailsWrapper: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const packageIdNumber = parseInt(id || "", 10);
+  const [packageDetails, setPackageDetails] = useState<PackageDetails | null>(
+    null,
+  );
+  const [loading, setloading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Find the package by ID
-  const selectedPackage = allPackages.find((pkg) => pkg.id === packageIdNumber);
+  useEffect(() => {
+    const fetchPackageDetails = async () => {
+      if (!id) {
+        setError("Invalid Package Id");
+        setloading(false);
+        return;
+      }
 
-  // Redirect if the package is not found
-  if (!selectedPackage) {
-    return <Navigate to="/packages" />;
-  }
+      try {
+        const response = await axios.get(`${url}/${id}`);
+       const modifiedData = {
+        ...response.data,
+        price: (Math.floor(Number(response.data.price)+ Number(response.data.price) * 0.10)), // keep it as string
+      };
+        setPackageDetails(mapApiDataToPacksgeDetails(modifiedData));
+      } catch (error) {
+        setError("Failed to fetch package details");
+        toast.error("Failed to fetch package details", {
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          theme: "light",
+          pauseOnHover: true,
+        });
+      } finally {
+        setloading(false);
+      }
+    };
+    fetchPackageDetails();
+  }, [id]);
 
+  const selectedPackage = packageDetails;
+
+  if (loading) return <div className="text-center h4 m-3 p-5"> <Spinner/></div>;
+  if (error) return <p>{error}</p>;
+  if (!selectedPackage) return <Navigate to="/packages" />;
   return <PackageDetails {...selectedPackage} />;
 };
 

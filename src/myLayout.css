@@ -1,6 +1,6 @@
 .RaSidebar-fixed {
-    background-color: rgb(238, 238, 238);
-    padding: 0 5px;
+    background-color: rgb(248 249 250);
+    
 }
 .css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root {
     border-radius: 4px;
@@ -10,9 +10,9 @@
     font-weight: 600;
 }
 .css-krc73u-MuiButtonBase-root-MuiMenuItem-root-RaMenuItemLink-root.RaMenuItemLink-active {
-    background: #fff;
-    border-radius: 4px;
-    color: #007bff !important;
+    background: #f5f8ff !important;
+    border-radius: 8px;
+    color: #2563eb !important;
     height: 40px;
     margin-bottom: 10px !important;
     font-weight: 600;
@@ -36,4 +36,17 @@
     height: 40px;
     margin-bottom: 10px !important;
     font-weight: 600;
+}
+
+/* Active menu item: blue icon and blue text */
+.RaMenuItemLink-active {
+  color: #2563eb !important; /* blue text */
+  font-weight: 600;
+  background: #f5f8ff !important;
+  border-radius: 8px;
+}
+
+.RaMenuItemLink-active .MuiSvgIcon-root,
+.RaMenuItemLink-active svg {
+  color: #2563eb !important; /* blue icon */
 }

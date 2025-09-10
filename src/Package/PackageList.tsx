@@ -1,116 +1,177 @@
+import React, { useState, useCallback } from "react";
 import {
-  BooleanField,
   Datagrid,
-  DateField,
-  DeleteWithConfirmButton,
   EditButton,
   FunctionField,
   List,
   NumberField,
-  ReferenceField,
   ReferenceManyCount,
-  ShowButton,
   TextField,
   useGetIdentity,
-  WrapperField,
+  SimpleForm,
+  TextInput,
+  NumberInput,
+  required,
+  Toolbar,
+  SaveButton,
+  useDataProvider,
+  CreateButton,
+  ExportButton,
+  TopToolbar,
+  useListContext
 } from "react-admin";
-import CurrencyField from "../components/CustomFields/CurrencyField";
-import { Chip } from "@mui/material";
-import { Close } from "@mui/icons-material";
-
-import { Breadcrumbs, Link, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 import {
-  Home as HomeIcon,
-  AccountBox as AccountBoxIcon,
-} from "@mui/icons-material";
-import ImageField from "../components/CustomFields/ImageField";
-import ApproveButton from "../PackageAdmin/ApproveButton";
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  IconButton,
+  Tooltip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@mui/material";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CurrencyField from "../components/CustomFields/CurrencyField";
+import RatingStars from "./RatingStarts";
+import { Create } from "react-admin";
+import { SearchInput } from 'react-admin';
+import { useNavigate } from "react-router-dom";
+//sent mail icon import 
+import MailIcon from "@mui/icons-material/Mail";
+
+// Define an interface for the Package record
+interface PackageRecord {
+  id: string | number;
+  title: string;
+  rating: number;
+  price: number;
+  walletAmount: number;
+  durationDays: number;
+  availableSlots: number;
+  approved: boolean;
+  active: boolean;
+  // Add other fields from your package record as needed
+}
+
+const postFilters = [
+  <SearchInput source="q" alwaysOn />
+];
+const CustomListActions = () => {
+
+  const { filterValues, setFilters } = useListContext(); // 👈 from RA
+  const [value, setValue] = React.useState(filterValues.status || "All");
+
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const selected = event.target.value as string;
+    setValue(selected);
+
+    // Apply filter dynamically
+    if (selected === "All") {
+      setFilters({ ...filterValues, status: undefined }, null);
+    } else {
+      setFilters({ ...filterValues, status: selected }, null);
+    }
+  };
+
+  return (
+    <TopToolbar>
+      {/* Default RA buttons */}
+
+      {/* Your dropdown */}
+      <FormControl size="small"
+        sx={{ minWidth: 180 }}
+        variant="outlined">
+        <InputLabel id="dropdown-label">Apply filter</InputLabel>
+        <Select
+          labelId="dropdown-label"
+          value={value}
+          onChange={handleChange}   // ✅ directly pass the function
+          label="Apply filter"      // 👈 important so MUI shows value with label
+        >
+          <MenuItem value="All">All</MenuItem>
+          <MenuItem value="Active">Active</MenuItem>
+          <MenuItem value="Ongoing">Ongoing</MenuItem>
+          <MenuItem value="Expired">Expired</MenuItem>
+        </Select>
+      </FormControl>
+      <CreateButton />
+      <ExportButton />
+    </TopToolbar>
+  );
+};
+
 export const PackageList = () => {
   const { data: user } = useGetIdentity();
 
+  const [open, setOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState<PackageRecord | null>(
+    null
+  );
+
+  const handleOpen = useCallback((record: PackageRecord) => {
+    setSelectedRecord(record);
+    setOpen(true);
+  }, []);
+
+  const handleClose = useCallback(() => {
+    setOpen(false);
+    setSelectedRecord(null);
+  }, []);
+
+  const handleSubmitWithdrawal = (data: any) => {
+    console.log(data);
+    return;
+  }
+
+  const dataProvider = useDataProvider();
+
+  const getEmailsOfBookedUsers = async (packageId: string | number) => {
+    // 1. Get bookings for the package
+    const bookingsRes = await dataProvider.getList("booking", {
+      filter: { packageId },
+      pagination: { page: 1, perPage: 1000 },
+      sort: { field: "id", order: "ASC" },
+    });
+
+    const emailList = bookingsRes.data.map((booking: any) => ({ id: booking.userId, name: booking.firstName + " " + booking.lastName }));
+
+    return emailList;
+  };
+  const navigate = useNavigate();
   return (
     <>
-      {/* <div className="d-flex justify-content-between align-center mb-5 mt-3 p-3">
-      <h2>Package Operations</h2>
-    
-    </div> */}
-
-      {/* <div className="row m-2 ">
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title medium">Total Packages</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">2,502</h2>
-              <i
-                className="bi bi-boxes"
-                style={{ fontSize: "2rem", color: "blue" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Approved Packages</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">1,500</h2>
-              <i
-                className="bi bi-box-seam"
-                style={{ fontSize: "2rem", color: "green" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Unapproved Packages</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">400</h2>
-              <i
-                className="bi bi-journal-x"
-                style={{ fontSize: "2rem", color: "red" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="col-md-3">
-        <div className="card shadow-sm">
-          <div className="card-body">
-            <h5 className="card-title">Average Bookings</h5>
-            <div className="d-flex justify-content-between align-items-center">
-              <h2 className="mb-0">200</h2>
-              <i
-                className="bi bi-journal-text"
-                style={{ fontSize: "2rem", color: "black" }}
-              ></i>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> */}
-      <List filter={{ vendorId: user?.vendorId }}>
+      <List filters={postFilters} filter={{ vendorId: user?.vendorId }} actions={<CustomListActions />}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
-          
-          <ImageField source="imagePaths" />
-          {/* <ReferenceField source="vendorId" reference="vendor">
-          <TextField source="agencyTitle" />
-        </ReferenceField> */}
           <TextField source="title" />
-          {/* <TextField source="description" /> */}
+          <FunctionField<PackageRecord>
+            render={(record) =>
+              record && <RatingStars rating={record.rating} />
+            }
+          />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
-          <NumberField label={"duration"} source="durationDays" />
-
-          <ReferenceField source="destination" reference="destination">
-            <TextField source="title" /> 
-          </ReferenceField>
-
+          <FunctionField
+            label="Wallet"
+            render={(record) => (
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+              >
+                <strong>₹{record.walletAmount?.toLocaleString("en-IN")}</strong>
+                <Tooltip title="Request Withdrawal">
+                  <IconButton
+                    onClick={() => handleOpen(record)}
+                    // disabled={record.walletAmount <= 0}
+                    color="primary"
+                    size="small"
+                  >
+                    <AccountBalanceWalletIcon />
+                  </IconButton>
+                </Tooltip>
+              </div>
+            )}
+          />
           <ReferenceManyCount
             label="Booking"
             reference="booking"
@@ -118,39 +179,95 @@ export const PackageList = () => {
             link
           />
           <NumberField label="available" source="availableSlots" />
-          <BooleanField source="approved" />
-          {/* <NumberField source="approvedBy" /> */}
-          {/* <DateField source="approvedOn" /> */}
-          {/* <FunctionField
-            label="Approved On"
-            render={(record) =>
-              !record.approvedOn ? (
-                <Chip
-                  sx={{ background: "#dc3545", color: "#fff" }}
-                  label="Approval Pending"
-                />
-              ) : (
-                record.approvedOn
-              )
+          {/* <BooleanField source="approved" /> */}
+          <FunctionField label="Admin" render={(record) => {
+            if (record.isApproved === "1") {
+              return <span style={{ color: "green" }}>Approved</span>;
+            } else {
+              return <span style={{ color: "red" }}>Not Approved</span>;
             }
-          /> */}
-          {/* <NumberField source="createdBy" />
-            <DateField source="createdOn" />
-            <NumberField source="updatedBy" />
-            <DateField source="updatedOn" />
-            <TextField source="enabled" /> */}
+          }} />
+          <FunctionField label="Email Users" render={(record) => {
+            return (
+              <div>
+                <IconButton
+                  onClick={async () => {
+                    const emails = await getEmailsOfBookedUsers(record.id);
+                    console.log("Emails of users who booked:", emails);
+                    navigate("/vendor/EmailToUserFromList", { state: { customers: emails } });
+                  }}
+                >
+                  <MailIcon />
+                </IconButton>
+                {/* <Button
+          variant="text"
+          color="primary"
+          onClick={async () => {
+            const emails = await getEmailsOfBookedUsers(record.id);
+            console.log("Emails of users who booked:", emails);
+           navigate("/vendor/EmailToUserFromList", { state: { customers: emails } });
+          }}
+        >
+          
+        </Button> */}
+              </div>
+            );
+          }} />
           <FunctionField
-            source=""
-            render={(record) => (
-              <div style={{ display: "flex", alignItems: "center", justifyContent:"space-between" }}>
-                 
-                <EditButton variant="text" color="primary" />
-                <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+            render={() => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <EditButton label="Edit/Show" variant="text" color="primary" />
+                {/* <ShowButton variant="text" /> */}
               </div>
             )}
           />
         </Datagrid>
       </List>
+
+      {/* Withdrawal Request Dialog */}
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+        <DialogTitle>Request Withdrawal</DialogTitle>
+        <DialogContent>
+          {selectedRecord && (
+            <Create>
+              <SimpleForm
+                onSubmit={handleSubmitWithdrawal}
+                toolbar={
+                  <Toolbar>
+                    <SaveButton label="Submit" />
+                    <Button
+                      onClick={handleClose}
+                      style={{ marginLeft: "1rem" }}
+                    >
+                      Cancel
+                    </Button>
+                  </Toolbar>
+                }
+                record={selectedRecord}
+              >
+                <NumberInput
+                  source="amount"
+                  label="Amount"
+                  validate={[
+                    required(),
+                    (value) =>
+                      selectedRecord && value > selectedRecord.walletAmount
+                        ? "Cannot request more than wallet amount"
+                        : undefined,
+                  ]}
+                />
+                <TextInput source="notes" label="Notes" />
+              </SimpleForm>
+            </Create>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
