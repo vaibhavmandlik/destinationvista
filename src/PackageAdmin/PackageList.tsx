@@ -167,14 +167,20 @@ export const PackageAdminList = () => {
         {/* Approval Status */}
         <FunctionField
           label="Approval Status"
-          render={(record: any) => <ApprovalStatusField record={record} />}
+          render={(record: any) =>
+            record.enabled !== "0" ? (
+              <ApprovalStatusField record={record} />
+            ) : (
+              <span>Inactive</span> // Show placeholder if inactive
+            )
+          }
         />
 
         {/* Actions */}
         <FunctionField
           label="Actions"
           render={(record) =>
-            record.isActive === "1" ? (
+            record.enabled !== "0" ? (
               <div style={{ display: "flex", gap: "8px" }}>
                 <EditButton label="Edit/Show" variant="text" color="primary" />
                 <DeleteWithConfirmButton variant="bootstrap" color="danger" />
