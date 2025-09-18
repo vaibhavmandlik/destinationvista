@@ -198,7 +198,9 @@ export const dataProviders = {
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PUT",
         body: formData,
-      }).then(({ json }) => ({ data: json }));
+      }).then(({ json }) => {
+        return { data: { ...json.data, id: json.data.id } };
+      });
     } else if (resource === "ticket") {
       const formData = JSON.stringify({ status: params?.data?.status });
       return httpClient(`${apiUrl}/${resource}/${params.id}/status`, {

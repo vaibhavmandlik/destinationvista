@@ -152,26 +152,6 @@ export const PackageList = () => {
             }
           />
           <CurrencyField locale="en-IN" currency="INR" source="price" />
-          <FunctionField
-            label="Wallet"
-            render={(record) => (
-              <div
-                style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
-              >
-                <strong>₹{record.walletAmount?.toLocaleString("en-IN")}</strong>
-                <Tooltip title="Request Withdrawal">
-                  <IconButton
-                    onClick={() => handleOpen(record)}
-                    // disabled={record.walletAmount <= 0}
-                    color="primary"
-                    size="small"
-                  >
-                    <AccountBalanceWalletIcon />
-                  </IconButton>
-                </Tooltip>
-              </div>
-            )}
-          />
           <ReferenceManyCount
             label="Booking"
             reference="booking"

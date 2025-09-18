@@ -5,6 +5,7 @@ type SearchQuery = {
   city: string;
   startDate: string;
   duration: string;
+  customDuration: string;
 };
 
 type SearchContextType = {
@@ -20,6 +21,7 @@ export const SearchProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     city: "",
     startDate: "",
     duration: "",
+    customDuration: "",
   });
 
   return (
