@@ -288,7 +288,6 @@ export const dataProviders = {
   },
 
   getList: (resource: any, params: any) => {
-
     if (resource === "statistics") {
       return httpClient(
         `${apiUrl}/vendor/${resource}?vendorId=${params.filter.vendorId}`,
@@ -300,20 +299,68 @@ export const dataProviders = {
         { method: "GET" }
       ).then(({ json }) => ({ data: json }));
     } else if (resource === "ticket") {
-      return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
+      const { page, perPage } = params.pagination || { page: 1, perPage: 25 };
+      const { field, order } = params.sort || { field: "id", order: "ASC" };
+      const filters = params.filter || {};
+
+      const query: any = {
+        _page: page,
+        _limit: perPage,
+        _sort: field,
+        _order: order,
+        ...filters,
+      };
+
+      const queryString = new URLSearchParams(query).toString();
+
+      return httpClient(`${apiUrl}/${resource}?${queryString}`, { method: "GET" })
         .then(({ json }) => ({ data: json, total: json.length }));
     } else if (resource === "destination") {
-      return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
+      const { page, perPage } = params.pagination || { page: 1, perPage: 25 };
+      const { field, order } = params.sort || { field: "id", order: "ASC" };
+      const filters = params.filter || {};
+
+      const query: any = {
+        _page: page,
+        _limit: perPage,
+        _sort: field,
+        _order: order,
+        ...filters,
+      };
+
+      const queryString = new URLSearchParams(query).toString();
+
+      return httpClient(`${apiUrl}/${resource}?${queryString}`, { method: "GET" })
         .then(({ json }) => {
           const records = Array.isArray(json) ? json : json.data;
-          const updatedRecords = records.map((item: { imagePath: any; }) => ({
+
+          const updatedRecords = records.map((item: { imagePath: any; id: any }) => ({
             ...item,
-            imagePath: `${apiUrl}${item.imagePath}`,
+            id: item.id,
+            imagePath: item.imagePath ? `${apiUrl}${item.imagePath}` : null,
           }));
-          return { data: updatedRecords, total: updatedRecords.length };
+
+          return {
+            data: updatedRecords,
+            total: json.total || updatedRecords.length,
+          };
         });
-    } else if (resource === "category") {
-      return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
+    }
+    else if (resource === "category") {
+      const { page, perPage } = params.pagination || { page: 1, perPage: 25 };
+      const { field, order } = params.sort || { field: "id", order: "ASC" };
+      const filters = params.filter || {};
+
+      const query: any = {
+        _page: page,
+        _limit: perPage,
+        _sort: field,
+        _order: order,
+        ...filters,
+      };
+
+      const queryString = new URLSearchParams(query).toString();
+      return httpClient(`${apiUrl}/${resource}?${queryString}`, { method: "GET" })
         .then(({ json }) => {
           const records = Array.isArray(json) ? json : json.data;
           const updatedRecords = records.map(

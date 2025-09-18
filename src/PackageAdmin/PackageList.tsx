@@ -1,16 +1,16 @@
 import {
   Datagrid,
+  DateInput,
   DeleteWithConfirmButton,
   EditButton,
-  Filter,
-  FilterProps,
   FunctionField,
   List,
   NumberField,
   ReferenceField,
   ReferenceManyCount,
-  SearchInput,
+  SelectInput,
   TextField,
+  TextInput,
   useDataProvider,
   useGetIdentity,
   useNotify,
@@ -20,15 +20,25 @@ import {
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
 import { Button, Menu, MenuItem } from "@mui/material";
 import React from "react";
-import { JSX } from "react/jsx-runtime";
 import CurrencyField from "../components/CustomFields/CurrencyField";
 
 // ---------------- Filter Component ----------------
-const PackageFilter = (props: JSX.IntrinsicAttributes & FilterProps) => (
-  <Filter {...props}>
-    <SearchInput source="q" alwaysOn />
-  </Filter>
-);
+const PackageFilter = [
+  <TextInput label="Search by Package ID" source="id" alwaysOn />,
+  <TextInput label="Search by title" source="title" />,
+  <TextInput label="Search by vendor ID" source="vendorId" />,
+  <DateInput label="Start Date (From)" source="startDate" />,
+  <DateInput label="Duration" source="duration" />,
+  <SelectInput
+    label="Approval Status"
+    source="status"
+    choices={[
+      { id: 0, name: "REJECTED" },
+      { id: 1, name: "APPROVED" },
+      { id: 2, name: "PENDING" },
+    ]}
+  />,
+];
 
 // ---------------- Approval Status Field ----------------
 const ApprovalStatusField = ({ record }: { record: any }) => {
@@ -141,7 +151,7 @@ export const PackageAdminList = () => {
   const { data: user } = useGetIdentity();
 
   return (
-    <List filters={<PackageFilter />} filter={{ vendorId: user?.vendorId }}>
+    <List filters={PackageFilter} filter={{ vendorId: user?.vendorId }}>
       <Datagrid rowClick={false} bulkActionButtons={false}>
         <TextField source="id" />
         {/* <ImageField source="imagePaths" /> */}

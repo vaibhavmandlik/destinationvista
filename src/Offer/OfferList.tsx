@@ -1,17 +1,33 @@
+import { Switch } from "@mui/material";
+import { useState } from "react";
 import {
+  Confirm,
   Datagrid,
   DeleteWithConfirmButton,
   EditButton,
+  FunctionField,
   List,
+  SelectInput,
   TextField,
+  TextInput,
+  useDataProvider,
   useNotify,
   useRefresh,
-  useDataProvider,
-  Confirm,
-  FunctionField,
 } from "react-admin";
-import { Switch } from "@mui/material";
-import React, { useState } from "react";
+
+// 🔎 Filters
+const offerFilters = [
+  <TextInput label="Search by Offer ID" source="id" alwaysOn />,
+  <TextInput label="Search by Offer title" source="title" />,
+  <SelectInput
+    label="Offer Status"
+    source="isActive"
+    choices={[
+      { id: 0, name: "Inactive" },
+      { id: 1, name: "Active" },
+    ]}
+  />,
+];
 
 export const OfferList = () => {
   const notify = useNotify();
@@ -26,7 +42,7 @@ export const OfferList = () => {
     if (record.isActive === "1") {
       // Deactivate offer directly
       record.isActive = "0";
-      
+
       try {
         await dataProvider.update("offer", {
           id: record.id,
@@ -40,7 +56,7 @@ export const OfferList = () => {
       }
     } else {
       record.isActive = "1";
-      
+
       try {
         // Get currently active offer
         const { data: activeOffers } = await dataProvider.getList("offer", {
@@ -116,7 +132,7 @@ export const OfferList = () => {
 
   return (
     <>
-      <List>
+      <List filters={offerFilters}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <TextField source="title" />
