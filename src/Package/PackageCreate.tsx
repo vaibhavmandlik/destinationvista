@@ -15,7 +15,7 @@ import {
   ReferenceInput,
   SelectArrayInput,
   SelectInput,
-  ReferenceField
+  ReferenceField,
 } from "react-admin";
 import {
   ClearButtons,
@@ -112,10 +112,7 @@ export const PackageCreate = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
-                <ReferenceInput
-                  source="destination"
-                  reference="destination"
-                >
+                <ReferenceInput source="destination" reference="destination">
                   <SelectInput
                     fullWidth
                     optionText="title"
@@ -287,6 +284,9 @@ export const PackageCreate = () => {
 
               {/* Other Information */}
               <Grid item xs={12} sm={6}>
+                <TextInput fullWidth source="vendorDiscount" />{" "}
+              </Grid>
+              <Grid item xs={12} sm={6}>
                 <TextInput
                   fullWidth
                   source="pickup_location"
@@ -346,11 +346,11 @@ export const PackageCreate = () => {
               </Grid>
               <FormDataConsumer>
                 {({ formData, ...rest }) => {
-                  const todayISO = dayjs().format('YYYY-MM-DD');
+                  const todayISO = dayjs().format("YYYY-MM-DD");
                   const minEndISO = formData.start_date
                     ? dayjs(formData.start_date)
-                      .add(DURATION_DAYS, 'day')
-                      .format('YYYY-MM-DD')
+                        .add(DURATION_DAYS, "day")
+                        .format("YYYY-MM-DD")
                     : todayISO;
 
                   return (
@@ -359,7 +359,6 @@ export const PackageCreate = () => {
                         fullWidth
                         source="end_date"
                         label="End Date"
-
                         sx={{
                           "& .MuiInputBase-root": {
                             borderRadius: 1, // Common border-radius for MUI inputs
@@ -408,10 +407,7 @@ export const PackageCreate = () => {
                 />
               </Grid>
               <div className="col-md-12">
-                <ReferenceInput
-                  source="category"
-                  reference="category"
-                >
+                <ReferenceInput source="category" reference="category">
                   <SelectArrayInput
                     fullWidth
                     optionText="name"
@@ -426,5 +422,3 @@ export const PackageCreate = () => {
     </CreateBase>
   );
 };
-
-

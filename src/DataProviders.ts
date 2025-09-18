@@ -28,12 +28,12 @@ type itineraryType = {
 
 type PackageParams = {
   id: string;
+  vendorId: string;
   title: string;
   price: string;
   durationDays: string;
   destination: string;
   availableSlots: string;
-  vendorId: string;
   description: string;
   images: {
     rawFile: File;
@@ -45,8 +45,14 @@ type PackageParams = {
   inclusion: string;
   exclusion: string;
   otherInfo: string;
-  start_date: string;
-  end_date?: string;
+  startDate: string;
+  endDate?: string;
+  vendorDiscount: number;
+  pickupLocation?: string;
+  startPoint?: string;
+  endPoint?: string;
+  modeOfTravel: string;
+  isActive: string;
   isApproved?: string;
   category: [];
 };
@@ -59,55 +65,112 @@ function formatDateToYYYYMMDD(dateString: string) {
   return `${year}-${month}-${day}`;
 }
 
-const createPackageFormData = (
-  params: CreateParams<PackageParams> | UpdateParams<PackageParams>,
-) => {
+// CREATE: flat structure
+const createPackageFormData = (params: CreateParams<PackageParams>) => {
   const formData = new FormData();
+
   if (params.data.images) {
-    const imagesArr: any = params?.data?.images;
+    const imagesArr: any = params.data.images;
     for (let fileObj of imagesArr) {
-      formData.append("images", fileObj?.rawFile);
+      formData.append("images", fileObj.rawFile);
     }
   }
+
+  // Flattened fields
   params.data.title && formData.append("title", params.data.title);
   params.data.price && formData.append("price", params.data.price);
-  params.data.durationDays &&
-    formData.append("durationDays", params.data.durationDays);
-  params.data.destination &&
-    formData.append("destination", params.data.destination);
-  params.data.availableSlots &&
-    formData.append("availableSlots", params.data.availableSlots);
-  params.data.description &&
-    formData.append("description", params.data.description);
+  params.data.durationDays && formData.append("durationDays", params.data.durationDays);
+  params.data.destination && formData.append("destination", params.data.destination);
+  params.data.availableSlots && formData.append("availableSlots", params.data.availableSlots);
+  params.data.description && formData.append("description", params.data.description);
   params.data.vendorId && formData.append("vendorId", params.data.vendorId);
-  params.data.quickItinerary &&
-    formData.append("quickItinerary", params.data.quickItinerary);
-  params.data.itinerary &&
-    formData.append("itinerary", JSON.stringify(params.data.itinerary));
+
+  // Flattened itinerary and details
+  params.data.quickItinerary && formData.append("quickItinerary", params.data.quickItinerary);
+  params.data.itinerary && formData.append("itinerary", JSON.stringify(params.data.itinerary));
   params.data.inclusion && formData.append("inclusion", params.data.inclusion);
   params.data.exclusion && formData.append("exclusion", params.data.exclusion);
   params.data.otherInfo && formData.append("otherInfo", params.data.otherInfo);
+  if (params.data.vendorDiscount !== undefined && params.data.vendorDiscount !== null) {
+    formData.append("vendorDiscount", String(params.data.vendorDiscount));
+  }
+  params.data.pickupLocation && formData.append("pickupLocation", params.data.pickupLocation);
+  params.data.startPoint && formData.append("startPoint", params.data.startPoint);
+  params.data.endPoint && formData.append("endPoint", params.data.endPoint);
+  params.data.modeOfTravel && formData.append("modeOfTravel", params.data.modeOfTravel);
+
+  // Categories
   if (params.data.category && Array.isArray(params.data.category)) {
     params.data.category.forEach((cat: string | number) => {
       formData.append("categories", String(cat));
     });
   }
-  params.data.isApproved &&
-    formData.append("isApproved", params.data.isApproved);
-  params.data.start_date &&
-    formData.append(
-      "startDate",
-      params.data.start_date
-        ? formatDateToYYYYMMDD(params.data.start_date)
-        : formatDateToYYYYMMDD(new Date().toISOString()),
-    );
-  params.data.end_date &&
-    formData.append(
-      "endDate",
-      params.data.end_date
-        ? formatDateToYYYYMMDD(params.data.end_date)
-        : formatDateToYYYYMMDD(new Date().toISOString()),
-    );
+
+  // Dates
+  params.data.startDate &&
+    formData.append("startDate", formatDateToYYYYMMDD(params.data.startDate));
+  params.data.endDate &&
+    formData.append("endDate", formatDateToYYYYMMDD(params.data.endDate));
+
+  // isApproved
+  params.data.isApproved && formData.append("isApproved", params.data.isApproved);
+
+  return formData;
+};
+
+// UPDATE: nested details object
+const updatePackageFormData = (params: UpdateParams<PackageParams>) => {
+  const formData = new FormData();
+
+  if (params.data.images) {
+    const imagesArr: any = params.data.images;
+    for (let fileObj of imagesArr) {
+      formData.append("images", fileObj.rawFile);
+    }
+  }
+
+  // Flatten main fields
+  formData.append("id", params.id);
+  params.data.title && formData.append("title", params.data.title);
+  params.data.price && formData.append("price", params.data.price);
+  params.data.durationDays && formData.append("durationDays", params.data.durationDays);
+  params.data.destination && formData.append("destination", params.data.destination);
+  params.data.availableSlots && formData.append("availableSlots", params.data.availableSlots);
+  params.data.description && formData.append("description", params.data.description);
+  params.data.vendorId && formData.append("vendorId", params.data.vendorId);
+
+  // Nest details
+  params.data.quickItinerary &&
+    formData.append("details[quickItinerary]", params.data.quickItinerary);
+  params.data.itinerary &&
+    formData.append("details[itinerary]", JSON.stringify(params.data.itinerary));
+  params.data.inclusion && formData.append("details[inclusion]", params.data.inclusion);
+  params.data.exclusion && formData.append("details[exclusion]", params.data.exclusion);
+  params.data.otherInfo && formData.append("details[otherInfo]", params.data.otherInfo);
+  if (params.data.vendorDiscount !== undefined && params.data.vendorDiscount !== null) {
+    formData.append("details[vendorDiscount]", String(params.data.vendorDiscount));
+  }
+  params.data.pickupLocation && formData.append("details[pickupLocation]", params.data.pickupLocation);
+  params.data.startPoint && formData.append("details[startPoint]", params.data.startPoint);
+  params.data.endPoint && formData.append("details[endPoint]", params.data.endPoint);
+  params.data.modeOfTravel && formData.append("details[modeOfTravel]", params.data.modeOfTravel);
+
+  // Categories
+  if (params.data.category && Array.isArray(params.data.category)) {
+    params.data.category.forEach((cat: string | number) => {
+      formData.append("categories", String(cat));
+    });
+  }
+
+  // Dates
+  params.data.startDate &&
+    formData.append("startDate", formatDateToYYYYMMDD(params.data.startDate));
+  params.data.endDate &&
+    formData.append("endDate", formatDateToYYYYMMDD(params.data.endDate));
+
+  // isApproved
+  params.data.isApproved && formData.append("isApproved", params.data.isApproved);
+
   return formData;
 };
 
@@ -193,7 +256,7 @@ export const dataProviders = {
 
   update: (resource: any, params: any) => {
     if (resource === "package") {
-      const formData = createPackageFormData(params);
+      const formData = updatePackageFormData(params);
       formData.append("id", params.id);
       return httpClient(`${apiUrl}/${resource}/${params.id}`, {
         method: "PUT",
@@ -243,7 +306,7 @@ export const dataProviders = {
       return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
         .then(({ json }) => {
           const records = Array.isArray(json) ? json : json.data;
-          const updatedRecords = records.map(item => ({
+          const updatedRecords = records.map((item: { imagePath: any; }) => ({
             ...item,
             imagePath: `${apiUrl}${item.imagePath}`,
           }));
@@ -253,18 +316,17 @@ export const dataProviders = {
       return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
         .then(({ json }) => {
           const records = Array.isArray(json) ? json : json.data;
-          const updatedRecords = records.map(item => {
-            let imagePath = "";
-            try {
-              const parsed = JSON.parse(item.imagePath);
-              if (Array.isArray(parsed) && parsed.length > 0) {
-                imagePath = `${apiUrl}${parsed[0]}`;
+          const updatedRecords = records.map(
+            (item: { imagePath: string[] | null; id: number; name: string; description: string }) => {
+              let imagePath = "";
+
+              if (Array.isArray(item.imagePath) && item.imagePath.length > 0) {
+                imagePath = `${apiUrl}${item.imagePath[0]}`;
               }
-            } catch {
-              console.error("Invalid imagePath format:", item.imagePath);
+
+              return { ...item, imagePath };
             }
-            return { ...item, imagePath };
-          });
+          );
           return { data: updatedRecords, total: updatedRecords.length };
         });
     } else if (resource === "common/city") {
