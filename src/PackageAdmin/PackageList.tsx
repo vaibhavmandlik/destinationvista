@@ -3,9 +3,11 @@ import {
   DeleteWithConfirmButton,
   EditButton,
   Filter,
+  FilterProps,
   FunctionField,
   List,
   NumberField,
+  ReferenceField,
   ReferenceManyCount,
   SearchInput,
   TextField,
@@ -13,23 +15,22 @@ import {
   useGetIdentity,
   useNotify,
   useRefresh,
-  ReferenceField,
 } from "react-admin";
 
-import CurrencyField from "../components/CustomFields/CurrencyField";
-import ImageField from "../components/CustomFields/ImageField";
-import { Button, Chip, Menu, MenuItem } from "@mui/material";
 import { ArrowDropDownCircleOutlined } from "@mui/icons-material";
+import { Button, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { JSX } from "react/jsx-runtime";
+import CurrencyField from "../components/CustomFields/CurrencyField";
 
-// Filter Component
-const PackageFilter = (props) => (
+// ---------------- Filter Component ----------------
+const PackageFilter = (props: JSX.IntrinsicAttributes & FilterProps) => (
   <Filter {...props}>
     <SearchInput source="q" alwaysOn />
   </Filter>
 );
 
-// Custom Component to Show and Change Approval Status
+// ---------------- Approval Status Field ----------------
 const ApprovalStatusField = ({ record }: { record: any }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -47,6 +48,13 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
   };
 
   const handleStatusChange = async (status: "approved" | "rejected") => {
+    if (record.isActive !== "1") {
+      notify("Cannot change status of an inactive package", {
+        type: "warning",
+      });
+      return;
+    }
+
     const confirmMessage = `Are you sure you want to mark this as ${status}?`;
     if (!window.confirm(confirmMessage)) return;
 
@@ -59,9 +67,7 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
       await dataProvider.update("package", {
         id: record.id,
         data: {
-          ...record,
           isApproved: statusValue[status],
-          vendorId: record.vendorId,
         },
         previousData: record,
       });
@@ -75,6 +81,7 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
     }
   };
 
+  // Status Colors & Labels
   const statusColors: Record<string, string> = {
     "1": "#4caf50", // Approved
     "0": "#f44336", // Rejected
@@ -89,6 +96,9 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
 
   const color = statusColors[record.isApproved];
   const label = statusLabels[record.isApproved];
+
+  // Hide button if inactive
+  if (record.isActive !== "1") return <span>{label || "Pending"}</span>;
 
   return (
     <>
@@ -126,7 +136,7 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
   );
 };
 
-// Main List Component
+// ---------------- Main List Component ----------------
 export const PackageAdminList = () => {
   const { data: user } = useGetIdentity();
 
@@ -154,26 +164,25 @@ export const PackageAdminList = () => {
           <TextField source="agencytitle" />
         </ReferenceField>
 
-        {/* ✅ Use the ApprovalStatusField component */}
+        {/* Approval Status */}
         <FunctionField
           label="Approval Status"
           render={(record: any) => <ApprovalStatusField record={record} />}
         />
 
+        {/* Actions */}
         <FunctionField
-          source="Actions"
-          render={(record) => (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <EditButton label="Edit/Show" variant="text" color="primary" />
-              <DeleteWithConfirmButton variant="bootstrap" color="danger" />
-            </div>
-          )}
+          label="Actions"
+          render={(record) =>
+            record.isActive === "1" ? (
+              <div style={{ display: "flex", gap: "8px" }}>
+                <EditButton label="Edit/Show" variant="text" color="primary" />
+                <DeleteWithConfirmButton variant="bootstrap" color="danger" />
+              </div>
+            ) : (
+              <span>Inactive</span> // Show placeholder if inactive
+            )
+          }
         />
       </Datagrid>
     </List>
