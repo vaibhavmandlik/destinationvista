@@ -1,4 +1,4 @@
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import React, { useState } from "react";
 import {
   Badge,
   Box,
@@ -13,48 +13,49 @@ import {
   ListItem,
   ListItemText,
   Menu,
-  List as MuiList,
   MenuItem,
-  Typography
+  List as MuiList,
+  Typography,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import React, { useState } from "react";
 import {
   CreateButton,
   Datagrid,
   DeleteWithConfirmButton,
   EditButton,
-  EmailField,
   ExportButton,
   FunctionField,
   List,
   required,
   SaveButton,
-  SearchInput,
   SimpleForm,
   TextField,
   TextInput,
   Toolbar,
+  ToolbarProps,
   TopToolbar,
   useCreate,
   useDataProvider,
   useGetList,
-  useListController,
   useNotify,
-  useRefresh
+  useRefresh,
 } from "react-admin";
-
+import {
+  ClearButtons,
+  FormatButtons,
+  LinkButtons,
+  ListButtons,
+  RichTextInput,
+  RichTextInputToolbar,
+} from "ra-input-rich-text";
 import ImageField from "../components/CustomFields/ImageField";
-import { RichTextInput, RichTextInputToolbar, FormatButtons, ListButtons, LinkButtons, ClearButtons } from "ra-input-rich-text";
-const postFilters = [
-  <SearchInput source="q" alwaysOn />
-];
 
-
-//Notification button component
+// ------------------ Notification Button ------------------
 const NotificationButton = ({ record }: any) => {
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -66,37 +67,41 @@ const NotificationButton = ({ record }: any) => {
   const handleOpen = async () => {
     setOpen(true);
     setLoading(true);
-
     try {
-      // fetch notifications for this vendor (adjust endpoint as needed)
       const { data } = await dataProvider.getList("notifications", {
         filter: { vendorId: record.id },
         pagination: { page: 1, perPage: 10 },
         sort: { field: "createdAt", order: "DESC" },
       });
-
       setNotifications(data);
-    } catch (err) {
+    } catch {
       notify("Error fetching notifications", { type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClose = () => setOpen(false);
-
-  const hasNotifications = notifications.length > 0;
-
   return (
     <>
-      <IconButton onClick={handleOpen} color={hasNotifications ? "primary" : "default"}>
+      <IconButton
+        onClick={handleOpen}
+        color={notifications.length > 0 ? "primary" : "default"}
+      >
         <Badge badgeContent={notifications.length} color="error">
-          {hasNotifications ? <NotificationsActiveIcon /> : <NotificationsIcon />}
+          {notifications.length > 0 ? (
+            <NotificationsActiveIcon />
+          ) : (
+            <NotificationsIcon />
+          )}
         </Badge>
       </IconButton>
 
-      {/* Notifications Dialog */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Notifications for {record.agencytitle}</DialogTitle>
         <DialogContent>
           {loading ? (
@@ -113,7 +118,7 @@ const NotificationButton = ({ record }: any) => {
               ))}
             </MuiList>
           ) : (
-            <p>No notifications found.</p>
+            <Typography>No notifications found.</Typography>
           )}
         </DialogContent>
       </Dialog>
@@ -121,8 +126,96 @@ const NotificationButton = ({ record }: any) => {
   );
 };
 
+// ------------------ Actions Field (Approve/Reject + Edit/Delete) ------------------
+const ActionsField = ({ record }: any) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const dataProvider = useDataProvider();
+  const notify = useNotify();
+  const refresh = useRefresh();
 
-const CustomToolbar = (props) => (
+  const handleClick = (event: React.MouseEvent<HTMLElement>) =>
+    setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
+  const handleStatusChange = async (status: "approved" | "rejected") => {
+    if (record.enabled !== "1") {
+      notify("Cannot change status of an inactive vendor", { type: "warning" });
+      return;
+    }
+
+    if (
+      !window.confirm(`Are you sure you want to mark this vendor as ${status}?`)
+    )
+      return;
+
+    const statusValue = { approved: "1", rejected: "0" };
+    try {
+      await dataProvider.update("vendor", {
+        id: record.id,
+        data: { ...record, isApproved: statusValue[status] },
+        previousData: record,
+      });
+      notify(`Vendor marked as ${status}`, { type: "success" });
+      refresh();
+    } catch (err) {
+      console.error(err);
+      notify("Error updating status", { type: "error" });
+    } finally {
+      handleClose();
+    }
+  };
+
+  const statusColors: Record<string, string> = {
+    "1": "#4caf50",
+    "0": "#f44336",
+    undefined: "#ff9800",
+  };
+  const statusLabels: Record<string, string> = {
+    "1": "Approved",
+    "0": "Rejected",
+    undefined: "Pending",
+  };
+
+  const color = statusColors[record.isApproved];
+  const label = statusLabels[record.isApproved];
+
+  if (record.enabled !== "1") return <span>Inactive</span>;
+
+  return (
+    <Box display="flex" gap={1} alignItems="center">
+      <Button
+        variant="outlined"
+        size="small"
+        onClick={handleClick}
+        endIcon={<ArrowDropDownIcon />}
+        sx={{
+          color,
+          borderColor: color,
+          textTransform: "capitalize",
+          fontWeight: "bold",
+          "&:hover": { backgroundColor: `${color}20`, borderColor: color },
+        }}
+      >
+        {label ? label : "Pending"}
+      </Button>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        <MenuItem disabled dense>
+          Change Status
+        </MenuItem>
+        <MenuItem onClick={() => handleStatusChange("approved")}>
+          Approve
+        </MenuItem>
+        <MenuItem onClick={() => handleStatusChange("rejected")}>
+          Reject
+        </MenuItem>
+      </Menu>
+    </Box>
+  );
+};
+
+// ------------------ Custom Toolbar ------------------
+const CustomToolbar = (props: ToolbarProps) => (
   <Toolbar {...props}>
     <Button
       variant="outlined"
@@ -144,32 +237,35 @@ const CustomToolbar = (props) => (
   </Toolbar>
 );
 
-const VendorListActions = ({ allVendors, handleOpenPingDialog }) => {
-  return (
-    <TopToolbar>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleOpenPingDialog(allVendors)}
-        sx={{ ml: 2 }}
-      >
-        Ping Vendor
-      </Button>
-      <CreateButton />
-      <ExportButton />
-    </TopToolbar>
-  );
-};
+// ------------------ Vendor List Actions ------------------
+const VendorListActions = ({ allVendors, handleOpenPingDialog }: any) => (
+  <TopToolbar>
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => handleOpenPingDialog(allVendors)}
+      sx={{ ml: 2 }}
+    >
+      Ping Vendor
+    </Button>
+    <CreateButton />
+    <ExportButton />
+  </TopToolbar>
+);
+
+// ------------------ Main Vendor List Component ------------------
 export const VendorListAdmin = () => {
   const [pingDialogOpen, setPingDialogOpen] = useState(false);
   const [userStatusList, setUserStatusList] = useState<any[]>([]);
   const [selectedForEmail, setSelectedForEmail] = useState<any[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
   const [openMail, setOpenMail] = useState(false);
 
   const notify = useNotify();
   const [create] = useCreate();
 
   const { data: allVendors } = useGetList("vendor");
+
   const handleOpenPingDialog = (users: any[]) => {
     setUserStatusList(users);
     setPingDialogOpen(true);
@@ -182,139 +278,81 @@ export const VendorListAdmin = () => {
     setUserStatusList(sorted);
   };
 
-
-  //to handle mail sending
   const handleOpenMail = () => {
-    const selected = userStatusList.filter(user => user.enabled).map(user => user.id);
+    const selected = userStatusList.filter((u) => u.enabled).map((u) => u.id);
     setSelectedForEmail(selected);
+    setSelectedUsers(userStatusList.filter((u) => u.enabled));
     setOpenMail(true);
   };
 
-  const handleCloseEmail = () => {
-    setOpenMail(false);
-
+  const handleOpenMailForUser = (user: any) => {
+    setSelectedForEmail([user.id]);
+    setSelectedUsers([user]);
+    setOpenMail(true);
   };
+
+  const handleCloseEmail = () => setOpenMail(false);
 
   const handleSubmit = (values: any) => {
     create(
       "vendor/sendMail",
-      { data: { customer: selectedForEmail, subject: values.subject, body: values.body } },
       {
-        onSuccess: () => { notify("Email sent successfully!", { type: "success" }); handleCloseEmail(); },
-        onError: () => { notify("Error sending email", { type: "warning" }); }
+        data: {
+          customer: selectedForEmail,
+          subject: values.subject,
+          body: values.body,
+        },
+      },
+      {
+        onSuccess: () => {
+          notify("Email sent successfully!", { type: "success" });
+          handleCloseEmail();
+        },
+        onError: () => notify("Error sending email", { type: "warning" }),
       }
     );
   };
 
-  const handleClose = () => {
-    setOpenMail(false);
-  };
-
   return (
     <>
-      <List title="Agency List"
-        actions={<VendorListActions allVendors={allVendors || []} handleOpenPingDialog={handleOpenPingDialog} />}
+      <List
+        title="Agency List"
+        actions={
+          <VendorListActions
+            allVendors={allVendors || []}
+            handleOpenPingDialog={handleOpenPingDialog}
+          />
+        }
       >
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <ImageField source="images" />
           <TextField source="agencytitle" />
-          <EmailField source="email" />
+          <FunctionField
+            label="Email"
+            render={(record: any) => (
+              <Box display="flex" alignItems="center" gap={1}>
+                <IconButton
+                  onClick={() => handleOpenMailForUser(record)}
+                  color="primary"
+                  size="small"
+                >
+                  <MailIcon />
+                </IconButton>
+                <Typography>{record.email}</Typography>
+              </Box>
+            )}
+          />
           <TextField source="contactNumber" />
           <FunctionField
             label="Actions"
-            render={(record: any) => {
-              const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-              const open = Boolean(anchorEl);
-              const dataProvider = useDataProvider();
-              const notify = useNotify();
-              const refresh = useRefresh();
-
-              const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-                setAnchorEl(event.currentTarget);
-              };
-
-              const handleClose = () => {
-                setAnchorEl(null);
-              };
-
-              const handleStatusChange = async (status: "approved" | "rejected") => {
-                const confirmMessage = `Are you sure you want to mark this as ${status}?`;
-                if (!window.confirm(confirmMessage)) return;
-                const statusValue = {
-                  approved: "1",
-                  rejected: "0",
-                }
-
-                try {
-                  await dataProvider.update(`vendor`, {
-                    id: record.id,
-                    data: { ...record, isApproved: statusValue[status] },
-                    previousData: record,
-                  });
-                  notify(`Status updated to ${status}`, { type: "success" });
-                  refresh();
-                } catch (err) {
-                  notify("Error updating status", { type: "error" });
-                } finally {
-                  handleClose();
-                }
-              };
-
-              const statusColors: Record<string, string> = {
-                approved: "#4caf50",    // green
-                rejected: "#f44336",    // red
-                cancelled: "#f44336",   // red (same as rejected)
-                pending: "#ff9800",     // orange
-              };
-
-              const color = statusColors[record.approvalStatus] || "#000";
-              // if already approved show only the status
-              if (record.isApproved === "1") {
-                return (
-                  <Chip
-                    label={"Approved"}
-                    style={{ backgroundColor: "#4caf50", color: "#fff" }}
-                    size="small"
-                  />
-                );
-              }
-              return (
-                <>
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleClick}
-                    endIcon={<ArrowDropDownIcon />}
-                    sx={{
-                      color,
-                      borderColor: color,
-                      textTransform: "capitalize",
-                      fontWeight: "bold",
-                      '&:hover': {
-                        backgroundColor: `${color}20`, // light background on hover
-                        borderColor: color,
-                      }
-                    }}
-                  >
-                    Pending
-                  </Button>
-                  <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-                    <MenuItem disabled dense>Change Status</MenuItem>
-                    <MenuItem onClick={() => handleStatusChange("approved")}>Approve</MenuItem>
-                    <MenuItem onClick={() => handleStatusChange("rejected")}>Reject</MenuItem>
-                  </Menu>
-                </>
-              );
-            }}
+            render={(record) => <ActionsField record={record} />}
           />
-          <TextField source="enabled" label={"Status"} />
-
+          <TextField source="enabled" label="Status" />
           <FunctionField
             label="Notifications"
             render={(record: any) => <NotificationButton record={record} />}
           />
-
           <EditButton
             variant="text"
             color="primary"
@@ -331,21 +369,58 @@ export const VendorListAdmin = () => {
       </List>
 
       {/* Mail Dialog */}
-      <Dialog open={openMail} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>Mail To Vendors</DialogTitle>
+      <Dialog
+        open={openMail}
+        onClose={handleCloseEmail}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>
+          {selectedUsers.length > 1
+            ? "Mail To Vendors"
+            : `Mail To ${
+                selectedUsers[0]?.agencytitle || selectedUsers[0]?.name || ""
+              } (${selectedUsers[0]?.email})`}
+        </DialogTitle>
         <DialogContent>
-          <Box sx={{ borderRadius: 2, margin: 4, boxShadow: 1, background: "#fff" }}>
-            <SimpleForm onSubmit={handleSubmit} toolbar={<CustomToolbar />} defaultValues={{ body: "<p>Write your message here...</p><br/><br/><br/>" }}>
+          <Box
+            sx={{
+              borderRadius: 2,
+              margin: 4,
+              boxShadow: 1,
+              background: "#fff",
+            }}
+          >
+            <SimpleForm
+              onSubmit={handleSubmit}
+              toolbar={<CustomToolbar />}
+              defaultValues={{ body: "<p>Write your message here...</p>" }}
+            >
               <Typography variant="h6" sx={{ padding: 2, borderRadius: 2 }}>
-                Email to Users
+                {selectedUsers.length > 1
+                  ? "Email to Vendors"
+                  : `Email to ${selectedUsers[0]?.agencytitle || ""} (${
+                      selectedUsers[0]?.email
+                    })`}
               </Typography>
               <div className="row">
                 <div className="col-md-12 col-lg-12">
-                  <TextInput source="subject" fullWidth placeholder="Enter Subject" />
+                  <TextInput
+                    source="subject"
+                    fullWidth
+                    placeholder="Enter Subject"
+                  />
                 </div>
                 <div className="col-md-12 col-lg-12">
                   <RichTextInput
-                    toolbar={<RichTextInputToolbar><FormatButtons size="small" /><ListButtons size="small" /><LinkButtons size="small" /><ClearButtons size="small" /></RichTextInputToolbar>}
+                    toolbar={
+                      <RichTextInputToolbar>
+                        <FormatButtons size="small" />
+                        <ListButtons size="small" />
+                        <LinkButtons size="small" />
+                        <ClearButtons size="small" />
+                      </RichTextInputToolbar>
+                    }
                     fullWidth
                     source="body"
                     validate={[required()]}
@@ -356,23 +431,45 @@ export const VendorListAdmin = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseEmail} variant="contained" color="primary">
+          <Button
+            onClick={handleCloseEmail}
+            variant="contained"
+            color="primary"
+          >
             Close
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* user ping dialog box */}
-      <Dialog open={pingDialogOpen} onClose={() => setPingDialogOpen(false)} fullWidth maxWidth="sm">
+      {/* Ping Dialog */}
+      <Dialog
+        open={pingDialogOpen}
+        onClose={() => setPingDialogOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>Ping Vendor</DialogTitle>
         <DialogContent>
           <Box display="flex" justifyContent="space-between" mb={2}>
             <Button onClick={() => handleSort("asc")}>Sort Active First</Button>
-            <Button onClick={() => handleSort("desc")}>Sort Inactive First</Button>
+            <Button onClick={() => handleSort("desc")}>
+              Sort Inactive First
+            </Button>
           </Box>
-          {userStatusList.map(user => (
-            <Box key={user.id} display="flex" justifyContent="space-between" alignItems="center" mb={1} p={1} border={1} borderRadius={1}>
-              <Typography>{user.agencytitle} ({user.email})</Typography>
+          {userStatusList.map((user) => (
+            <Box
+              key={user.id}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              mb={1}
+              p={1}
+              border={1}
+              borderRadius={1}
+            >
+              <Typography>
+                {user.agencytitle} ({user.email})
+              </Typography>
             </Box>
           ))}
         </DialogContent>
