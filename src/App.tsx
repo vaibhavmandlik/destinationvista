@@ -1,101 +1,98 @@
+import jsonServerProvider from "ra-data-json-server";
 import React from "react";
 import {
   Admin,
   CustomRoutes,
   fetchUtils,
-  ListGuesser,
-  Resource,
-  ShowGuesser,
+  Resource
 } from "react-admin";
-import jsonServerProvider from "ra-data-json-server";
-import { UserList } from "./User/UserList";
-import { UserCreate } from "./User/UserCreate";
-import { UserUpdate } from "./User/UserUpdate";
-import { VendorList } from "./Vendor/VendorList";
-import { VendorCreate } from "./Vendor/VendorCreate";
-import { VendorUpdate } from "./Vendor/VendorUpdate";
-import { PackageCreate } from "./Package/PackageCreate";
-import { PackageList } from "./Package/PackageList";
-import { PackageUpdate } from "./Package/PackageUpdate";
-import VendorLayout from "./VendorLayout";
-import theme from "./Theme";
 import {
+  Outlet,
+  Route,
   BrowserRouter as Router,
   Routes,
-  Route,
-  Outlet,
 } from "react-router-dom";
-import { LoginProvider } from "./LoginContext";
-import Footer from "./components/footer/Footer";
-import DynamicHeader from "./components/header/DynamicHeader";
-import AboutUs from "./pages/about/AboutUs";
-import Blogs from "./pages/blogs/Blogs";
-import Contact from "./pages/contact/Contact";
-import PackageDetailsWrapper from "./pages/packages/PackageDetailsWrapper";
-import PackagesList from "./pages/packages/PackagesList";
-import Registration from "./pages/registration/Registration";
-import Home from "./pages/home/Home";
-import Destination from "./pages/destinations/Destination";
-import BookingsHistory from "./pages/dropDown/BookingsHistory";
-import PackageCart from "./pages/dropDown/PackageCart";
-import Profile from "./pages/dropDown/Profile";
-const apiUrl = import.meta.env.VITE_API_URL;
-import VendorResistration from "./components/vendor/Register";
-import authProvider from "./authProvider";
-import MyLoginPage from "./pages/login/LoginPage";
-import { dataProviders } from "./DataProviders";
-import { BookingList } from "./Booking/BookingList";
-import { DestinationList } from "./Destination/DestinationList";
-import { UserShow } from "./User/UserShow";
-import VendorDashboard from "./VendorDashboard/VendorDashboard";
-import AdminLayout from "./AdminLayout";
-import { VendorListAdmin } from "./VendorAdmin/VendorList";
-import { PackageAdminList } from "./PackageAdmin/PackageList";
-import DestinationCreate from "./Destination/DestinationCreate";
-import { DestinationUpdate } from "./Destination/DestinationUpdate";
-import SupportTicket from "./SupportTicket/SupportTicket";
+import AdminLayout1 from "./AdminLayout1";
 import AdminSupport from "./AdminSupport/AdminSupport";
-import UserLoginPage from "./pages/login/UserLoginPage";
-import CreateTicket from "./SupportTicket/CreateTicket";
-import { TicketList } from "./SupportTicket/Ticket";
+import { UpdateBlog } from "./Blog/UpdateBlog";
 import { createBlog } from "./Blog/createBlog";
 import { listBlog } from "./Blog/listBlog";
-import EmailToUsers from "./EmailtoUser/EmailToUserAdmin";
-import authProviderAdmin from "./authProviderAdmin";
-import LoginPageAdmin from "./pages/login/LoginPageAdmin";
-import EmailToUserFromList from "./EmailtoUser/EmailToUserFromList";
-import { UpdateBlog } from "./Blog/UpdateBlog";
-import TermsAndCondition from "./pages/agreements/TermsAndCondition";
-import PrivateAndPolicy from "./pages/agreements/PrivateAndPolicy";
-import Disclaimer from "./pages/agreements/Disclaimer";
-import Support from "./pages/agreements/Support";
-import PaymentPolicy from "./pages/agreements/PaymentPolicy";
-import NewsLetter from "./pages/agreements/NewsLetter";
-import RefundPolicy from "./pages/agreements/RefundPolicy";
-import VendorPolicy from "./pages/agreements/VendorPolicy";
-import GrievanceAndRedressel from "./pages/agreements/GrievanceAndRedressel";
-import CookiesPolicy from "./pages/agreements/CookiesPolicy";
-import DateRetension from "./pages/agreements/DateRetension";
-import Rights from "./pages/agreements/Rights";
-import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
-import AdminLayout1 from "./AdminLayout1";
+import { BookingList } from "./Booking/BookingList";
 import CategoryCreate from "./Category/CategoryCreate";
 import { CategoryList } from "./Category/CategoryList";
-import EmailToUserAdmin from "./EmailtoUser/EmailToUserAdmin";
-import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
-import { SearchProvider } from "./pages/Searchbar/SearchContext";
-import DestinationDetails from "./pages/destinations/DestinationDetails";
-import OfferCreate from "./Offer/OfferCreate";
-import { OfferList } from "./Offer/OfferList";
-import OfferUpdate from "./Offer/OfferUpdate";
-import BlogDetail from "./pages/blogs/BlogDetail";
-import Faq from "./pages/faq/Faq";
-import ForgotPassword from "./pages/login/ForgotPassword";
+import { dataProviders } from "./DataProviders";
+import DestinationCreate from "./Destination/DestinationCreate";
+import { DestinationList } from "./Destination/DestinationList";
+import { DestinationUpdate } from "./Destination/DestinationUpdate";
+import EmailToUsers from "./Email/EmailToUser";
+import EmailToUserAdmin from "./EmailAdmin/EmailToUserAdmin";
 import {
   EmailTemplateCreate,
   EmailTemplateEdit,
   EmailTemplateList,
 } from "./EmailTemplate/createEmailTemplate";
+import { LoginProvider } from "./LoginContext";
+import OfferCreate from "./Offer/OfferCreate";
+import { OfferList } from "./Offer/OfferList";
+import OfferUpdate from "./Offer/OfferUpdate";
+import { PackageCreate } from "./Package/PackageCreate";
+import { PackageList } from "./Package/PackageList";
+import { PackageUpdate } from "./Package/PackageUpdate";
+import { PackageAdminCreate } from "./PackageAdmin/PackageCreate";
+import { PackageAdminList } from "./PackageAdmin/PackageList";
+import CreateTicket from "./SupportTicket/CreateTicket";
+import SupportTicket from "./SupportTicket/SupportTicket";
+import { TicketList } from "./SupportTicket/Ticket";
+import theme from "./Theme";
+import { UserCreate } from "./User/UserCreate";
+import { UserList } from "./User/UserList";
+import { UserShow } from "./User/UserShow";
+import { UserUpdate } from "./User/UserUpdate";
+import { VendorCreate } from "./Vendor/VendorCreate";
+import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
+import { VendorList } from "./Vendor/VendorList";
+import { VendorUpdate } from "./Vendor/VendorUpdate";
+import { VendorListAdmin } from "./VendorAdmin/VendorList";
+import VendorDashboard from "./VendorDashboard/VendorDashboard";
+import VendorLayout from "./VendorLayout";
+import authProvider from "./authProvider";
+import authProviderAdmin from "./authProviderAdmin";
+import Footer from "./components/footer/Footer";
+import DynamicHeader from "./components/header/DynamicHeader";
+import VendorResistration from "./components/vendor/Register";
+import { SearchProvider } from "./pages/Searchbar/SearchContext";
+import AboutUs from "./pages/about/AboutUs";
+import CookiesPolicy from "./pages/agreements/CookiesPolicy";
+import DateRetension from "./pages/agreements/DateRetension";
+import Disclaimer from "./pages/agreements/Disclaimer";
+import GrievanceAndRedressel from "./pages/agreements/GrievanceAndRedressel";
+import NewsLetter from "./pages/agreements/NewsLetter";
+import PaymentPolicy from "./pages/agreements/PaymentPolicy";
+import PrivateAndPolicy from "./pages/agreements/PrivateAndPolicy";
+import RefundPolicy from "./pages/agreements/RefundPolicy";
+import Rights from "./pages/agreements/Rights";
+import Support from "./pages/agreements/Support";
+import TermsAndCondition from "./pages/agreements/TermsAndCondition";
+import VendorPolicy from "./pages/agreements/VendorPolicy";
+import BlogDetail from "./pages/blogs/BlogDetail";
+import Blogs from "./pages/blogs/Blogs";
+import Contact from "./pages/contact/Contact";
+import Destination from "./pages/destinations/Destination";
+import DestinationDetails from "./pages/destinations/DestinationDetails";
+import BookingsHistory from "./pages/dropDown/BookingsHistory";
+import PackageCart from "./pages/dropDown/PackageCart";
+import Profile from "./pages/dropDown/Profile";
+import Faq from "./pages/faq/Faq";
+import Home from "./pages/home/Home";
+import ForgotPassword from "./pages/login/ForgotPassword";
+import MyLoginPage from "./pages/login/LoginPage";
+import LoginPageAdmin from "./pages/login/LoginPageAdmin";
+import UserLoginPage from "./pages/login/UserLoginPage";
+import PackageDetailsWrapper from "./pages/packages/PackageDetailsWrapper";
+import PackagesList from "./pages/packages/PackagesList";
+import Registration from "./pages/registration/Registration";
+
+const apiUrl = import.meta.env.VITE_API_URL;
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -121,7 +118,6 @@ const VendorRoute: React.FC = () => {
       <Resource
         name="vendor"
         list={VendorList}
-        // create={VendorCreate}
         edit={VendorUpdate}
       />
       <Resource
@@ -129,8 +125,6 @@ const VendorRoute: React.FC = () => {
         list={PackageList}
         create={PackageCreate}
         edit={PackageUpdate}
-        // show={PackageShow}
-        // show={ViewDetails}
       />
       <Resource name="booking" list={BookingList} />
       <Resource name="destination" list={DestinationList} />
@@ -144,8 +138,10 @@ const VendorRoute: React.FC = () => {
       <Resource name="ticket" list={TicketList} create={CreateTicket} />
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
-        <Route path="/mailingsrevice" element={<EmailToUsers isAdmin={false}/>} />
-        {/* <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} /> */}
+        <Route
+          path="/mailingservice"
+          element={<EmailToUsers />}
+        />
       </CustomRoutes>
     </Admin>
   );
@@ -160,7 +156,6 @@ const AdminRoute: React.FC = () => {
       loginPage={LoginPageAdmin}
       layout={AdminLayout1}
       theme={theme}
-      // dashboard={VendorDashboard}
     >
       <Resource
         name="vendor"
@@ -210,9 +205,7 @@ const AdminRoute: React.FC = () => {
       />
       <CustomRoutes>
         <Route path="/support" element={<AdminSupport />} />
-
         <Route path="/email" element={<EmailToUserAdmin isAdmin={true} />} />
-        <Route path="/EmailToUserFromList" element={<EmailToUserFromList isAdmin={true}/>} />
       </CustomRoutes>
     </Admin>
   );
