@@ -253,6 +253,8 @@ const VendorListActions = ({ allVendors, handleOpenPingDialog }: any) => (
   </TopToolbar>
 );
 
+
+
 // ------------------ Main Vendor List Component ------------------
 export const VendorListAdmin = () => {
   const [pingDialogOpen, setPingDialogOpen] = useState(false);
@@ -421,6 +423,7 @@ export const VendorListAdmin = () => {
                 subject: templateData.subject,
               }}
             >
+              
               {/* Template Selector */}
               <Box sx={{ mb: 2 }}>
                 <Select

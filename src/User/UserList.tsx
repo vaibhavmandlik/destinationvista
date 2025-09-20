@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CreateButton,
   Datagrid,
@@ -17,6 +17,7 @@ import {
   TopToolbar,
   useCreate,
   useDataProvider,
+  useGetList,
   useListController,
   useNotify,
   useRecordContext,
@@ -27,7 +28,7 @@ import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
 import { Link } from "react-router-dom";
-
+import { useFormContext } from "react-hook-form";
 import {
   Box,
   Button,
@@ -38,6 +39,8 @@ import {
   DialogTitle,
   Divider,
   IconButton,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -145,6 +148,28 @@ export const UserList = () => {
   const [pingDialogOpen, setPingDialogOpen] = useState(false);
   const [userStatusList, setUserStatusList] = useState<any[]>([]);
   const [selectedForEmail, setSelectedForEmail] = useState<any[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [templateData, setTemplateData] = useState<{
+    subject?: string;
+    body?: string;
+  }>({});
+
+  const { data: templates, isLoading: templatesLoading } = useGetList(
+    "cannedMail",
+    {
+      pagination: { page: 1, perPage: 100 },
+      sort: { field: "id", order: "ASC" },
+    }
+  );
+
+  useEffect(() => {
+    if (selectedTemplate && templates) {
+      const tmpl = templates.find((t: any) => t.id === selectedTemplate);
+      if (tmpl) setTemplateData({ subject: tmpl.subject, body: tmpl.body });
+    } else {
+      setTemplateData({ subject: "", body: "" });
+    }
+  }, [selectedTemplate, templates]);
 
   // Download warning dialog
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -366,19 +391,19 @@ export const UserList = () => {
                         }}
                       />
                     )) || (
-                      <Box
-                        component="img"
-                        src={"/img/user.jpg"}
-                        alt="Profile"
-                        sx={{
-                          width: 100,
-                          height: 100,
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                          border: "2px solid #1976d2",
-                        }}
-                      />
-                    )}
+                        <Box
+                          component="img"
+                          src={"/img/user.jpg"}
+                          alt="Profile"
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                            border: "2px solid #1976d2",
+                          }}
+                        />
+                      )}
                     <Box width="75%">
                       <Box
                         display="flex"
@@ -404,8 +429,8 @@ export const UserList = () => {
                         {selectedUser.category === 0
                           ? "Admin"
                           : selectedUser.category === 1
-                          ? "Vendor"
-                          : "Customer"}
+                            ? "Vendor"
+                            : "Customer"}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Status: {selectedUser.enabled ? "Enabled" : "Disabled"}
@@ -440,11 +465,9 @@ export const UserList = () => {
                     <Typography variant="body2">
                       <strong>Address:</strong>{" "}
                       {selectedUser.address
-                        ? `${selectedUser.address.addressLine1 || ""}, ${
-                            selectedUser.address.addressLine2 || ""
-                          }, ${selectedUser.address.city || ""}, ${
-                            selectedUser.address.state || ""
-                          } - ${selectedUser.address.pincode || ""}`
+                        ? `${selectedUser.address.addressLine1 || ""}, ${selectedUser.address.addressLine2 || ""
+                        }, ${selectedUser.address.city || ""}, ${selectedUser.address.state || ""
+                        } - ${selectedUser.address.pincode || ""}`
                         : "NA"}
                     </Typography>
                     <Typography variant="body2">
@@ -619,17 +642,41 @@ export const UserList = () => {
               onSubmit={handleSubmit}
               toolbar={<CustomToolbar />}
               defaultValues={{
-                body: "<p>Write your message here...</p><br/><br/><br/>",
+                body: templateData.body,
+                subject: templateData.subject,
               }}
             >
+
               <div className="row">
+                {/* Template Selector */}
+                <Box sx={{ mb: 2 }}>
+                  <Select
+                    fullWidth
+                    value={selectedTemplate || ""}
+                    onChange={(e) => setSelectedTemplate(e.target.value)}
+                    displayEmpty
+                  >
+                    <MenuItem value="" disabled>
+                      Select a Template
+                    </MenuItem>
+                    {templates?.map((t: any) => (
+                      <MenuItem key={t.id} value={t.id}>
+                        {`${t.category} - ${t.subject}`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
                 <div className="col-md-12 col-lg-12">
                   <TextInput
                     source="subject"
                     fullWidth
                     placeholder="Enter Subject"
+                    defaultValue={templateData.subject}
+                    validate={[required()]}
+
                   />
                 </div>
+
                 <div className="col-md-12 col-lg-12">
                   <RichTextInput
                     toolbar={
@@ -643,6 +690,7 @@ export const UserList = () => {
                     fullWidth
                     source="body"
                     validate={[required()]}
+                    defaultValue={templateData.body}
                   />
                 </div>
               </div>

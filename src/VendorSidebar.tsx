@@ -93,7 +93,7 @@ const MySidebar = (props: any) => {
                 >
                     <Menu.Item
                         sx={{ fontSize: "0.875rem" }}
-                        to="/vendor/email"
+                        to="/vendor/mailingsrevice"
                         primaryText="Mailing Services"
                         leftIcon={<PiEnvelopeSimpleBold size={22} />}
                     />

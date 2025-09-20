@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   Container,
@@ -23,9 +23,11 @@ function ForgotPassword() {
   const [otp, setOtp] = useState("");
   const [timeLeft, setTimeLeft] = useState(0); // timer in seconds
   const [step, setStep] = useState(1); // 1 = Send OTP, 2 = Verify OTP, 3 = Reset Password
-
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const Navigate = useNavigate();
+  const vendorUrl = "/vendor/forgotpass";
+  const userUrl = "/forgotpassword";
 
   // countdown logic
   useEffect(() => {
@@ -111,7 +113,14 @@ const handlePasswordChange = async (e: React.FormEvent) => {
       notify("Password changed successfully!", { type: "success" });
       setNewPassword("");
       setConfirmPassword("");
-      setStep(1); // back to Send OTP or redirect to login
+      const url = window.location.pathname;
+      if(url === vendorUrl){
+        Navigate("/vendor/login");
+      }
+      else{
+        Navigate("/loginpage");
+    }
+      // setStep(1); // back to Send OTP or redirect to login
     }
   } catch (error: any) {
     notify(

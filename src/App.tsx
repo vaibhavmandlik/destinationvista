@@ -144,8 +144,8 @@ const VendorRoute: React.FC = () => {
       <Resource name="ticket" list={TicketList} create={CreateTicket} />
       <CustomRoutes>
         <Route path="/support-ticket" element={<SupportTicket />} />
-        <Route path="/email" element={<EmailToUsers />} />
-        <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
+        <Route path="/mailingsrevice" element={<EmailToUsers isAdmin={false}/>} />
+        {/* <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} /> */}
       </CustomRoutes>
     </Admin>
   );
@@ -212,7 +212,7 @@ const AdminRoute: React.FC = () => {
         <Route path="/support" element={<AdminSupport />} />
 
         <Route path="/email" element={<EmailToUserAdmin isAdmin={true} />} />
-        <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
+        <Route path="/EmailToUserFromList" element={<EmailToUserFromList isAdmin={true}/>} />
       </CustomRoutes>
     </Admin>
   );
@@ -291,6 +291,7 @@ const App: React.FC = () => {
             <Route path="admin/*" element={<AdminRoute />} />
             <Route path="open/*" element={<OpenRoute />} />
             <Route path="vendor/forgotpass" element={<ForgotPassword />} />
+            <Route path="forgotpassword" element={<ForgotPassword />} />
           </Routes>
         </SearchProvider>
       </LoginProvider>

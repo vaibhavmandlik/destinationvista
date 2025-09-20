@@ -43,7 +43,11 @@ const CustomToolbar = (props) => (
   </Toolbar>
 );
 
-const EmailToUserFromList: React.FC = () => {
+interface EmailToUserAdminProps {
+  isAdmin?: boolean;
+}
+
+const EmailToUserFromList: React.FC<EmailToUserAdminProps> = ({isAdmin = false}) => {
   const notify = useNotify();
   const [create] = useCreate();
   const location = useLocation();
