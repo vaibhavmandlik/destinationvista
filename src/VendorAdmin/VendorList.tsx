@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import {
   Badge,
   Box,
   Button,
-  Chip,
   CircularProgress,
   Dialog,
   DialogActions,
@@ -15,14 +19,18 @@ import {
   Menu,
   MenuItem,
   List as MuiList,
+  Select,
   Typography,
 } from "@mui/material";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import MailIcon from "@mui/icons-material/Mail";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import {
+  ClearButtons,
+  FormatButtons,
+  LinkButtons,
+  ListButtons,
+  RichTextInput,
+  RichTextInputToolbar,
+} from "ra-input-rich-text";
+import React, { useState } from "react";
 import {
   CreateButton,
   Datagrid,
@@ -45,14 +53,6 @@ import {
   useNotify,
   useRefresh,
 } from "react-admin";
-import {
-  ClearButtons,
-  FormatButtons,
-  LinkButtons,
-  ListButtons,
-  RichTextInput,
-  RichTextInputToolbar,
-} from "ra-input-rich-text";
 import ImageField from "../components/CustomFields/ImageField";
 
 // ------------------ Notification Button ------------------
@@ -259,6 +259,11 @@ export const VendorListAdmin = () => {
   const [userStatusList, setUserStatusList] = useState<any[]>([]);
   const [selectedForEmail, setSelectedForEmail] = useState<any[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [templateData, setTemplateData] = useState<{
+    subject?: string;
+    body?: string;
+  }>({});
   const [openMail, setOpenMail] = useState(false);
 
   const notify = useNotify();
@@ -312,6 +317,24 @@ export const VendorListAdmin = () => {
       }
     );
   };
+
+  const { data: templates, isLoading: templatesLoading } = useGetList(
+    "cannedMail",
+    {
+      pagination: { page: 1, perPage: 100 },
+      sort: { field: "id", order: "ASC" },
+    }
+  );
+
+  // Update template data when selection changes
+  React.useEffect(() => {
+    if (selectedTemplate && templates) {
+      const tmpl = templates.find((t: any) => t.id === selectedTemplate);
+      if (tmpl) setTemplateData({ subject: tmpl.subject, body: tmpl.body });
+    } else {
+      setTemplateData({ subject: "", body: "" });
+    }
+  }, [selectedTemplate, templates]);
 
   return (
     <>
@@ -377,8 +400,8 @@ export const VendorListAdmin = () => {
       >
         <DialogTitle>
           {selectedUsers.length > 1
-            ? "Mail To Vendors"
-            : `Mail To ${
+            ? "Email To Vendors"
+            : `Email To ${
                 selectedUsers[0]?.agencytitle || selectedUsers[0]?.name || ""
               } (${selectedUsers[0]?.email})`}
         </DialogTitle>
@@ -386,7 +409,6 @@ export const VendorListAdmin = () => {
           <Box
             sx={{
               borderRadius: 2,
-              margin: 4,
               boxShadow: 1,
               background: "#fff",
             }}
@@ -394,39 +416,54 @@ export const VendorListAdmin = () => {
             <SimpleForm
               onSubmit={handleSubmit}
               toolbar={<CustomToolbar />}
-              defaultValues={{ body: "<p>Write your message here...</p>" }}
+              defaultValues={{
+                body: templateData.body,
+                subject: templateData.subject,
+              }}
             >
-              <Typography variant="h6" sx={{ padding: 2, borderRadius: 2 }}>
-                {selectedUsers.length > 1
-                  ? "Email to Vendors"
-                  : `Email to ${selectedUsers[0]?.agencytitle || ""} (${
-                      selectedUsers[0]?.email
-                    })`}
-              </Typography>
-              <div className="row">
-                <div className="col-md-12 col-lg-12">
-                  <TextInput
-                    source="subject"
-                    fullWidth
-                    placeholder="Enter Subject"
-                  />
-                </div>
-                <div className="col-md-12 col-lg-12">
-                  <RichTextInput
-                    toolbar={
-                      <RichTextInputToolbar>
-                        <FormatButtons size="small" />
-                        <ListButtons size="small" />
-                        <LinkButtons size="small" />
-                        <ClearButtons size="small" />
-                      </RichTextInputToolbar>
-                    }
-                    fullWidth
-                    source="body"
-                    validate={[required()]}
-                  />
-                </div>
-              </div>
+              {/* Template Selector */}
+              <Box sx={{ mb: 2 }}>
+                <Select
+                  fullWidth
+                  value={selectedTemplate || ""}
+                  onChange={(e) => setSelectedTemplate(e.target.value)}
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    Select a Template
+                  </MenuItem>
+                  {templates?.map((t: any) => (
+                    <MenuItem key={t.id} value={t.id}>
+                      {`${t.category} - ${t.subject}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+
+              {/* Subject Input */}
+              <TextInput
+                source="subject"
+                fullWidth
+                placeholder="Enter Subject"
+                defaultValue={templateData.subject}
+                validate={[required()]}
+              />
+
+              {/* Rich Text Body */}
+              <RichTextInput
+                toolbar={
+                  <RichTextInputToolbar>
+                    <FormatButtons size="small" />
+                    <ListButtons size="small" />
+                    <LinkButtons size="small" />
+                    <ClearButtons size="small" />
+                  </RichTextInputToolbar>
+                }
+                fullWidth
+                source="body"
+                validate={[required()]}
+                defaultValue={templateData.body}
+              />
             </SimpleForm>
           </Box>
         </DialogContent>

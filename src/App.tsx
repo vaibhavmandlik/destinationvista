@@ -91,6 +91,11 @@ import OfferUpdate from "./Offer/OfferUpdate";
 import BlogDetail from "./pages/blogs/BlogDetail";
 import Faq from "./pages/faq/Faq";
 import ForgotPassword from "./pages/login/ForgotPassword";
+import {
+  EmailTemplateCreate,
+  EmailTemplateEdit,
+  EmailTemplateList,
+} from "./EmailTemplate/createEmailTemplate";
 const httpClient = (url: string, options: any = {}) => {
   if (!options.headers) {
     options.headers = new Headers({ Accept: "application/json" });
@@ -197,8 +202,15 @@ const AdminRoute: React.FC = () => {
         edit={UserUpdate}
         show={UserShow}
       />
+      <Resource
+        name="cannedMail"
+        list={EmailTemplateList}
+        create={EmailTemplateCreate}
+        edit={EmailTemplateEdit}
+      />
       <CustomRoutes>
         <Route path="/support" element={<AdminSupport />} />
+
         <Route path="/email" element={<EmailToUserAdmin isAdmin={true} />} />
         <Route path="/EmailToUserFromList" element={<EmailToUserFromList />} />
       </CustomRoutes>
