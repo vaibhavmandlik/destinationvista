@@ -130,6 +130,11 @@ const UserListActions = ({ allUsers, handleOpenPingDialog }) => {
   );
 };
 
+const UserFilter = [
+  <TextInput label="Search by user ID" source="id" alwaysOn />,
+  <TextInput label="Search user" source="q" alwaysOn />,
+];
+
 export const UserList = () => {
   const notify = useNotify();
   const [create] = useCreate();
@@ -305,7 +310,7 @@ export const UserList = () => {
 
   return (
     <>
-      <List
+      <List filters={UserFilter}
         actions={
           <UserListActions
             allUsers={allUsers || []}

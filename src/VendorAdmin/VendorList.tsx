@@ -41,6 +41,7 @@ import {
   List,
   required,
   SaveButton,
+  SelectInput,
   SimpleForm,
   TextField,
   TextInput,
@@ -253,8 +254,6 @@ const VendorListActions = ({ allVendors, handleOpenPingDialog }: any) => (
   </TopToolbar>
 );
 
-
-
 // ------------------ Main Vendor List Component ------------------
 export const VendorListAdmin = () => {
   const [pingDialogOpen, setPingDialogOpen] = useState(false);
@@ -338,9 +337,24 @@ export const VendorListAdmin = () => {
     }
   }, [selectedTemplate, templates]);
 
+  const PackageFilter = [
+    <TextInput label="Search by Package ID" source="id" alwaysOn />,
+    <TextInput label="Search by vendor ID" source="vendorId" alwaysOn />,
+    <SelectInput alwaysOn
+      label="Approval Status"
+      source="status"
+      choices={[
+        { id: 0, name: "REJECTED" },
+        { id: 1, name: "APPROVED" },
+        { id: 2, name: "PENDING" },
+      ]}
+    />,
+  ];
+
   return (
     <>
       <List
+        filters={PackageFilter}
         title="Agency List"
         actions={
           <VendorListActions
@@ -423,7 +437,6 @@ export const VendorListAdmin = () => {
                 subject: templateData.subject,
               }}
             >
-              
               {/* Template Selector */}
               <Box sx={{ mb: 2 }}>
                 <Select

@@ -34,12 +34,12 @@ export const EmailTemplateList = () => (
   <List
     filters={[
       <TextInput label="Search by ID" source="id" alwaysOn />,
-      <SelectInput
+      <SelectInput alwaysOn
         label="Category"
         source="category"
         choices={categoryChoices}
       />,
-      <TextInput label="Subject" source="subject" />,
+      <TextInput label="Subject" source="subject" alwaysOn />,
     ]}
   >
     <Datagrid rowClick="edit">

@@ -12,7 +12,7 @@ import {
 // ---------------- Filter Inputs ----------------
 const destinationFilters = [
   <TextInput key="id" label="Search by Destination ID" source="id" alwaysOn />,
-  <TextInput key="title" label="Search by Title" source="title" />,
+  <TextInput key="title" label="Search by Title" source="title" alwaysOn />,
 ];
 
 export const DestinationList = () => {

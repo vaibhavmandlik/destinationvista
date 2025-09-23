@@ -1,17 +1,21 @@
 import {
   Datagrid,
+  DeleteWithConfirmButton,
   EditButton,
   List,
   TextField,
-  useGetIdentity,
-  DeleteWithConfirmButton,
+  TextInput
 } from "react-admin";
 
+const BlogFilter = [
+  <TextInput label="Search by blog ID" source="id" alwaysOn />,
+  <TextInput label="Search by title" source="title" alwaysOn />,
+];
+
 export const listBlog = () => {
-  const { data: user } = useGetIdentity();
   return (
     <>
-      <List filter={{ vendorId: user?.vendorId }}>
+      <List filters={BlogFilter}>
         <Datagrid rowClick={false} bulkActionButtons={false}>
           <TextField source="id" />
           <TextField source="title" />

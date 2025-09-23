@@ -18,7 +18,7 @@ import {
 // 🔎 Filters
 const offerFilters = [
   <TextInput label="Search by Offer ID" source="id" alwaysOn />,
-  <TextInput label="Search by Offer title" source="title" />,
+  <TextInput label="Search by Offer title" source="title" alwaysOn />,
   <SelectInput
     label="Offer Status"
     source="isActive"

@@ -150,8 +150,8 @@ const StatusDropdown = () => {
 // 🔎 Filters
 const ticketFilters = [
   <TextInput label="Search by ticket ID" source="id" alwaysOn />,
-  <TextInput label="Search by subject" source="subject" />,
-  <SelectInput
+  <TextInput label="Search by subject" source="subject" alwaysOn />,
+  <SelectInput alwaysOn
     label="Category"
     source="category"
     choices={[
@@ -160,7 +160,7 @@ const ticketFilters = [
       { id: "General", name: "General" },
     ]}
   />,
-  <SelectInput
+  <SelectInput alwaysOn
     label="Priority"
     source="priority"
     choices={[
@@ -169,7 +169,7 @@ const ticketFilters = [
       { id: "High", name: "High" },
     ]}
   />,
-  <SelectInput
+  <SelectInput alwaysOn
     label="Status"
     source="status"
     choices={[

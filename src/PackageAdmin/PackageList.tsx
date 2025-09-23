@@ -12,7 +12,6 @@ import {
   TextField,
   TextInput,
   useDataProvider,
-  useGetIdentity,
   useNotify,
   useRefresh,
 } from "react-admin";
@@ -25,7 +24,7 @@ import CurrencyField from "../components/CustomFields/CurrencyField";
 // ---------------- Filter Component ----------------
 const PackageFilter = [
   <TextInput label="Search by Package ID" source="id" alwaysOn />,
-  <TextInput label="Search by title" source="title" />,
+  <TextInput label="Search by title" source="title" alwaysOn />,
   <TextInput label="Search by vendor ID" source="vendorId" />,
   <DateInput label="Start Date (From)" source="startDate" />,
   <DateInput label="Duration" source="duration" />,
@@ -104,11 +103,10 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
     undefined: "Pending",
   };
 
-  const color = statusColors[record.isApproved];
-  const label = statusLabels[record.isApproved];
+  const label = statusLabels[String(record.isApproved)];
+  const color = statusColors[String(record.isApproved)];
 
-  // Hide button if inactive
-  if (record.isActive !== "1") return <span>{label || "Pending"}</span>;
+  if (String(record.isActive) !== "1") return <span>{label || "Pending"}</span>;
 
   return (
     <>
@@ -148,10 +146,8 @@ const ApprovalStatusField = ({ record }: { record: any }) => {
 
 // ---------------- Main List Component ----------------
 export const PackageAdminList = () => {
-  const { data: user } = useGetIdentity();
-
   return (
-    <List filters={PackageFilter} filter={{ vendorId: user?.vendorId }}>
+    <List filters={PackageFilter}>
       <Datagrid rowClick={false} bulkActionButtons={false}>
         <TextField source="id" />
         {/* <ImageField source="imagePaths" /> */}
