@@ -1,15 +1,27 @@
-import { Datagrid, DeleteWithConfirmButton, EditButton, ImageField, List, TextField, useGetIdentity } from "react-admin";
+import {
+  Datagrid,
+  DeleteWithConfirmButton,
+  ImageField,
+  List,
+  TextField,
+  TextInput
+} from "react-admin";
+
+// 🔎 Filters
+const categoryFilters = [
+  <TextInput label="Search by name" source="name" alwaysOn />,
+];
 
 export const CategoryList = () => {
-  const { data: user } = useGetIdentity();
   return (
-    <List filter={{ vendorId: user?.vendorId }}>
-    <Datagrid rowClick={false} bulkActionButtons={false}>
-      <TextField source="id" />
-      <TextField source="name" />
-      <TextField source="description" />
-      <ImageField source="imagePath" />
-      <DeleteWithConfirmButton />
-    </Datagrid>
-  </List>
-)};
+    <List filters={categoryFilters}>
+      <Datagrid rowClick={false} bulkActionButtons={false}>
+        <TextField source="id" />
+        <TextField source="name" />
+        <TextField source="description" />
+        <ImageField source="imagePath" />
+        <DeleteWithConfirmButton />
+      </Datagrid>
+    </List>
+  );
+};

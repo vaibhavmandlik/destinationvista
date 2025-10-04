@@ -82,7 +82,11 @@ const AdminSideBar = (props: any) => {
           icon={<FaUserEdit size={22} />}
           // defaultOpen is false here by default (or explicitly set to false if desired)
         >
-          <Menu.Item leftIcon={<FaBookMedical />} to="/admin/blog" primaryText="Blog" />
+          <Menu.Item
+            leftIcon={<FaBookMedical />}
+            to="/admin/blog"
+            primaryText="Blog"
+          />
           <Menu.Item
             to="/admin/user"
             primaryText="Users"
@@ -93,7 +97,7 @@ const AdminSideBar = (props: any) => {
             primaryText="Support"
             leftIcon={<PiTicket />}
           />
-           <Menu.Item
+          <Menu.Item
             to="/admin/category"
             primaryText="category"
             leftIcon={<PiCircle />}
@@ -106,18 +110,24 @@ const AdminSideBar = (props: any) => {
           icon={<FaEnvelopeOpenText size={22} />}
           // defaultOpen is false here by default
         >
-            <Menu.Item
-        sx={{ fontSize: "0.875rem" }}
-        to="/admin/email"
-        primaryText="Mailing Services"
-        leftIcon={<PiEnvelopeSimpleBold size={22} />}
-      />
-       <Menu.Item
-        sx={{ fontSize: "0.875rem" }}
-        to="/admin/vendor"
-        primaryText="Vendors"
-        leftIcon={<PiEnvelopeSimpleBold size={22} />}
-      />
+          <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
+            to="/admin/cannedMail"
+            primaryText="Email Templates"
+            leftIcon={<PiEnvelopeSimpleBold size={22} />}
+          />
+          <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
+            to="/admin/email"
+            primaryText="Mailing Services"
+            leftIcon={<PiEnvelopeSimpleBold size={22} />}
+          />
+          <Menu.Item
+            sx={{ fontSize: "0.875rem" }}
+            to="/admin/vendor"
+            primaryText="Vendors"
+            leftIcon={<PiEnvelopeSimpleBold size={22} />}
+          />
         </CollapsibleMenu>
       </Menu>
     </Sidebar>

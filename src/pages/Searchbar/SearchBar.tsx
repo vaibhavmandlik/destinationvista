@@ -42,15 +42,40 @@ const SearchBar: React.FC = () => {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "state") {
+      const fetchCitiesByState = async () => {
+        try {
+          const response = await axios.get(`${apiUrl}/common/city/${value}`);
+
+          if (response.status === 200) setCities(response.data);
+        } catch (error) {
+          console.error("Error fetching cities by state:", error);
+          setCities([]);
+        }
+      };
+
+      fetchCitiesByState();
+    }
   };
 
   const handleSearch = () => {
-    setQuery(formData);     // store search in context
-    navigate("/packages");  // redirect to packages page
+    const durationValue =
+      formData.duration === "other"
+        ? formData.customDuration
+        : formData.duration;
+
+    formData.customDuration = "";
+    setQuery({
+      ...formData,
+      duration: durationValue,
+    });
+
+    navigate("/packages");
   };
 
   return (
@@ -74,9 +99,18 @@ const SearchBar: React.FC = () => {
             <div className="row w-100 align-items-center justify-content-between mb-2">
               {/* State Dropdown */}
               <div className="col-md-3 px-1">
-                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                <div
+                  className="input-group"
+                  style={{
+                    border: "1px solid var(--primary)",
+                    borderRadius: "8px",
+                  }}
+                >
                   <span className="input-group-text border-0">
-                    <i className="fas fa-map-marker-alt" style={{ color: "var(--primary)" }}></i>
+                    <i
+                      className="fas fa-map-marker-alt"
+                      style={{ color: "var(--primary)" }}
+                    ></i>
                   </span>
                   <select
                     className="form-control"
@@ -86,7 +120,7 @@ const SearchBar: React.FC = () => {
                   >
                     <option value="">Select State</option>
                     {states.map((s) => (
-                      <option key={s.state_id} value={s.state_name}>
+                      <option key={s.state_id} value={s.state_id}>
                         {s.state_name}
                       </option>
                     ))}
@@ -96,9 +130,18 @@ const SearchBar: React.FC = () => {
 
               {/* City Dropdown */}
               <div className="col-md-3 px-1">
-                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                <div
+                  className="input-group"
+                  style={{
+                    border: "1px solid var(--primary)",
+                    borderRadius: "8px",
+                  }}
+                >
                   <span className="input-group-text border-0">
-                    <i className="fas fa-city" style={{ color: "var(--primary)" }}></i>
+                    <i
+                      className="fas fa-city"
+                      style={{ color: "var(--primary)" }}
+                    ></i>
                   </span>
                   <select
                     className="form-control"
@@ -118,9 +161,18 @@ const SearchBar: React.FC = () => {
 
               {/* Date Input */}
               <div className="col-md-3 px-1">
-                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                <div
+                  className="input-group"
+                  style={{
+                    border: "1px solid var(--primary)",
+                    borderRadius: "8px",
+                  }}
+                >
                   <span className="input-group-text border-0">
-                    <i className="fas fa-calendar-alt" style={{ color: "var(--primary)" }}></i>
+                    <i
+                      className="fas fa-calendar-alt"
+                      style={{ color: "var(--primary)" }}
+                    ></i>
                   </span>
                   <input
                     type="date"
@@ -135,15 +187,31 @@ const SearchBar: React.FC = () => {
 
               {/* Duration Dropdown */}
               <div className="col-md-3 px-1">
-                <div className="input-group" style={{ border: "1px solid var(--primary)", borderRadius: "8px" }}>
+                <div
+                  className="input-group"
+                  style={{
+                    border: "1px solid var(--primary)",
+                    borderRadius: "8px",
+                  }}
+                >
                   <span className="input-group-text border-0">
-                    <i className="fas fa-hourglass-half" style={{ color: "var(--primary)" }}></i>
+                    <i
+                      className="fas fa-hourglass-half"
+                      style={{ color: "var(--primary)" }}
+                    ></i>
                   </span>
+
                   <select
                     className="form-control"
                     name="duration"
                     value={formData.duration || ""}
-                    onChange={handleChange}
+                    onChange={(e) => {
+                      const { value } = e.target;
+                      setFormData((prev) => ({
+                        ...prev,
+                        duration: value,
+                      }));
+                    }}
                   >
                     <option value="">Duration</option>
                     {Array.from({ length: 20 }, (_, i) => (
@@ -151,8 +219,56 @@ const SearchBar: React.FC = () => {
                         {i + 1} Days
                       </option>
                     ))}
+                    <option value="other">Other</option>
                   </select>
                 </div>
+
+                {/* Show numeric input if 'Other' is selected */}
+                {formData.duration === "other" && (
+                  <div className="input-group mt-2">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          customDuration: Math.max(
+                            (prev.customDuration || 1) - 1,
+                            1
+                          ),
+                        }))
+                      }
+                    >
+                      -
+                    </button>
+
+                    <input
+                      type="number"
+                      min={1}
+                      className="form-control text-center"
+                      value={formData.customDuration || 1}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          customDuration: Number(e.target.value),
+                        }))
+                      }
+                    />
+
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          customDuration: (prev.customDuration || 1) + 1,
+                        }))
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -1,18 +1,31 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box, Grid, IconButton, InputAdornment } from "@mui/material";
+import { useState } from "react";
 import {
   Create,
+  DateInput,
+  email,
+  ImageField,
+  ImageInput,
+  required,
+  SelectInput,
   SimpleForm,
   TextInput,
-  required,
-  email,
-  PasswordInput,
 } from "react-admin";
-import { Box, Grid } from '@mui/material';
-import { SelectInput } from "react-admin";
-import React, { useState } from "react";
-import {IconButton, InputAdornment } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
 
-const CustomPasswordField = ({ source, validate, label, ...rest }) => {
+type CustomPasswordFieldProps = {
+  source: string;
+  validate?: any;
+  label?: string; // ✅ make label optional
+  [key: string]: any;
+};
+
+const CustomPasswordField = ({
+  source,
+  validate,
+  label = "",
+  ...rest
+}: CustomPasswordFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
@@ -23,7 +36,7 @@ const CustomPasswordField = ({ source, validate, label, ...rest }) => {
     <Box>
       <TextInput
         source={source}
-        label={label}
+        label={label} // will default to ""
         validate={validate}
         type={showPassword ? "text" : "password"}
         fullWidth
@@ -42,71 +55,111 @@ const CustomPasswordField = ({ source, validate, label, ...rest }) => {
   );
 };
 
-// export default CustomPasswordField;
-
 export const UserCreate = () => {
-  const inputStyles = {
-    height: "56px", // Matches the default height of Material-UI inputs
-    "& .MuiInputBase-root": {
-      height: "100%", // Ensures inner input aligns with the height
-    },
-  };
-  
   return (
-    <Create sx={{ maxWidth: 600, margin: '0 auto', marginTop:2 }}>
+    <Create sx={{ maxWidth: 800, margin: "0 auto", marginTop: 2 }}>
       <SimpleForm>
-        
         <Grid container spacing={2}>
-          
-          
+          {/* Name */}
           <Grid item xs={12} md={6}>
             <strong>First Name</strong>
-            <TextInput sx={{ padding: '8.5px auto', height: '56px' }} label="" fullWidth source="firstName" variant="outlined" validate={[required()]} />
+            <TextInput fullWidth source="firstName" validate={[required()]} />
           </Grid>
           <Grid item xs={12} md={6}>
             <strong>Last Name</strong>
-            <TextInput label="" fullWidth source="lastName" validate={[required()]} />
+            <TextInput fullWidth source="lastName" validate={[required()]} />
           </Grid>
-          
+
+          {/* Email & Password */}
           <Grid item xs={12} md={6}>
             <strong>Email</strong>
-            <TextInput label="" fullWidth source="email" validate={[required(), email()]} />
+            <TextInput
+              fullWidth
+              source="email"
+              validate={[required(), email()]}
+            />
           </Grid>
           <Grid item xs={12} md={6}>
             <strong>Password</strong>
             <CustomPasswordField
-              label=""
               fullWidth
               source="password"
               validate={[required()]}
             />
           </Grid>
+
+          {/* User Role */}
           <Grid item xs={12}>
             <strong>User Role</strong>
-            <SelectInput 
+            <SelectInput
               fullWidth
-              label=""
               source="category"
               validate={[required()]}
               choices={[
                 { id: "0", name: "Super Admin" },
-                { id: "1", name: "Subscriber" },
+                { id: "1", name: "Vendor" },
                 { id: "2", name: "User" },
               ]}
             />
           </Grid>
+
+          {/* Refer Code */}
           <Grid item xs={12} md={6}>
             <strong>Refer Code</strong>
-            <TextInput label="" fullWidth source="referCode" validate={[required()]} />
+            <TextInput fullWidth source="referCode" />
+          </Grid>
+
+          {/* Address */}
+          <Grid item xs={12} md={6}>
+            <strong>Address Line 1</strong>
+            <TextInput fullWidth source="addressLine1" />
           </Grid>
           <Grid item xs={12} md={6}>
-            <strong>Created by</strong>
-            <TextInput label="" fullWidth source="createdBy" validate={[required()]} />
+            <strong>Address Line 2</strong>
+            <TextInput fullWidth source="addressLine2" />
           </Grid>
-          
           <Grid item xs={12} md={6}>
-            <strong>Updated By</strong>
-            <TextInput label="" fullWidth source="updatedBy" validate={[required()]} />
+            <strong>Landmark</strong>
+            <TextInput fullWidth source="landmark" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <strong>City</strong>
+            <TextInput fullWidth source="city" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <strong>State</strong>
+            <TextInput fullWidth source="state" />
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <strong>Pincode</strong>
+            <TextInput fullWidth source="pincode" />
+          </Grid>
+
+          {/* DOB */}
+          <Grid item xs={12} md={6}>
+            <strong>Date of Birth</strong>
+            <DateInput fullWidth source="dateOfBirth" />
+          </Grid>
+
+          {/* Contact Numbers */}
+          <Grid item xs={12} md={6}>
+            <strong>Primary Contact</strong>
+            <TextInput fullWidth source="primaryContactNumber" />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <strong>Secondary Contact</strong>
+            <TextInput fullWidth source="secondaryContactNumber" />
+          </Grid>
+
+          {/* Profile Image */}
+          <Grid item xs={12}>
+            <strong>Profile Image</strong>
+            <ImageInput
+              source="profileImagePath"
+              accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
+            >
+              <ImageField source="src" />
+            </ImageInput>
           </Grid>
         </Grid>
       </SimpleForm>

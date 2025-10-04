@@ -1,21 +1,20 @@
+import { Box, Button, Drawer, Typography } from "@mui/material";
+import BeachAccessIcon from "@mui/icons-material/BeachAccess";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import Spinner from "../../components/Loader/Spinner";
 import PageHeader from "../pageheader/pageHeader";
 import SearchBar from "../Searchbar/SearchBar";
-import axios from "axios";
-import {toast,ToastContainer } from "react-toastify";
-import Spinner from "../../components/Loader/Spinner";
-import { Button, Drawer, Box, Collapse } from "@mui/material";
-import BookingForm from "./BookingForm"; 
-import { AwardIcon } from "lucide-react";
 import { useSearch } from "./../Searchbar/SearchContext";
+import BookingForm from "./BookingForm";
 
 const url = `${import.meta.env.VITE_API_URL}`;
 
 // Define the `Package` type for type safety
 type Package = {
-  id: number | string ;
+  id: number | string;
   title: string;
   description: string;
   price: string;
@@ -32,26 +31,6 @@ interface TourPackagesProps {
   isSearchBar?: boolean;
 }
 
-// Additional tour packages
-const morePackages: Package[] = [
-  {
-    id: 5,
-    title: "Goa Beach Tour",
-    description:
-      "Relax and unwind at the beautiful beaches of Goa, famous for its coastal beauty and vibrant nightlife.",
-    price: "₹7,000",
-    imagePaths: ["/img/goa.jpg"],
-  },
-  {
-    id: 6,
-    title: "Kerala Backwaters",
-    description:
-      "Explore the tranquil backwaters of Kerala in a houseboat cruise, amidst lush green landscapes.",
-    price: "₹9,000",
-    imagePaths: ["/img/kerla.jpeg"],
-  },
-];
-
 const PackagesList: React.FC<TourPackagesProps> = ({
   heading,
   subheading,
@@ -63,78 +42,33 @@ const PackagesList: React.FC<TourPackagesProps> = ({
   const [errortext, setError] = useState<string | null>(null);
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [morePackages , setMorePackages] = useState<Package[]>([]);
+  const [hasMore, setHasMore] = useState(true);
   const navigate = useNavigate();
 
-const { query } = useSearch();
+  const { query } = useSearch();
 
-useEffect(() => {
-  const fetchPackagesData = async () => {
-    try {
-      // build query string from context
-      const queryString = Object.keys(query)
-      .filter((key) => query[key]) // skip empty values
-      .map((key) => `${key}=${encodeURIComponent(query[key])}`)
-      .join("&");
-      
+  useEffect(() => {
+    const fetchPackagesData = async () => {
+      try {
+        let response;
+        if (subheading === "") {
+          // build query string from context
+          const queryString = Object.keys(query)
+            .filter((key) => query[key]) // skip empty values
+            .map((key) => `${key}=${encodeURIComponent(query[key])}`)
+            .join("&");
 
-      const response = await axios.get(`${url}/package${queryString ? `?${queryString}` : ""}`);
-      setPackagesToShow(response.data);
-      setLoading(false);
-    } catch (error) {
-      setError("Failed to fetch packages. Please try again");
-      toast.error(errortext, {
-        position: "top-right",
-        autoClose: 3000,
-        closeOnClick: true,
-        theme: "light",
-        pauseOnHover: true,
-      });
-      setLoading(false);
-    }
-  };
-
-  fetchPackagesData();
-}, [query]); // 🔑 refetch whenever search query changes
-
-
-  // Redirect to the details page
-  const onDetailsBookNowClick = (pkg : Package) => {
-    navigate(`/packages/${pkg.id}`);
-  };
-
-  const handleBookNowClick = (pkg: Package) =>{
-    setSelectedPackage(pkg);
-    setIsDrawerOpen(true);
-  }
-
-  const handleCloseBookingForm = () => {
-    setSelectedPackage(null);
-    setIsDrawerOpen(false);
-  };
-
-
-
-  // Appends more packages to the list
-  const onExploreMoreClick = async () => { 
-    try {
-      const start = packagesToShow.length + 1;
-      const end = packagesToShow.length + 10;
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${url}/package?start=${start}&end=${end}`,
-        {
-            headers: { Authorization: `Bearer ${token}` },
+          response = await axios.get(
+            `${url}/package${queryString ? `?${queryString}` : ""}`
+          );
+        } else {
+          response = await axios.get(`${url}/package/top`);
         }
-      );
-
-      if(response.status === 200)
-      {
-          setMorePackages(response.data);
-          setPackagesToShow((prev)=>[...prev , ...morePackages]);
-      }
-    } catch (error) {
-      setError('Failed to fetch packages . Plaease try again');
-        toast.error(errortext,{
+        setPackagesToShow(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError("Failed to fetch packages. Please try again");
+        toast.error(errortext, {
           position: "top-right",
           autoClose: 3000,
           closeOnClick: true,
@@ -142,11 +76,68 @@ useEffect(() => {
           pauseOnHover: true,
         });
         setLoading(false);
+      }
+    };
+
+    fetchPackagesData();
+  }, [query]); // 🔑 refetch whenever search query changes
+
+  // Redirect to the details page
+  const onDetailsBookNowClick = (pkg: Package) => {
+    navigate(`/packages/${pkg.id}`);
+  };
+
+  const handleBookNowClick = (pkg: Package) => {
+    setSelectedPackage(pkg);
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseBookingForm = () => {
+    setSelectedPackage(null);
+    setIsDrawerOpen(false);
+  };
+
+  // Appends more packages to the list
+  const onExploreMoreClick = async () => {
+    if (subheading === "") {
+      try {
+        const start = packagesToShow.length + 1;
+        const end = packagesToShow.length + 10;
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${url}/package?start=${start}&end=${end}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (response.status === 200) {
+          const newPackages: Package[] = response.data;
+
+          if (newPackages.length === 0) {
+            setHasMore(false);
+          } else {
+            setPackagesToShow((prev) => [...prev, ...newPackages]);
+          }
+        }
+      } catch (error) {
+        setError("Failed to fetch packages . Plaease try again");
+        toast.error(errortext, {
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          theme: "light",
+          pauseOnHover: true,
+        });
+        setLoading(false);
+      }
+    } else {
+      navigate(`/packages`);
     }
   };
 
-  if (loading) return  <Spinner/>;
-  if (errortext) return <ToastContainer/>;
+  if (loading) return <Spinner />;
+  if (errortext) return <ToastContainer />;
 
   return (
     <>
@@ -179,115 +170,179 @@ useEffect(() => {
             <h1>{heading}</h1>
           </div>
 
-         {/* Package crads showing*/}
-          {packagesToShow.map((pkg)=>(
-            <div 
-            style={{
-              width: "100%",
-              height:"40ch",
-              position: "relative",
-              margin:'0'
-            }}
-          >
-            
-             <Box
-              component="img"
-              src={`${url}${pkg.imagePaths[0]}`}
-              sx={{
-                borderRadius:2,
-                width: "30%",
-                height: "70%",
-                position: "absolute",
-                top:'8%',
-                left: `${Number(pkg.id) % 2 === 0 ? '58%' :'12%'}`,
-                zIndex: "1",
-              }}
-            /> 
-            
+          {/* Package crads showing*/}
+          {packagesToShow.map((pkg, index) => (
             <Box
-              component="div"
+              key={pkg.id}
               sx={{
-                color:'#000',
-                borderRadius:4,
-                width: "50%",
-                height:"35ch",
-                boxShadow:4,
-                position: "absolute",
-                top: 0,
-                left: `${Number(pkg.id) % 2 === 0 ? '10%' :'40%'}`,
-                zIndex: `0`,
-                p:5,
+                display: "flex",
+                flexDirection: {
+                  xs: "column", // 📱 mobile stacked
+                  md: index % 2 === 0 ? "row" : "row-reverse", // 💻 desktop alternate
+                },
+                alignItems: "center",
+                justifyContent: "center",
+                gap: { xs: 2, md: 4 },
+                my: 6,
               }}
             >
-              <p>
-              <strong dangerouslySetInnerHTML={{__html : pkg.title}}/>
-              </p>
-              <Box sx={{overflow:'hidden',
-                width:'50ch',
-                height:'10ch'
-              }} dangerouslySetInnerHTML={{__html: pkg.description}}>
+              {/* Package Image */}
+              <Box
+                component="img"
+                src={`${url}${pkg.imagePaths[0]}`}
+                alt={pkg.title}
+                sx={{
+                  borderRadius: 3,
+                  width: { xs: "100%", md: "35%" },
+                  height: { xs: "200px", md: "280px" },
+                  objectFit: "cover",
+                  boxShadow: 6,
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    boxShadow: 10,
+                  },
+                }}
+              />
+
+              {/* Package Details */}
+              <Box
+                sx={{
+                  backgroundColor: "#fff",
+                  borderRadius: 3,
+                  width: { xs: "100%", md: "50%" },
+                  minHeight: { xs: "auto", md: "260px" },
+                  p: { xs: 2, md: 4 },
+                  boxShadow: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  component="div"
+                  fontWeight="bold"
+                  gutterBottom
+                  dangerouslySetInnerHTML={{ __html: pkg.title }}
+                />
+
+                <Typography
+                  variant="body2"
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    color: "text.secondary",
+                  }}
+                  dangerouslySetInnerHTML={{ __html: pkg.description }}
+                />
+
+                <Typography
+                  variant="subtitle1"
+                  sx={{ mt: 2, fontWeight: "bold", color: "success.main" }}
+                >
+                  Price: ₹
+                  {Math.floor(Number(pkg.price) + Number(pkg.price) * 0.1)}
+                </Typography>
+
+                {/* Buttons */}
+                <Box sx={{ mt: 2 }}>
+                  <Button
+                    sx={{ mr: 2 }}
+                    color="success"
+                    variant="outlined"
+                    onClick={() => onDetailsBookNowClick(pkg)}
+                  >
+                    More Details
+                  </Button>
+                  <Button
+                    color="success"
+                    variant="contained"
+                    onClick={() => handleBookNowClick(pkg)}
+                  >
+                    Book Now
+                  </Button>
                 </Box>
-              <p className="mt-2">
-                <strong>
-                 Price:{Math.floor(Number(pkg.price)+ Number(pkg.price) * 0.10)}
-                </strong>
-              </p>
-              <div>
-              <Button sx={{m:1}} color="success" variant="outlined" onClick={()=>{onDetailsBookNowClick(pkg)}}>More Details</Button>
-              <Button color="success" variant="contained" onClick={()=>{handleBookNowClick(pkg)}}>Book Now</Button>
-              </div>
+              </Box>
             </Box>
-          </div>
-          ))
-          }
-           
+          ))}
 
           {/* Explore More Packages Button */}
-          <div className="text-center mt-4">
-            <button
-              className="btn btn-primary"
-              onClick={onExploreMoreClick}
-              style={{ padding: "10px 20px", fontWeight: "bold" }}
+          {hasMore ? (
+            <div className="text-center mt-4">
+              <button
+                className="btn btn-primary"
+                onClick={onExploreMoreClick}
+                style={{ padding: "10px 20px", fontWeight: "bold" }}
+              >
+                Explore More Packages
+              </button>
+            </div>
+          ) : (
+            <Box
+              sx={{
+                textAlign: "center",
+                mt: 6,
+                p: 4,
+                borderRadius: 3,
+                background: "linear-gradient(135deg, #f5f7fa, #e6f4ea)",
+                boxShadow: 3,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             >
-              Explore More Packages
-            </button>
-          </div>
+              <BeachAccessIcon
+                sx={{ fontSize: 50, color: "success.main", mb: 1 }}
+              />
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                You’ve all caught up!
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                No more packages to explore right now.
+              </Typography>
+            </Box>
+          )}
         </div>
       </div>
 
-      <ToastContainer/>
+      <ToastContainer />
 
-              <Drawer
-                    anchor="right"
-                    open={isDrawerOpen}
-                    onClose={handleCloseBookingForm}
-                    sx={{
-                      "& .MuiDrawer-paper": {
-                        width: { xs: "100%", sm: 600 },
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        zIndex: '1',
-                        position:'absolute'  
-                      },
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        padding: 2,
-                        overflowY: "auto",
-                        height: "100%",
-                        marginLeft: 1,
-                      }}
-                    >
-                      {selectedPackage && (
-                        <BookingForm
-                          pkg={selectedPackage}
-                          onClose={handleCloseBookingForm}
-                        />
-                      )}
-                    </Box>
-                  </Drawer>      
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={handleCloseBookingForm}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: { xs: "100%", sm: 600 },
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            zIndex: "1",
+            position: "absolute",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            padding: 2,
+            overflowY: "auto",
+            height: "100%",
+            marginLeft: 1,
+          }}
+        >
+          {selectedPackage && (
+            <BookingForm
+              pkg={selectedPackage}
+              onClose={handleCloseBookingForm}
+            />
+          )}
+        </Box>
+      </Drawer>
     </>
   );
 };

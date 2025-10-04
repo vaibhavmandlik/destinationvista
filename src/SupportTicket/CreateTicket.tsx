@@ -1,103 +1,105 @@
 // CreateTicket.tsx
-import React, { useState } from "react";
+import { Grid, Paper } from "@mui/material";
 import {
-  Button,
-  Grid,
-  MenuItem,
-  Paper,
-  Box,
-} from "@mui/material";
-import { Create, required, SimpleForm, TextInput } from "react-admin";
+  Create,
+  FileField,
+  FileInput,
+  required,
+  SaveButton,
+  SelectInput,
+  SimpleForm,
+  TextInput,
+  Toolbar
+} from "react-admin";
 
-interface CreateTicketProps {
-  onAddTicket: (ticket: {
-    subject: string;
-    description: string;
-    category: string;
-    priority: string;
-  }) => void;
-}
+const categories = [
+  { id: "Billing", name: "Billing" },
+  { id: "Technical", name: "Technical" },
+  { id: "General", name: "General" },
+];
 
-const categories = ["Billing", "Technical", "General"];
-const priorities = ["Low", "Medium", "High"];
+const priorities = [
+  { id: "Low", name: "Low" },
+  { id: "Medium", name: "Medium" },
+  { id: "High", name: "High" },
+];
 
-export default function CreateTicket({ onAddTicket }: CreateTicketProps) {
-  const [subject, setSubject] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [priority, setPriority] = useState("");
+const CustomToolbar = (props: any) => (
+  <Toolbar {...props}>
+    <SaveButton
+      label="Submit Ticket"
+      sx={{
+        borderRadius: 2,
+        minWidth: 150,
+        background: "#2563eb",
+        "&:hover": { background: "#1746a2" },
+      }}
+    />
+  </Toolbar>
+);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!subject || !description || !category || !priority) return;
-
-    onAddTicket({ subject, description, category, priority });
-
-    // Reset form
-    setSubject("");
-    setDescription("");
-    setCategory("");
-    setPriority("");
-  };
-
+export default function CreateTicket() {
   return (
-    <Create>
-      <SimpleForm>
+    <Create resource="ticket" redirect="list">
+      <SimpleForm toolbar={<CustomToolbar />}>
         <Paper elevation={3} sx={{ p: 3 }}>
-          <Box>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextInput
-                  fullWidth
-                  label="Subject"
-                  source="subject"
-                  validate={[required()]}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextInput
-                  fullWidth
-                  label="Description"
-                  multiline
-                  rows={4}
-                  source="description"
-                  validate={[required()]}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <TextInput
-                  select
-                  fullWidth
-                  label="Category"
-                  source="category"
-                  validate={[required()]}
-                >
-                  {categories.map((cat) => (
-                    <MenuItem key={cat} value={cat}>
-                      {cat}
-                    </MenuItem>
-                  ))}
-                </TextInput>
-              </Grid>
-              <Grid item xs={6}>
-                <TextInput
-                  select
-                  fullWidth
-                  label="Priority"
-                  source="priority"
-                  validate={[required()]}
-                >
-                  {priorities.map((p) => (
-                    <MenuItem key={p} value={p}>
-                      {p}
-                    </MenuItem>
-                  ))}
-                </TextInput>
-              </Grid>
-
+          <Grid container spacing={2}>
+            {/* Subject */}
+            <Grid item xs={12}>
+              <TextInput
+                fullWidth
+                label="Subject"
+                source="subject"
+                validate={[required()]}
+              />
             </Grid>
-          </Box>
+
+            {/* Description */}
+            <Grid item xs={12}>
+              <TextInput
+                fullWidth
+                label="Description"
+                multiline
+                rows={5}
+                source="description"
+                validate={[required()]}
+              />
+            </Grid>
+
+            {/* Category */}
+            <Grid item xs={12} sm={6}>
+              <SelectInput
+                fullWidth
+                label="Category"
+                source="category"
+                choices={categories}
+                validate={[required()]}
+              />
+            </Grid>
+
+            {/* Priority */}
+            <Grid item xs={12} sm={6}>
+              <SelectInput
+                fullWidth
+                label="Priority"
+                source="priority"
+                choices={priorities}
+                validate={[required()]}
+              />
+            </Grid>
+
+            {/* Image Upload */}
+            <Grid item xs={12}>
+              <FileInput
+                source="images"
+                label="Upload Screenshots"
+                accept="image/*"
+                multiple
+              >
+                <FileField source="src" title="title" />
+              </FileInput>
+            </Grid>
+          </Grid>
         </Paper>
       </SimpleForm>
     </Create>

@@ -4,6 +4,9 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LoginContext } from '../../LoginContext';
+import { Box } from 'lucide-react';
+import { Button, email, useNotify } from 'react-admin';
+import { useForm } from 'react-hook-form';
 
 const url = `${import.meta.env.VITE_API_URL}/user/login`;
 
@@ -13,7 +16,8 @@ const UserLoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const notify = useNotify();
+ 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setLoading(true);
@@ -36,6 +40,22 @@ const UserLoginPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+   const handleForgotPassword = () => {
+    if (!email) {
+      notify("Please enter your email before resetting password.", {
+        type: "warning",
+      });
+      return;
+    }
+    try {
+      debugger;
+      navigate("/forgotpassword" , {state: { email }});
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
 
   const isFormValid = email.trim() !== '' && password.trim() !== '';
 
@@ -71,12 +91,12 @@ const UserLoginPage: React.FC = () => {
             {loading ? 'Logging in...' : 'Login'}
           </button>
 
+          {/* Forgot Password */}
+              <div className='text-center'>
+                <button className="btn  btn-link m-2" onClick={handleForgotPassword}>Forgot Password !</button>
+              </div>
           <p className="text-center mt-3">
-            <a href="#">Forgot Password?</a>
-          </p>
-          <p className="text-center mt-2">Or login with</p> 
-          <p className="text-center mt-3">
-            Don’t have an account? <a href="/registration">Sign Up</a>
+            Don't have an account? <a href="/registration">Sign Up</a>
           </p>
         </form>
       </div>
