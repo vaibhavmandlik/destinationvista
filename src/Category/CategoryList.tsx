@@ -9,7 +9,6 @@ import {
 
 // 🔎 Filters
 const categoryFilters = [
-  <TextInput label="Search by category ID" source="id" alwaysOn />,
   <TextInput label="Search by name" source="name" alwaysOn />,
 ];
 

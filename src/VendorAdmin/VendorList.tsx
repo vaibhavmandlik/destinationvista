@@ -69,10 +69,10 @@ const NotificationButton = ({ record }: any) => {
     setOpen(true);
     setLoading(true);
     try {
-      const { data } = await dataProvider.getList("notifications", {
+      const { data } = await dataProvider.getList("notification", {
         filter: { vendorId: record.id },
         pagination: { page: 1, perPage: 10 },
-        sort: { field: "createdAt", order: "DESC" },
+        sort: { field: "createdOn", order: "DESC" },
       });
       setNotifications(data);
     } catch {

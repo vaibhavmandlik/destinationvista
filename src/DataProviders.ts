@@ -78,6 +78,7 @@ const createPackageFormData = (params: CreateParams<PackageParams>) => {
 
   // Flattened fields
   params.data.title && formData.append("title", params.data.title);
+  params.data.body && formData.append("body", params.data.body);
   params.data.price && formData.append("price", params.data.price);
   params.data.durationDays && formData.append("durationDays", params.data.durationDays);
   params.data.destination && formData.append("destination", params.data.destination);
@@ -245,6 +246,7 @@ export const dataProviders = {
         body: JSON.stringify(params.data),
       }).then(({ json }) => ({ data: { id: 1, ...json } }));
     } else if (resource === "blog") {
+      debugger;
       const formData = createPackageFormData(params);
       return httpClient(`${apiUrl}/${resource}`, {
         method: "POST",
@@ -376,14 +378,32 @@ export const dataProviders = {
           );
           return { data: updatedRecords, total: updatedRecords.length };
         });
-    } else if (resource === "common/city") {
+    }
+    else if (resource === "common/state") {
+      return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
+        .then(({ json }) => {
+          const records = Array.isArray(json) ? json : json.data;
+
+          const mapped = records.map((state: any) => ({
+            id: state.state_id,
+            name: state.state_name,
+          }));
+
+          console.log("Mapped states for RA:", mapped);
+          return {
+            data: mapped,
+            total: mapped.length,
+          };
+        });
+    }
+    else if (resource === "common/city") {
       return httpClient(`${apiUrl}/${resource}`, { method: "GET" })
         .then(({ json }) => {
           const records = Array.isArray(json) ? json : json.data;
 
           const mapped = records.map((city: any) => ({
             ...city,
-            id: city.city_id,   // 👈 REQUIRED by React-Admin
+            id: city.city_id,
           }));
 
           console.log("Mapped cities for RA:", mapped);

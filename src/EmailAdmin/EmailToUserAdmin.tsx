@@ -19,7 +19,7 @@ import {
   AutocompleteArrayInput,
   ReferenceArrayInput,
   SaveButton,
-  SimpleForm,
+  Form,
   TextInput,
   Toolbar,
   required,
@@ -90,6 +90,7 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
     body?: string;
   }>({});
 
+  // Update template data when template changes
   React.useEffect(() => {
     if (selectedTemplate && templates) {
       const tmpl = templates.find((t: any) => t.id === selectedTemplate);
@@ -98,38 +99,6 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
       setTemplateData({ subject: "", body: "" });
     }
   }, [selectedTemplate, templates]);
-
-  const handleSubmit = (values: any) => {
-    create(
-      "vendor/sendMail",
-      {
-        data: {
-          customer: values.customer,
-          subject: values.subject,
-          body: values.body,
-        },
-      },
-      {
-        onSuccess: () => {
-          notify(
-            translate("email.users.success_message", {
-              _: "Email sent successfully!",
-            }),
-            { type: "success" }
-          );
-          redirect("/admin/email");
-        },
-        onError: (error: any) => {
-          notify(
-            translate("email.users.error_message", {
-              _: `Error sending email: ${error.message}`,
-            }),
-            { type: "error" }
-          );
-        },
-      }
-    );
-  };
 
   if (templatesLoading) {
     return (
@@ -170,37 +139,47 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
         {translate("email.users.title", { _: "Email to Users" })}
       </Typography>
 
-      <SimpleForm
-        onSubmit={handleSubmit}
-        toolbar={<CustomToolbar />}
+      <Form
+        onSubmit={(values: any) => {
+          create(
+            "vendor/sendMail",
+            {
+              data: {
+                customer: values.customer,
+                subject: values.subject,
+                body: values.body,
+              },
+            },
+            {
+              onSuccess: () => {
+                notify(
+                  translate("email.users.success_message", {
+                    _: "Email sent successfully!",
+                  }),
+                  { type: "success" }
+                );
+
+                setTemplateData({ subject: "", body: "" });
+                setSelectedTemplate(null);
+              },
+              onError: (error: any) => {
+                notify(
+                  translate("email.users.error_message", {
+                    _: `Error sending email: ${error.message}`,
+                  }),
+                  { type: "error" }
+                );
+              },
+            }
+          );
+        }}
         defaultValues={{
-          body: templateData.body,
           subject: templateData.subject,
+          body: templateData.body,
         }}
       >
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <ReferenceArrayInput
-              source="customer"
-              reference="user"
-              filter={filter}
-              perPage={50}
-              sort={{ field: "firstName", order: "ASC" }}
-              label={translate("resources.users.select_recipients", {
-                _: "Select Recipients",
-              })}
-              validate={required()}
-            >
-              <AutocompleteArrayInput
-                optionText={(choice: any) =>
-                  `${choice.firstName} ${choice.lastName} (${choice.email})`
-                }
-                fullWidth
-                filterToQuery={(searchText: string) => ({ q: searchText })}
-              />
-            </ReferenceArrayInput>
-          </Grid>
-
+        <Grid container spacing={3} sx={{ padding: { xs: 2, sm: 3 } }}>
+          {/* Template Selection */}
           <Grid item xs={12}>
             <Select
               fullWidth
@@ -219,6 +198,31 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
             </Select>
           </Grid>
 
+          {/* Customer Selection */}
+          <Grid item xs={12}>
+            <ReferenceArrayInput
+              source="customer"
+              reference="user"
+              filter={filter}
+              perPage={50}
+              sort={{ field: "firstName", order: "ASC" }}
+              label={translate("resources.users.select_recipients", {
+                _: "Select Recipients",
+              })}
+              validate={required()}
+              defaultValue={[]}
+            >
+              <AutocompleteArrayInput
+                optionText={(choice: any) =>
+                  `${choice.firstName} ${choice.lastName} (${choice.email})`
+                }
+                fullWidth
+                filterToQuery={(searchText: string) => ({ q: searchText })}
+              />
+            </ReferenceArrayInput>
+          </Grid>
+
+          {/* Subject */}
           <Grid item xs={12}>
             <TextInput
               source="subject"
@@ -229,6 +233,7 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
             />
           </Grid>
 
+          {/* Email Body */}
           <Grid item xs={12}>
             <RichTextInput
               source="body"
@@ -246,8 +251,13 @@ const EmailToUserAdmin: React.FC<EmailToUserAdminProps> = ({
               defaultValue={templateData.body}
             />
           </Grid>
+
+          {/* Toolbar */}
+          <Grid item xs={12}>
+            <CustomToolbar />
+          </Grid>
         </Grid>
-      </SimpleForm>
+      </Form>
     </Box>
   );
 };

@@ -152,7 +152,7 @@ export const UserUpdate = () => {
           </Grid>
 
           {/* Profile Image */}
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <strong>Profile Image</strong>
             <ImageInput
               source="profileImagePath"
@@ -160,7 +160,7 @@ export const UserUpdate = () => {
             >
               <ImageField source="src" />
             </ImageInput>
-          </Grid>
+          </Grid> */}
         </Grid>
       </SimpleForm>
     </Edit>

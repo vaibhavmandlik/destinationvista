@@ -49,7 +49,7 @@ import { UserList } from "./User/UserList";
 import { UserShow } from "./User/UserShow";
 import { UserUpdate } from "./User/UserUpdate";
 import { VendorCreate } from "./Vendor/VendorCreate";
-import { VendorCreateOpen } from "./Vendor/VendorCreateOpen";
+import VendorCreateOpen from "./Vendor/VendorCreateOpen";
 import { VendorList } from "./Vendor/VendorList";
 import { VendorUpdate } from "./Vendor/VendorUpdate";
 import { VendorListAdmin } from "./VendorAdmin/VendorList";

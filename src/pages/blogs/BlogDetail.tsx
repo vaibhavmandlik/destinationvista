@@ -2,6 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 // import "/styles/Blogdetails.css";
 
+declare global {
+  interface Window {
+    adsbygoogle?: any[];
+  }
+}
+
 interface BlogPost {
   id: number;
   title: string;
@@ -59,6 +65,13 @@ const BlogDetail: React.FC = () => {
       }
     };
 
+    // Load ads when BlogDetail mounts
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.error("AdSense error", e);
+    }
+
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchRelatedPosts();
     fetchPost();
@@ -106,11 +119,12 @@ const BlogDetail: React.FC = () => {
         <div dangerouslySetInnerHTML={{ __html: post.body }} />
       </div>
 
+      {/* AdSense ad block */}
       <div className="my-5 text-center">
         <ins
           className="adsbygoogle"
           style={{ display: "block" }}
-          data-ad-client="ca-pub-XXXXXXXXXXXX"
+          data-ad-client="ca-pub-6912321285006351"
           data-ad-slot="1234567890"
           data-ad-format="auto"
           data-full-width-responsive="true"
@@ -122,7 +136,11 @@ const BlogDetail: React.FC = () => {
         {relatedPosts.map((rp) => (
           <div className="col-md-4" key={rp.id}>
             <div className="card mb-3 h-100">
-              <img src="/img/blog-1.jpg" className="card-img-top" alt="Related Blog" />
+              <img
+                src="/img/blog-1.jpg"
+                className="card-img-top"
+                alt="Related Blog"
+              />
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title">{rp.title}</h5>
                 <div

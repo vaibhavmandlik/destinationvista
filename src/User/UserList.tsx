@@ -10,6 +10,7 @@ import {
   ReferenceField,
   required,
   SaveButton,
+  SelectInput,
   SimpleForm,
   TextField,
   TextInput,
@@ -27,8 +28,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import EditIcon from "@mui/icons-material/Edit";
 import EmailIcon from "@mui/icons-material/Email";
-import { Link } from "react-router-dom";
-import { useFormContext } from "react-hook-form";
 import {
   Box,
   Button,
@@ -41,6 +40,7 @@ import {
   IconButton,
   MenuItem,
   Select,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -48,6 +48,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 import {
   ClearButtons,
@@ -133,6 +134,16 @@ const UserListActions = ({ allUsers, handleOpenPingDialog }) => {
 const UserFilter = [
   <TextInput label="Search by user ID" source="id" alwaysOn />,
   <TextInput label="Search user" source="q" alwaysOn />,
+  <SelectInput
+    alwaysOn
+    label="Role"
+    source="category"
+    choices={[
+      { id: 0, name: "Admin" },
+      { id: 1, name: "Vendor" },
+      { id: 2, name: "User" },
+    ]}
+  />,
 ];
 
 export const UserList = () => {
@@ -151,6 +162,7 @@ export const UserList = () => {
   const [transactionsDetails, setTransactionsDetails] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<any>({});
   const [pingDialogOpen, setPingDialogOpen] = useState(false);
+  const [showActiveOnly, setShowActiveOnly] = useState(true);
   const [userStatusList, setUserStatusList] = useState<any[]>([]);
   const [selectedForEmail, setSelectedForEmail] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
@@ -188,6 +200,10 @@ export const UserList = () => {
     setSelectedUsers([]);
     setPingDialogOpen(true);
   };
+
+  const filteredUsers = showActiveOnly
+    ? userStatusList.filter((u) => u.enabled)
+    : userStatusList.filter((u) => !u.enabled);
 
   const handleSort = (type: "asc" | "desc") => {
     const sorted = [...userStatusList].sort((a, b) =>
@@ -310,7 +326,8 @@ export const UserList = () => {
 
   return (
     <>
-      <List filters={UserFilter}
+      <List
+        filters={UserFilter}
         actions={
           <UserListActions
             allUsers={allUsers || []}
@@ -396,19 +413,19 @@ export const UserList = () => {
                         }}
                       />
                     )) || (
-                        <Box
-                          component="img"
-                          src={"/img/user.jpg"}
-                          alt="Profile"
-                          sx={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: "50%",
-                            objectFit: "cover",
-                            border: "2px solid #1976d2",
-                          }}
-                        />
-                      )}
+                      <Box
+                        component="img"
+                        src={"/img/user.jpg"}
+                        alt="Profile"
+                        sx={{
+                          width: 100,
+                          height: 100,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          border: "2px solid #1976d2",
+                        }}
+                      />
+                    )}
                     <Box width="75%">
                       <Box
                         display="flex"
@@ -434,8 +451,8 @@ export const UserList = () => {
                         {selectedUser.category === 0
                           ? "Admin"
                           : selectedUser.category === 1
-                            ? "Vendor"
-                            : "Customer"}
+                          ? "Vendor"
+                          : "Customer"}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
                         Status: {selectedUser.enabled ? "Enabled" : "Disabled"}
@@ -470,9 +487,11 @@ export const UserList = () => {
                     <Typography variant="body2">
                       <strong>Address:</strong>{" "}
                       {selectedUser.address
-                        ? `${selectedUser.address.addressLine1 || ""}, ${selectedUser.address.addressLine2 || ""
-                        }, ${selectedUser.address.city || ""}, ${selectedUser.address.state || ""
-                        } - ${selectedUser.address.pincode || ""}`
+                        ? `${selectedUser.address.addressLine1 || ""}, ${
+                            selectedUser.address.addressLine2 || ""
+                          }, ${selectedUser.address.city || ""}, ${
+                            selectedUser.address.state || ""
+                          } - ${selectedUser.address.pincode || ""}`
                         : "NA"}
                     </Typography>
                     <Typography variant="body2">
@@ -651,7 +670,6 @@ export const UserList = () => {
                 subject: templateData.subject,
               }}
             >
-
               <div className="row">
                 {/* Template Selector */}
                 <Box sx={{ mb: 2 }}>
@@ -678,7 +696,6 @@ export const UserList = () => {
                     placeholder="Enter Subject"
                     defaultValue={templateData.subject}
                     validate={[required()]}
-
                   />
                 </div>
 
@@ -713,40 +730,71 @@ export const UserList = () => {
         </DialogActions>
       </Dialog>
 
-      {/* user ping dialog box */}
+      {/* Ping Users Dialog */}
       <Dialog
         open={pingDialogOpen}
         onClose={() => setPingDialogOpen(false)}
         fullWidth
-        maxWidth="sm"
+        maxWidth="md"
       >
-        <DialogTitle>Ping Users</DialogTitle>
-        <DialogContent>
-          <Box display="flex" justifyContent="space-between" mb={2}>
-            <Button onClick={() => handleSort("asc")}>Sort Active First</Button>
-            <Button onClick={() => handleSort("desc")}>
-              Sort Inactive First
-            </Button>
+        <DialogTitle>
+          Ping Users
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="flex-end"
+            mt={1}
+          >
+            <Typography variant="body2" sx={{ mr: 1 }}>
+              {showActiveOnly ? "Active Users" : "Inactive Users"}
+            </Typography>
+            <Switch
+              checked={showActiveOnly}
+              onChange={() => setShowActiveOnly((prev) => !prev)}
+              color="primary"
+            />
           </Box>
-          {userStatusList.map((user) => (
-            <Box
-              key={user.id}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              mb={1}
-              p={1}
-              border={1}
-              borderRadius={1}
-            >
-              <Typography>
-                {user.firstName} {user.lastName} ({user.email})
-              </Typography>
-            </Box>
-          ))}
+        </DialogTitle>
+
+        <DialogContent dividers>
+          {filteredUsers.length ? (
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>User ID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Status</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredUsers.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.id}</TableCell>
+                    <TableCell>
+                      {user.firstName} {user.lastName}
+                    </TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      {user.enabled ? "Active" : "Inactive"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <Typography>No users found.</Typography>
+          )}
         </DialogContent>
+
         <DialogActions>
-          <Button onClick={() => setPingDialogOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => setPingDialogOpen(false)}
+            variant="contained"
+            color="primary"
+          >
+            Close
+          </Button>
           <Button
             variant="contained"
             color="primary"

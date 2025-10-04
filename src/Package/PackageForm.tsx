@@ -2,21 +2,22 @@ import { Box, Grid, Paper, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { RichTextInput } from "ra-input-rich-text";
 import {
-    ArrayInput,
-    AutocompleteArrayInput,
-    AutocompleteInput,
-    DateInput,
-    ImageField,
-    ImageInput,
-    ReferenceArrayInput,
-    ReferenceInput,
-    SimpleForm,
-    SimpleFormIterator,
-    TextInput,
-    number,
-    required,
+  ArrayInput,
+  AutocompleteArrayInput,
+  AutocompleteInput,
+  DateInput,
+  ImageField,
+  ImageInput,
+  ReferenceArrayInput,
+  ReferenceInput,
+  SimpleForm,
+  SimpleFormIterator,
+  TextInput,
+  number,
+  required,
 } from "react-admin";
 import { useFormContext, useWatch } from "react-hook-form";
+import { useEffect } from "react";
 
 export const PackageForm = () => {
   return (
@@ -35,13 +36,17 @@ export const PackageForm = () => {
             </Grid>
 
             <Grid item xs={12} sm={12}>
-              <ReferenceInput source="vendorId" reference="vendor">
+              <ReferenceInput
+                source="vendorId"
+                reference="vendor"
+                filter={{ status: 1 }}
+              >
                 <AutocompleteInput
                   fullWidth
                   optionText="agencytitle"
                   optionValue="id"
                   validate={[required()]}
-                  filterToQuery={(searchText) => ({ q: searchText })}
+                  filterToQuery={(searchText) => ({ q: searchText, status: 1 })}
                 />
               </ReferenceInput>
             </Grid>
@@ -84,6 +89,11 @@ export const PackageForm = () => {
                 label="Duration (Days)"
                 validate={[required(), number()]}
                 type="number"
+                inputProps={{
+                  onWheel: (e: React.WheelEvent<HTMLInputElement>) =>
+                    e.currentTarget.blur(),
+                  min: 1,
+                }}
               />
             </Grid>
 
@@ -253,10 +263,22 @@ export const PackageForm = () => {
   );
 };
 
-// Component to handle Start and End Date with useWatch
+// Start & End Dates Component
 const StartEndDateInputs = () => {
-  const { control } = useFormContext();
-  const startDate = useWatch({ control, name: "startDate" });
+  const { setValue } = useFormContext();
+  const startDate = useWatch({ name: "startDate" });
+  const durationRaw = useWatch({ name: "durationDays" });
+
+  const duration = parseInt(durationRaw, 10) || 0;
+
+  useEffect(() => {
+    if (startDate && duration > 0) {
+      const end = dayjs(startDate)
+        .add(duration - 1, "day")
+        .format("YYYY-MM-DD");
+      setValue("endDate", end);
+    }
+  }, [startDate, duration, setValue]);
 
   return (
     <Grid container spacing={3}>
@@ -274,11 +296,7 @@ const StartEndDateInputs = () => {
           fullWidth
           source="endDate"
           label="End Date"
-          inputProps={{
-            min: startDate
-              ? dayjs(startDate).format("YYYY-MM-DD")
-              : dayjs().format("YYYY-MM-DD"),
-          }}
+          disabled // auto-calculated
         />
       </Grid>
     </Grid>

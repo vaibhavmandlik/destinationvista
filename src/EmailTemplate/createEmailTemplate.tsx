@@ -1,26 +1,29 @@
+import { Grid } from "@mui/material";
 import {
-  List,
-  Datagrid,
-  TextField,
-  EditButton,
-  DeleteWithConfirmButton,
+  ClearButtons,
+  FormatButtons,
+  LinkButtons,
+  ListButtons,
+  RichTextInput,
+  RichTextInputToolbar,
+} from "ra-input-rich-text";
+import {
   Create,
-  SimpleForm,
-  TextInput,
-  SelectInput,
-  required,
+  Datagrid,
+  DeleteWithConfirmButton,
   Edit,
+  EditButton,
+  FilterForm,
+  FilterFormProps,
+  List,
+  SelectInput,
+  SimpleForm,
+  TextField,
+  TextInput,
+  required,
   useNotify,
   useRedirect,
 } from "react-admin";
-import {
-  RichTextInput,
-  RichTextInputToolbar,
-  FormatButtons,
-  ListButtons,
-  LinkButtons,
-  ClearButtons,
-} from "ra-input-rich-text";
 
 const categoryChoices = [
   { id: "promotional", name: "Promotional" },
@@ -30,18 +33,36 @@ const categoryChoices = [
   { id: "reminder", name: "Reminder" },
 ];
 
+const filterInputs = [
+  <TextInput
+    key="id"
+    label="Search by ID"
+    source="id"
+    alwaysOn
+    fullWidth
+    sx={{ minWidth: { xs: "100%", sm: 200, md: 250 }, m: 0.5 }}
+  />,
+  <SelectInput
+    key="category"
+    alwaysOn
+    label="Category"
+    source="category"
+    choices={categoryChoices}
+    fullWidth
+    sx={{ minWidth: { xs: "100%", sm: 200, md: 250 }, m: 0.5 }}
+  />,
+  <TextInput
+    key="subject"
+    label="Subject"
+    source="subject"
+    alwaysOn
+    fullWidth
+    sx={{ minWidth: { xs: "100%", sm: 200, md: 250 }, m: 0.5 }}
+  />,
+];
+
 export const EmailTemplateList = () => (
-  <List
-    filters={[
-      <TextInput label="Search by ID" source="id" alwaysOn />,
-      <SelectInput alwaysOn
-        label="Category"
-        source="category"
-        choices={categoryChoices}
-      />,
-      <TextInput label="Subject" source="subject" alwaysOn />,
-    ]}
-  >
+  <List filters={filterInputs}>
     <Datagrid rowClick="edit">
       <TextField source="id" />
       <TextField source="category" />

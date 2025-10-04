@@ -1,4 +1,7 @@
 import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { TextInput, ImageInput, ImageField } from "react-admin";
+import { useFormContext, useWatch } from "react-hook-form";
+import React, { useEffect, useState } from "react";
 import {
   ClearButtons,
   FormatButtons,
@@ -7,8 +10,6 @@ import {
   RichTextInput,
   RichTextInputToolbar,
 } from "ra-input-rich-text";
-import React, { useEffect, useState } from "react";
-import { ImageField, ImageInput, TextInput } from "react-admin";
 
 interface BlogEditorProps {
   initialTitle?: string;
@@ -19,19 +20,24 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
   initialTitle = "",
   initialBody = "",
 }) => {
-  const [title, setTitle] = useState(initialTitle);
-  const [bodyContent, setBodyContent] = useState(initialBody);
+  const { control, setValue } = useFormContext();
+
+  // Watch RA form fields for live preview
+  const title = useWatch({ control, name: "title" }) || initialTitle;
+  const bodyContent = useWatch({ control, name: "body" }) || initialBody;
+  const images = useWatch({ control, name: "images" }) || [];
+
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
+  // Generate image previews whenever images change
   useEffect(() => {
-    setTitle(initialTitle);
-    setBodyContent(initialBody);
-  }, [initialTitle, initialBody]);
-
-  const handleImageChange = (files: File[]) => {
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews(previews);
-  };
+    if (images && Array.isArray(images)) {
+      const previews = images.map((file: any) =>
+        typeof file === "string" ? file : URL.createObjectURL(file.rawFile)
+      );
+      setImagePreviews(previews);
+    }
+  }, [images]);
 
   return (
     <Grid container spacing={3}>
@@ -43,13 +49,6 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
           source="title"
           label="Blog Title"
           defaultValue={initialTitle}
-          onChange={(e) => setTitle((e.target as HTMLInputElement).value)}
-          sx={{
-            "& .RaInput-input": {
-              fontSize: "1.1rem",
-              fontWeight: 500,
-            },
-          }}
         />
 
         {/* Image Input */}
@@ -58,19 +57,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
             source="images"
             label="Upload Blog Images"
             accept={{ "image/*": [".png", ".jpg", ".jpeg"] }}
-            onChange={handleImageChange}
-            sx={{
-              "& .RaFileInput-dropZone": {
-                border: "2px dashed #3f51b5",
-                padding: 2,
-                borderRadius: 2,
-                backgroundColor: "#fafafa",
-                transition: "0.3s",
-                "&:hover": {
-                  backgroundColor: "#f0f4ff",
-                },
-              },
-            }}
+            multiple
           >
             <ImageField source="src" title="title" />
           </ImageInput>
@@ -91,10 +78,6 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
             }
             fullWidth
             defaultValue={initialBody}
-            onChange={(event: any) => {
-              const value = event?.target?.value ?? event;
-              setBodyContent(value);
-            }}
             sx={{
               ".ProseMirror": {
                 minHeight: "250px",
@@ -136,7 +119,8 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
             >
               PREVIEW
             </Typography>
-            {/* Blog Title Preview */}
+
+            {/* Title Preview */}
             {title && (
               <Typography
                 variant="h5"
@@ -155,7 +139,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
               </Typography>
             )}
 
-            {/* Horizontal Scroll for Images */}
+            {/* Image Previews */}
             {imagePreviews.length > 0 && (
               <Box
                 sx={{
@@ -179,9 +163,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
                       borderRadius: "12px",
                       border: "1px solid #ddd",
                       transition: "transform 0.3s ease",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                      },
+                      "&:hover": { transform: "scale(1.05)" },
                       flexShrink: 0,
                     }}
                   />
@@ -189,7 +171,7 @@ export const BlogEditor: React.FC<BlogEditorProps> = ({
               </Box>
             )}
 
-            {/* Blog Body Preview */}
+            {/* Body Preview */}
             <Box
               sx={{
                 color: "#444",
