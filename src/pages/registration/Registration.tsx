@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import {
   Box,
@@ -16,10 +17,137 @@ import {
   Typography,
   CardMedia,
 } from "@mui/material";
-import IndianStateDropdown from "./IndianStateDropdown";
 
-const url = `${import.meta.env.VITE_API_URL}/user`;
+// ✅ Environment variable
+const apiUrl = import.meta.env.VITE_API_URL;
+const userUrl = `${apiUrl}/user`;
 
+// ----------------------------------------
+// 📍 StateCityDropdown Component
+// ----------------------------------------
+interface Option {
+  id: number;
+  name: string;
+}
+
+interface StateCityProps {
+  onStateSelect: (stateId: number) => void;
+  onCitySelect: (cityId: number) => void;
+  selectedStateId?: number | null;
+  selectedCityId?: number | null;
+  apiBaseUrl: string;
+}
+
+const StateCityDropdown: React.FC<StateCityProps> = ({
+  onStateSelect,
+  onCitySelect,
+  selectedStateId = null,
+  selectedCityId = null,
+  apiBaseUrl,
+}) => {
+  const [states, setStates] = useState<Option[]>([]);
+  const [cities, setCities] = useState<Option[]>([]);
+  const [loadingStates, setLoadingStates] = useState(false);
+  const [loadingCities, setLoadingCities] = useState(false);
+
+  // Fetch states
+  useEffect(() => {
+    const fetchStates = async () => {
+      setLoadingStates(true);
+      try {
+        const res = await axios.get(`${apiBaseUrl}/common/state`);
+        setStates(res.data);
+      } catch (err) {
+        console.error("Error fetching states:", err);
+      } finally {
+        setLoadingStates(false);
+      }
+    };
+    fetchStates();
+  }, [apiBaseUrl]);
+
+  // Fetch cities when state changes
+  useEffect(() => {
+    const fetchCities = async () => {
+      if (!selectedStateId) {
+        setCities([]);
+        return;
+      }
+      setLoadingCities(true);
+      try {
+        const res = await axios.get(`${apiBaseUrl}/common/city/${selectedStateId}`);
+        setCities(res.data);
+      } catch (err) {
+        console.error("Error fetching cities:", err);
+      } finally {
+        setLoadingCities(false);
+      }
+    };
+    fetchCities();
+  }, [selectedStateId, apiBaseUrl]);
+
+  return (
+    <>
+      {/* State Dropdown */}
+      <Grid item xs={12} sm={6}>
+        <TextField
+          select
+          fullWidth
+          SelectProps={{ native: true }}
+          label="State"
+          value={selectedStateId || ""}
+          onChange={(e) => onStateSelect(Number(e.target.value))}
+          focused
+          required
+          helperText="Select your state"
+        >
+          <option value="" disabled>
+            {loadingStates ? "Loading states..." : "-- Select State --"}
+          </option>
+          {states.map((state) => (
+            <option key={state.id} value={state.id}>
+              {state.name}
+            </option>
+          ))}
+        </TextField>
+      </Grid>
+
+      {/* City Dropdown */}
+      <Grid item xs={12} sm={6}>
+        <TextField
+          select
+          className="form-control signup-input city-select"
+          fullWidth
+          SelectProps={{ native: true }}
+          label="City"
+          value={selectedCityId || ""}
+          onChange={(e) => onCitySelect(Number(e.target.value))}
+          focused
+          disabled={!selectedStateId || loadingCities}
+          required
+          helperText="Select your city"
+        >
+          <option value="" disabled>
+            {!selectedStateId
+              ? "Select state first"
+              : loadingCities
+              ? "Loading cities..."
+              : "-- Select City --"}
+          </option>
+          {cities.map((city) => (
+            <option key={city.id} value={city.id}>
+              {city.name}
+            </option>
+          ))}
+        </TextField>
+      </Grid>
+    </>
+  );
+};
+
+// ----------------------------------------
+// 📍 Registration Component
+// ----------------------------------------
 interface FormData {
   firstName: string;
   lastName: string;
@@ -27,12 +155,11 @@ interface FormData {
   password: string;
   confirmPassword: string;
   category: 0 | 1 | 2;
-  pincode: number | string;
+  pincode: string;
   primaryContactNumber: string;
   secondaryContactNumber: string;
   addressLine1: string;
   addressLine2: string;
-  city: string;
   landmark: string;
   dateOfBirth: string;
 }
@@ -50,15 +177,13 @@ const Registration: React.FC = () => {
     secondaryContactNumber: "",
     addressLine1: "",
     addressLine2: "",
-    city: "",
     landmark: "",
     dateOfBirth: "",
   });
 
-  const [state, setSelectState] = useState<string>("");
-  const [acceptTerms, setAcceptTerms] = useState<boolean>(false);
-
-  const handleStateSelect = (state: string) => setSelectState(state);
+  const [acceptTerms, setAcceptTerms] = useState(false);
+  const [stateId, setStateId] = useState<number | null>(null);
+  const [cityId, setCityId] = useState<number | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,36 +193,27 @@ const Registration: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!acceptTerms) {
-      toast.error("You must accept Terms & Conditions before creating an account!");
-      return;
-    }
-    if (formData.password.length < 6) {
-      toast.error("Password must be at least 6 characters");
-      return;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match!");
-      return;
-    }
-
-    const payload = { ...formData, state };
+    // Validation
+    if (!acceptTerms) return toast.error("Please accept the Terms & Conditions");
+    if (!stateId || !cityId) return toast.error("Please select State and City");
+    if (formData.password.length < 6)
+      return toast.error("Password must be at least 6 characters");
+    if (formData.password !== formData.confirmPassword)
+      return toast.error("Passwords do not match!");
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const payload = { ...formData, state_id: stateId, city_id: cityId };
+      const res = await axios.post(userUrl, payload);
 
-      if (response.ok) {
-        toast.success(`Welcome ${formData.firstName} ${formData.lastName}`);
-        window.location.href = "/loginPage";
+      if (res.status === 200 || res.status === 201) {
+        toast.success(`Welcome ${formData.firstName} ${formData.lastName}!`);
+        setTimeout(() => (window.location.href = "/loginPage"), 1200);
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error("Registration failed. Try again.");
       }
-    } catch (error) {
-      toast.error("Server connection failed.");
+    } catch (err) {
+      console.error("Error:", err);
+      toast.error("Server connection failed. Please try later.");
     }
   };
 
@@ -124,114 +240,107 @@ const Registration: React.FC = () => {
             overflow: "hidden",
           }}
         >
-          {/* Left side image */}
+          {/* Left Image */}
           <Box sx={{ flex: 1, display: { xs: "none", md: "block" } }}>
             <CardMedia
               component="img"
-              image="https://i.pinimg.com/564x/a8/72/14/a872140102e7673359f30afcdf6083e4.jpg" // change this to your product image
-              alt="Product highlight"
-              sx={{
-                height: "100%",
-                objectFit: "cover",
-              }}
+              image="https://i.pinimg.com/564x/a8/72/14/a872140102e7673359f30afcdf6083e4.jpg"
+              alt="Register"
+              sx={{ height: "100%", objectFit: "cover" }}
             />
           </Box>
 
-          {/* Right side form */}
+          {/* Right Form */}
           <Box sx={{ flex: 1.2, p: 3 }}>
             <CardHeader
               title={
-                <Typography variant="h4" color="green" align="center" fontWeight="bold">
+                <Typography variant="h4" align="center" color="green" fontWeight="bold">
                   Create Account
                 </Typography>
               }
               subheader={
-                <Typography variant="body2" color="textSecondary" align="center">
+                <Typography variant="body2" align="center" color="textSecondary">
                   Explore Dream Discover – Your next adventure awaits!
                 </Typography>
               }
             />
+
             <CardContent>
-              <Box component="form" onSubmit={handleSubmit} noValidate>
+              <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
-                  {/* First & Last Name */}
+                  {/* Names */}
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      fullWidth
                       name="firstName"
                       label="First Name"
+                      fullWidth
                       value={formData.firstName}
                       onChange={handleInputChange}
                       required
-                      helperText="Enter your given name"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      fullWidth
                       name="lastName"
                       label="Last Name"
+                      fullWidth
                       value={formData.lastName}
                       onChange={handleInputChange}
                       required
-                      helperText="Enter your surname"
                     />
                   </Grid>
 
                   {/* Email */}
                   <Grid item xs={12}>
                     <TextField
-                      fullWidth
-                      type="email"
                       name="email"
                       label="Email"
+                      type="email"
+                      fullWidth
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      helperText="We'll never share your email"
                     />
                   </Grid>
 
-                  {/* Contact Numbers & DOB */}
+                  {/* Contact + DOB */}
                   <Grid item xs={12} sm={4}>
                     <TextField
-                      fullWidth
                       name="primaryContactNumber"
-                      label="Primary Number"
+                      label="Primary Contact"
+                      fullWidth
                       value={formData.primaryContactNumber}
                       onChange={handleInputChange}
-                      helperText="Active mobile number"
+                      required
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <TextField
-                      fullWidth
                       name="secondaryContactNumber"
-                      label="Secondary Number"
+                      label="Secondary Contact"
+                      fullWidth
                       value={formData.secondaryContactNumber}
                       onChange={handleInputChange}
-                      helperText="Optional"
                     />
                   </Grid>
                   <Grid item xs={12} sm={4}>
                     <TextField
-                      fullWidth
-                      type="date"
                       name="dateOfBirth"
                       label="Date of Birth"
+                      type="date"
                       InputLabelProps={{ shrink: true }}
+                      fullWidth
                       value={formData.dateOfBirth}
                       onChange={handleInputChange}
-                      helperText="DD/MM/YYYY"
                     />
                   </Grid>
 
                   {/* Address */}
                   <Grid item xs={12}>
                     <TextField
-                      fullWidth
                       name="addressLine1"
                       label="Address Line 1"
+                      fullWidth
                       value={formData.addressLine1}
                       onChange={handleInputChange}
                       required
@@ -239,70 +348,66 @@ const Registration: React.FC = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      fullWidth
                       name="addressLine2"
                       label="Address Line 2"
+                      fullWidth
                       value={formData.addressLine2}
                       onChange={handleInputChange}
                     />
                   </Grid>
                   <Grid item xs={12}>
                     <TextField
-                      fullWidth
                       name="landmark"
                       label="Landmark"
+                      fullWidth
                       value={formData.landmark}
                       onChange={handleInputChange}
                     />
                   </Grid>
 
-                  {/* City, State, Pincode */}
-                  <Grid item xs={12} sm={4}>
+                  {/* State & City Dropdown */}
+                  <StateCityDropdown
+                    apiBaseUrl={apiUrl}
+                    selectedStateId={stateId}
+                    selectedCityId={cityId}
+                    onStateSelect={setStateId}
+                    onCitySelect={setCityId}
+                  />
+
+                  {/* Pincode */}
+                  <Grid item xs={12}>
                     <TextField
-                      fullWidth
-                      name="city"
-                      label="City"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <IndianStateDropdown onStateSelect={handleStateSelect} />
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    <TextField
-                      fullWidth
-                      type="number"
                       name="pincode"
-                      label="Postal Code"
+                      label="Pincode"
+                      type="number"
+                      fullWidth
                       value={formData.pincode}
                       onChange={handleInputChange}
+                      required
                     />
                   </Grid>
 
                   {/* Passwords */}
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      fullWidth
-                      type="password"
                       name="password"
                       label="Password"
+                      type="password"
+                      fullWidth
                       value={formData.password}
                       onChange={handleInputChange}
                       required
-                      helperText="At least 6 characters"
                     />
                   </Grid>
                   <Grid item xs={12} sm={6}>
                     <TextField
-                      fullWidth
-                      type="password"
                       name="confirmPassword"
                       label="Confirm Password"
+                      type="password"
+                      fullWidth
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
                       required
-                      helperText="Must match password"
                     />
                   </Grid>
 
@@ -318,7 +423,7 @@ const Registration: React.FC = () => {
                       label={
                         <Typography variant="body2">
                           I agree to the{" "}
-                          <Link to="/terms" style={{ color: "#1976d2", fontWeight: 600 }}>
+                          <Link to="/terms" style={{ color: "#1976d2" }}>
                             Terms & Conditions
                           </Link>
                         </Typography>
@@ -329,7 +434,7 @@ const Registration: React.FC = () => {
 
                 {/* Submit */}
                 <CardActions sx={{ mt: 2, flexDirection: "column" }}>
-                  <Button type="submit" variant="contained" color="primary" fullWidth>
+                  <Button variant="contained" color="primary" type="submit" fullWidth>
                     Create Account
                   </Button>
                   <Typography variant="body2" sx={{ mt: 2 }}>
