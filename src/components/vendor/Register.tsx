@@ -111,19 +111,30 @@ const Register = () => {
           source: "addressLine1",
           label: "Address Line 1",
           xs: 12,
-          validate: (v: string) => (!!v ? true : "Address Line 1 is required"),
+          validate: (v: string) =>
+            !!v
+              ? /^[A-Za-z0-9\s.,'’/#\-]{5,100}$/.test(v || "")
+                ? true
+                : "Invalid address format. Please use only letters, numbers, spaces, commas, periods, slashes, or hyphens"
+              : "Address Line 1 is required",
         },
         {
           source: "addressLine2",
           label: "Address Line 2",
           xs: 12,
-          validate: (v: string) => (!!v ? true : "Address Line 2 is required"),
+          validate: (v: string) =>
+            !v || /^[A-Za-z0-9\s.,'’/#\-]{5,100}$/.test(v)
+              ? true
+              : "Invalid address format. Please use only letters, numbers, spaces, commas, periods, slashes, or hyphens",
         },
         {
           source: "landmark",
           label: "Landmark",
           xs: 12,
-          validate: (v: string) => (!!v ? true : "Landmark is required"),
+          validate: (v: string) =>
+            !v || /^[A-Za-z0-9\s,.'’/#\-]{3,50}$/.test(v)
+              ? true
+              : "Invalid landmark format. Please use only letters, numbers, spaces, and basic punctuation (e.g., “Near City Mall”, “Opposite Bus Stand”).",
         },
         {
           source: "state",
@@ -149,7 +160,11 @@ const Register = () => {
           xs: 12,
           sm: 4,
           validate: (v: string) =>
-            /^\d{6}$/.test(v || "") ? true : "Pincode must be 6 digits",
+            !!v
+              ? /^\d{6}$/.test(v || "")
+                ? true
+                : "Pincode must be 6 digits"
+              : "Pincode is required",
         },
         {
           source: "primaryContactNumber",
@@ -157,7 +172,9 @@ const Register = () => {
           xs: 12,
           sm: 6,
           validate: (v: string) =>
-            /^\d{10}$/.test(v || "") ? true : "Must be 10 digits",
+            /^[1-9]\d{9}$/.test(v)
+              ? true
+              : "Must be a valid 10-digit mobile number (not starting with 0)",
         },
         {
           source: "secondaryContactNumber",
@@ -165,7 +182,9 @@ const Register = () => {
           xs: 12,
           sm: 6,
           validate: (v: string) =>
-            /^\d{10}$/.test(v || "") ? true : "Must be 10 digits",
+            !v || /^[1-9]\d{9}$/.test(v)
+              ? true
+              : "Must be a valid 10-digit mobile number (not starting with 0)",
         },
       ],
     },
@@ -268,7 +287,7 @@ const Register = () => {
                               {opt.state_name}
                             </MenuItem>
                           ))}
-                        
+
                         {field.source === "city" &&
                           (field.options || []).map((opt: any) => (
                             <MenuItem key={opt.city_id} value={opt.city_id}>
