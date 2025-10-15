@@ -1,14 +1,14 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const url = `${import.meta.env.VITE_API_URL}`;
 
 interface Passenger {
-  name: string,
-  contact: string,
-  email:string
+  name: string;
+  contact: string;
+  email: string;
 }
 
 interface Package {
@@ -26,14 +26,6 @@ interface Booking {
   totalSlots: number;
 }
 
-interface BookingResponse{
-    id: number
-    packageId: number,
-    bookingDate: string,
-    totalPrice : number,
-    totalSlots: number
-
-}
 interface BookingFormProps {
   pkg: Package;
   onClose: () => void;
@@ -41,133 +33,124 @@ interface BookingFormProps {
 
 const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
   const [numPassengers, setNumPassengers] = useState(1);
-  const [passengers, setPassengers] = useState<Passenger>();
   const [email, setEmail] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const navigate = useNavigate();
-  
+
   const addPassenger = () => {
-    if (numPassengers < 10) {
-      setNumPassengers(numPassengers + 1);
-    }
+    if (numPassengers < 10) setNumPassengers(numPassengers + 1);
   };
 
   const removePassenger = () => {
-    if (numPassengers > 1) {
-      setNumPassengers(numPassengers - 1);
-    }
+    if (numPassengers > 1) setNumPassengers(numPassengers - 1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!email) {
-    toast.error("Email is required");
-    return;
-  }
-
-  const token = localStorage.getItem("token");
-
-  if (!token) {
-    toast.error("Please login before booking your package");
-    navigate("/loginpage");
-    onClose();
-    return;
-  }
-
-  const bookingData: Booking = {
-    packageId: pkg.id,
-    bookingDate: new Date().toISOString().split("T")[0],
-    totalPrice: Number(pkg.price) * numPassengers,
-    totalSlots: numPassengers,
-  };
-
-  try {
-    const response1 = await axios.post<Booking>(
-      `${url}/booking`,
-      bookingData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response1.status === 200) {
-      debugger;
-      const bookingId = response1.data.id;
-
-      // Create order for Razorpay
-      const response2 = await axios.post(
-        `${url}/payments/order`,
-        { bookingId },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response2.status === 200) {
-        const { amount, currency, order_id, key } = response2.data;
-
-        const options = {
-          key: key, 
-          amount: amount.toString(),
-          currency,
-          order_id: order_id,
-          name: "Destination vista",
-          description: "Package Booking Payment",
-          handler: async function (response: any) {
-            try {
-              const verifyRes = await axios.post(
-                `${url}/payments/verify`,
-                {
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                  bookingId: bookingId,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-
-              if (verifyRes.data.success) {
-                toast.success("Payment successful and verified!");
-                onClose(); 
-                navigate("/home");
-              } else {
-                toast.error("Payment verification failed.");
-              }
-            } catch (err) {
-              toast.error("Error verifying payment.");
-              console.error(err);
-            }
-          },
-          prefill: {
-            name: "Passenger Name",
-            email,
-            contact: "9999999999",
-          },
-          theme: {
-            color: "#3399cc",
-          },
-        };
-
-        const razor = new window.Razorpay(options);
-        razor.open();
-
-      }
+    if (!email) {
+      toast.error("Email is required");
+      return;
     }
-  } catch (error) {
-    console.log(error);
-    toast.error("Failed to book your package");
-  }
-};
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login before booking your package");
+      navigate("/loginpage");
+      onClose();
+      return;
+    }
+
+    const bookingData: Booking = {
+      packageId: pkg.id,
+      bookingDate: new Date().toISOString().split("T")[0],
+      totalPrice: Number(pkg.price) * numPassengers,
+      totalSlots: numPassengers,
+    };
+
+    try {
+      const response1 = await axios.post(`${url}/booking`, bookingData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response1.status === 200) {
+        const bookingId = response1.data.id;
+
+        // Create Razorpay order
+        const response2 = await axios.post(
+          `${url}/payments/order`,
+          { bookingId },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (response2.status === 200) {
+          const { amount, currency, order_id, key } = response2.data;
+
+          const options = {
+            key,
+            amount: amount.toString(),
+            currency,
+            order_id,
+            name: "Destination Vista",
+            description: "Package Booking Payment",
+            handler: async function (response: any) {
+              try {
+                setIsVerifying(true); // Show verifying popup
+
+                const verifyRes = await axios.post(
+                  `${url}/payments/verify`,
+                  {
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                    bookingId,
+                  },
+                  {
+                    headers: { Authorization: `Bearer ${token}` },
+                  }
+                );
+
+                setIsVerifying(false); // Hide verifying popup
+
+                if (
+                  verifyRes.data.message === "Payment verified successfully"
+                ) {
+                  toast.success("✅ Payment verified successfully!");
+                  setTimeout(() => {
+                    onClose();
+                    navigate("/bookingshistory");
+                  }, 2000);
+                } else {
+                  toast.error("Payment verification failed.");
+                }
+              } catch (err) {
+                setIsVerifying(false);
+                toast.error("Error verifying payment.");
+                console.error(err);
+              }
+            },
+            prefill: {
+              name: "Passenger Name",
+              email,
+              contact: "9999999999",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+          };
+
+          const razor = new window.Razorpay(options);
+          razor.open();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to book your package");
+    }
+  };
 
   return (
     <div className="container-fluid py-5 bg-light">
@@ -176,7 +159,18 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
           {pkg.title}
         </h2>
 
-        <div className="bg-white p-5 rounded shadow-lg">
+        <div className="bg-white p-5 rounded shadow-lg position-relative">
+          {/* Verifying Payment Popup */}
+          {isVerifying && (
+            <div
+              className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center bg-light bg-opacity-75"
+              style={{ zIndex: 10 }}
+            >
+              <div className="spinner-border text-dark" role="status"></div>
+              <p className="mt-3 text-dark fw-bold">Verifying Payment...</p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <h4 className="mb-4 text-dark">Passenger Information</h4>
 
@@ -254,7 +248,7 @@ const BookingForm: React.FC<BookingFormProps> = ({ pkg, onClose }) => {
               <label>Total Price</label>
               <input
                 type="text"
-                value={(Math.floor(Number(pkg.price)+ Number(pkg.price) * 0.10)) * numPassengers}
+                value={Number(pkg.price) * numPassengers}
                 readOnly
                 className="form-control font-weight-bold"
               />

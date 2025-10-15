@@ -61,10 +61,10 @@ export const PackageForm = () => {
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <ReferenceInput source="destination" reference="destination">
+              <ReferenceInput source="destination" reference="common/city">
                 <AutocompleteInput
                   fullWidth
-                  optionText="title"
+                  optionText="name"
                   optionValue="id"
                   validate={[required()]}
                   filterToQuery={(searchText) => ({ q: searchText })}

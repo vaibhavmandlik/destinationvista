@@ -405,8 +405,6 @@ export const dataProviders = {
             ...city,
             id: city.city_id,
           }));
-
-          console.log("Mapped cities for RA:", mapped);
           return {
             data: mapped,
             total: mapped.length,
